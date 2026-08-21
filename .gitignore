@@ -1,0 +1,10 @@
+# Compiled binaries 
+/bin/
+/tmp/
+# Local Environment(never commit secrets)
+.env
+#macOs
+.DS_Store
+#Editors
+.vscode/
+.idea/
