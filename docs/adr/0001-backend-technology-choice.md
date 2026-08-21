@@ -1,6 +1,6 @@
-ADR-0001 - Use Go for the website backend
+# RFC-0001 - Backend technology choice
 
-Status: Proposed — awaiting tech lead review
+Status: In Discussion
 Date: 2026-08-21
 Author: Elizaveta Mokhova
 Reviewer: Petr
@@ -51,4 +51,4 @@ The biggest risk is my current Go experience. I am still learning the language, 
 
 The second risk is frontend work. Go does not give us the same frontend and image tooling as Next.js/Astro, so performance and UI quality will need to be checked explicitly rather than assumed.
 
-I would revisit this decision if the frontend needs much more interaction, if Go conflicts with an important company-wide technical constraint, or if an early test shows that this approach makes the PRD performance targets difficult to reach.
+I would revisit this proposal if the frontend needs much more interaction, if Go conflicts with an important company-wide technical constraint, or if an early test shows that this approach makes the PRD performance targets difficult to reach.
