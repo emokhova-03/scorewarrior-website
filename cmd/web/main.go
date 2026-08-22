@@ -2,12 +2,18 @@ package main
 
 import (
 	"fmt"
+	"html/template"
 	"log"
 	"net/http"
 )
 
+var homeTemplate = template.Must(template.ParseFiles("templates/home.html"))
+
 func homeHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprint(w, "Scorewarrior website is running")
+	err := homeTemplate.Execute(w, nil)
+	if err != nil {
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+	}
 }
 func healthHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprint(w, "ok")
