@@ -1,0 +1,14 @@
+[
+    {
+        "title": "[TEST] Backend Engineer",
+        "department": "Engineering",
+        "location": "Limassol, Cyprus",
+        "slug": "test-backend-engineer"
+    },
+    {
+        "title": "[TEST] Game Designer",
+        "department": "Design",
+        "location":"Limassol, Cyprus",
+        "slug": "test-game-designer"
+    }
+]

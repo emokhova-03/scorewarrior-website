@@ -1,0 +1,19 @@
+{{define "content"}}
+
+<section>
+    <h1>Careers</h1>
+
+    {{if .}}
+       {{range .}}
+       <article>
+            <h2>{{.Title}}</h2>
+            <p>{{.Department}}</p>
+            <p>{{.Location}}</p>
+       </article>
+       {{end}}
+    {{else}}
+        <p>No openings right now.</p>
+    {{end}}
+</section>
+
+{{end}}
