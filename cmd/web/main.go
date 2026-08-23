@@ -7,10 +7,10 @@ import (
 	"net/http"
 )
 
-var homeTemplate = template.Must(template.ParseFiles("templates/home.html"))
+var homeTemplate = template.Must(template.ParseFiles("templates/base.html", "templates/home.html"))
 
 func homeHandler(w http.ResponseWriter, r *http.Request) {
-	err := homeTemplate.Execute(w, nil)
+	err := homeTemplate.ExecuteTemplate(w, "base.html", nil)
 	if err != nil {
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 	}
