@@ -3,10 +3,14 @@
 <section>
     <h1>Careers</h1>
 
-    {{if .}}
-       {{range .}}
+    {{if .LoadError}}
+    <p>Unable to load open roles right now</p>
+    {{else if .Roles}}
+        {{range .Roles}}
        <article>
-            <h2>{{.Title}}</h2>
+            <h2>
+                <a href="/careers/{{.Slug}}">{{.Title}}</a>
+            </h2>
             <p>{{.Department}}</p>
             <p>{{.Location}}</p>
        </article>

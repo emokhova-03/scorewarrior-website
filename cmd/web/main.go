@@ -9,18 +9,26 @@ import (
 	"os"
 )
 
-var homeTemplate = template.Must(template.ParseFiles("templates/base.html", "templates/home.html"))
-var careersTemplate = template.Must(template.ParseFiles("templates/base.html", "templates/careers.html"))
-
 type Role struct {
-	Title      string `json: "title"`
-	Department string `json: "department"`
-	Location   string `json: "location"`
-	Slug       string `json: "slug"`
+	Title      string `json:"title"`
+	Department string `json:"department"`
+	Location   string `json:"location"`
+	Slug       string `json:"slug"`
 }
 
-func loadRoles() ([]Role, error) {
-	data, err := os.ReadFile("data/roles.json")
+type CareersPageData struct {
+	Roles     []Role
+	LoadError bool
+}
+
+var roles = []Role{}
+var rolesLoadError error
+var homeTemplate *template.Template
+var careersTemplate *template.Template
+var roleTemplate *template.Template
+
+func loadRoles(path string) ([]Role, error) {
+	data, err := os.ReadFile(path)
 
 	if err != nil {
 		return nil, err
@@ -32,10 +40,44 @@ func loadRoles() ([]Role, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	for idx := 0; idx < len(roles); idx++ {
+		err = validateRole(roles[idx])
+		if err != nil {
+			return nil, err
+		}
+	}
 	return roles, nil
 }
 
-var roles = []Role{}
+func findRoleBySlug(roles []Role, slug string) (Role, bool) {
+	for idx := 0; idx < len(roles); idx++ {
+		if roles[idx].Slug == slug {
+			return roles[idx], true
+		}
+
+	}
+	return Role{}, false
+}
+func validateRole(role Role) error {
+	if role.Title == "" {
+		return fmt.Errorf("role title is required")
+	}
+
+	if role.Department == "" {
+		return fmt.Errorf("role department is required")
+	}
+
+	if role.Location == "" {
+		return fmt.Errorf("role location is required")
+	}
+
+	if role.Slug == "" {
+		return fmt.Errorf("role slug is required")
+	}
+
+	return nil
+}
 
 func homeHandler(w http.ResponseWriter, r *http.Request) {
 	err := homeTemplate.ExecuteTemplate(w, "base.html", nil)
@@ -44,7 +86,12 @@ func homeHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 func careersHandler(w http.ResponseWriter, r *http.Request) {
-	err := careersTemplate.ExecuteTemplate(w, "base.html", roles)
+
+	pageData := CareersPageData{
+		Roles:     roles,
+		LoadError: rolesLoadError != nil, //returns bool, if there is mistake true if not - false
+	}
+	err := careersTemplate.ExecuteTemplate(w, "base.html", pageData)
 
 	if err != nil {
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
@@ -54,19 +101,40 @@ func healthHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprint(w, "ok")
 
 }
-func main() {
-	loadedRoles, err := loadRoles()
 
-	if err != nil {
-		log.Fatal(err)
+func roleHandler(w http.ResponseWriter, r *http.Request) {
+	slug := r.PathValue("slug")
+	role, found := findRoleBySlug(roles, slug)
+
+	if !found {
+		http.NotFound(w, r)
+		return
 	}
 
-	roles = loadedRoles
+	err := roleTemplate.ExecuteTemplate(w, "base.html", role)
+
+	if err != nil {
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+	}
+}
+func main() {
+	homeTemplate = template.Must(template.ParseFiles("templates/base.html", "templates/home.html"))
+	careersTemplate = template.Must(template.ParseFiles("templates/base.html", "templates/careers.html"))
+	roleTemplate = template.Must(template.ParseFiles("templates/base.html", "templates/role.html"))
+	loadedRoles, err := loadRoles("data/roles.json")
+
+	if err != nil {
+		log.Printf("failed to load roles: %v", err)
+		rolesLoadError = err
+	} else {
+		roles = loadedRoles
+	}
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /healthz", healthHandler)
 	mux.HandleFunc("GET /", homeHandler)
 	mux.HandleFunc("GET /careers", careersHandler)
+	mux.HandleFunc("GET /careers/{slug}", roleHandler)
 
 	log.Println("Server is running: http://localhost:8080")
 
