@@ -25,6 +25,7 @@ var roles = []Role{}
 var rolesLoadError error
 var homeTemplate *template.Template
 var careersTemplate *template.Template
+var notFoundTemplate *template.Template
 var roleTemplate *template.Template
 
 func loadRoles(path string) ([]Role, error) {
@@ -80,6 +81,11 @@ func validateRole(role Role) error {
 }
 
 func homeHandler(w http.ResponseWriter, r *http.Request) {
+	path := r.URL.Path
+	if path != "/" {
+		notFoundHandler(w, r)
+		return
+	}
 	err := homeTemplate.ExecuteTemplate(w, "base.html", nil)
 	if err != nil {
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
@@ -107,7 +113,7 @@ func roleHandler(w http.ResponseWriter, r *http.Request) {
 	role, found := findRoleBySlug(roles, slug)
 
 	if !found {
-		http.NotFound(w, r)
+		notFoundHandler(w, r)
 		return
 	}
 
@@ -117,10 +123,19 @@ func roleHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 	}
 }
+func notFoundHandler(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusNotFound)
+
+	err := notFoundTemplate.ExecuteTemplate(w, "base.html", nil)
+	if err != nil {
+		log.Printf("failed to render 404 page: %v", err)
+	}
+}
 func main() {
 	homeTemplate = template.Must(template.ParseFiles("templates/base.html", "templates/home.html"))
 	careersTemplate = template.Must(template.ParseFiles("templates/base.html", "templates/careers.html"))
 	roleTemplate = template.Must(template.ParseFiles("templates/base.html", "templates/role.html"))
+	notFoundTemplate = template.Must(template.ParseFiles("templates/base.html", "templates/notfound.html"))
 	loadedRoles, err := loadRoles("data/roles.json")
 
 	if err != nil {
@@ -136,9 +151,14 @@ func main() {
 	mux.HandleFunc("GET /careers", careersHandler)
 	mux.HandleFunc("GET /careers/{slug}", roleHandler)
 
-	log.Println("Server is running: http://localhost:8080")
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
 
-	err = http.ListenAndServe(":8080", mux)
+	log.Printf("Server is running on port %s", port)
+	err = http.ListenAndServe(":"+port, mux)
+
 	if err != nil {
 		log.Fatal(err)
 	}

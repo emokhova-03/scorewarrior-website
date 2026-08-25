@@ -2,9 +2,13 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8">
+        <!--This tells browser: draw page that has width same to width of the device
+        screen, scale 1:1-->
+        <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Scorewarrior</title>
     </head>
     <body>
+        <a href="#main">Skip to content</a>
         <header>
             <nav aria-label="Primary navigation">
                 <a href="/">Scorewarrior</a>
@@ -15,7 +19,7 @@
             </nav>
         </header>
 
-        <main>
+        <main id="main">
             {{template "content" .}}
         </main>
 
