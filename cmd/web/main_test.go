@@ -13,7 +13,7 @@ func TestValidateRoleValid(t *testing.T) {
 		Slug:       "test-backend-engineer",
 	}
 	err := validateRole(role)
-	if err == nil {
+	if err != nil {
 		t.Fatalf("expected valid role, got error: %v", err)
 	}
 }
