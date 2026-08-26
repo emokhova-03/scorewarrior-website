@@ -37,6 +37,7 @@ Decision
 I propose Go with server-side rendering.
 
 The main reasons are:
+
 - it gives the backend a meaningful role in the project;
 - the first version can stay as one application instead of two;
 - the Go standard library already covers the basic HTTP and rendering needs;
@@ -52,3 +53,14 @@ The biggest risk is my current Go experience. I am still learning the language, 
 The second risk is frontend work. Go does not give us the same frontend and image tooling as Next.js/Astro, so performance and UI quality will need to be checked explicitly rather than assumed.
 
 I would revisit this proposal if the frontend needs much more interaction, if Go conflicts with an important company-wide technical constraint, or if an early test shows that this approach makes the PRD performance targets difficult to reach.
+
+### Deployment evidence (2026-08-25)
+
+The Go candidate is deployed and publicly reachable at
+https://scorewarrior-website.onrender.com.
+
+Build and start commands are documented in the README. The port is supplied by the platform through the `PORT` environment variable.
+
+Health checks are wired to `/healthz`. Every push to `main` triggers an automatic rebuild and deploy, and GitHub Actions runs formatting, vet, tests and build on every push and pull request.
+
+Known limitation: templates and data are still read from disk relative to the working directory, so the binary is not yet self-contained.
