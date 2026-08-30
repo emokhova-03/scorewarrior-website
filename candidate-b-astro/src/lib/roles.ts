@@ -119,3 +119,4 @@ export function loadRoles(filePath: string = ROLES_FILE): RolesResult{
 export function findRoleBySlug(roles: Role[], slug: string): Role | undefined{
     return roles.find((role) => role.slug === slug);
 }
+
