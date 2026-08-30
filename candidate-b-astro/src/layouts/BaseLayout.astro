@@ -1,0 +1,39 @@
+---
+//Это место называется frontmatter, здесь лежит TypeScript и JavaScript
+//Здесь мы подготавливаем данные страницы
+interface Props {
+  /*Props это особое имя, Astro и редактор ищут интерфейс именно с таким именем, чтобы проверять параметры компонента*/
+  /*Props - данные, параметры, которые компонентожидает получить снаружи.*/
+  title: string;
+  description: string;
+}
+const { title, description } = Astro.props; //извлекаем параметры в переменные
+---
+
+<!--В Astro самозакрывающийся тег относится к невалидному HTML, и незакрытый тег теперь ошибка сборки --><!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width-device-width, initial-scale=1" />
+    <!--Подстановка значения в текст разметки-->
+    <title>{title}</title>
+    <!--Подстановка в атрибут -->
+    <meta name="description" content={description} />
+  </head>
+  <body>
+    <a href="#main">Skip to content</a>
+    <header>
+      <nav aria-label="Primary">
+        <a href="/">Home</a>
+        <a href="/careers">Careers</a>
+      </nav>
+    </header>
+    <main id="main">
+      <!--Сюда подставится содержимое конкретной страницы(в slot) -->
+      <slot />
+    </main>
+    <footer>
+      <p>[TEST] Development build - Candidate B (Astro + TypeScript).</p>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,15 @@
+---
+import type { Role } from "../lib/roles";
+
+interface Props {
+  role: Role;
+}
+const { role } = Astro.props;
+---
+
+<!--семантический контейнер самостоятельной единицы контента. -->
+<article>
+  <!--атрибут из строки с подстановкой: вставляем slug в URL. -->
+  <h2><a href={`/careers/${role.slug}`}>{role.title}</a></h2>
+  <p>{role.department} - {role.location}</p>
+</article>

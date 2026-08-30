@@ -1,0 +1,53 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import RoleCard from "../../components/RoleCard.astro";
+import { loadRoles } from "../../lib/roles";
+
+const { status, roles, problems } = loadRoles(); //вызываем загрузку и разбиваем результат на три переменные
+
+if (problems.length > 0) {
+  console.warn(`[careers] roles source status: ${status}`);
+  for (const problem of problems) {
+    console.warn(`[careers] ${problem}`); //console.warn печатает предупреждение в лог сборки
+  }
+}
+const sourceUsable = status === "ok";
+---
+
+<BaseLayout
+  title="[TEST] Open roles - Scorewarrior"
+  description="[TEST] Placeholder description for the careers listing."
+>
+  <h1>Open roles</h1>
+  {
+    //Ветка источник непригоден
+    !sourceUsable && (
+      <section>
+        <p>The list of open roles is temporarily unavailable</p>
+        <p>[TEST] Plceholder fallback text for the unavailable source state.</p>
+      </section>
+    )
+  }
+  {
+    //Ветка empty state
+    sourceUsable && roles.length === 0 && (
+      <section>
+        <p>No open roles right now</p>
+        <p>[TEST] Placeholder empty-state text.</p>
+      </section>
+    )
+  }
+  {
+    //нормальный список
+    sourceUsable && roles.length > 0 && (
+      <ul>
+        {roles.map((role) => (
+          //для каждой роли элемент списка
+          <li>
+            <RoleCard role={role} />
+          </li>
+        ))}
+      </ul>
+    )
+  }
+</BaseLayout>

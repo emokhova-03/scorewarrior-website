@@ -1,0 +1,32 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { loadRoles } from "../../lib/roles";
+import type { Role } from "../../lib/roles";
+
+export function getStaticPaths() {
+  const { roles } = loadRoles();
+
+  return roles.map((role) => ({
+    //превращаем каждую роль в описание одной страницы
+    params: { slug: role.slug },
+    props: { role }, //передаем саму роль в страницу, чтобы не читатаь файл во второй раз
+  }));
+}
+//типизация того, что придет в astro.props
+interface Props {
+  role: Role;
+}
+
+const { role } = Astro.props;
+---
+
+<BaseLayout
+  title={`[TEST] ${role.title} - Scorewarrior`}
+  description={`[TEST] Role page for ${role.title}.`}
+>
+  <p><a href="/careers">Back to all roles</a></p>
+
+  <h1>{role.title}</h1>
+  <p>{role.department}</p>
+  <p><strong>{role.location}</strong></p>
+</BaseLayout>
