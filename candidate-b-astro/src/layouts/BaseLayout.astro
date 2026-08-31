@@ -1,4 +1,5 @@
 ---
+import "../styles/global.css";
 //Это место называется frontmatter, здесь лежит TypeScript и JavaScript
 //Здесь мы подготавливаем данные страницы
 interface Props {
@@ -6,8 +7,9 @@ interface Props {
   /*Props - данные, параметры, которые компонентожидает получить снаружи.*/
   title: string;
   description: string;
+  theme?: "dark" | "light";
 }
-const { title, description } = Astro.props; //извлекаем параметры в переменные
+const { title, description, theme = "light" } = Astro.props; //извлекаем параметры в переменные
 ---
 
 <!--В Astro самозакрывающийся тег относится к невалидному HTML, и незакрытый тег теперь ошибка сборки --><!doctype html>
@@ -19,8 +21,13 @@ const { title, description } = Astro.props; //извлекаем парамет�
     <title>{title}</title>
     <!--Подстановка в атрибут -->
     <meta name="description" content={description} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+
   </head>
-  <body>
+  <body class={`theme-${theme}`}>
     <a href="#main">Skip to content</a>
     <header>
       <nav aria-label="Primary">
