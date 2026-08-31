@@ -1,0 +1,19 @@
+---
+interface NavLink {
+  label: string;
+  href: string;
+  children?: NavLink[];
+}
+
+const navigation: NavLink[] = [
+  {
+    label: "Careers",
+    href: "/careers",
+    children: [
+      { label: "Open positions", href: "/careers/open-positions" },
+    ],
+  },
+];
+
+const currentPath = Astro.url.pathname;
+---
