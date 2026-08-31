@@ -1,0 +1,58 @@
+
+/* ============================================================
+   Дизайн-токены Scorewarrior
+   Значения с пометкой TODO нужно заменить измеренными
+   в DevTools (Sprint Day 1, Часть III, действие 3.1).
+   Метод и результаты записываются в docs/design-tokens.md
+   ============================================================ */
+ 
+:root {
+  /* ---- ЦВЕТ (измерено, см. docs/design-tokens.md) ---- */
+  --c-bg:           #0E0E10;   /* TODO */
+  --c-bg-elevated:  #17171A;   /* TODO */
+  --c-text:         #FFFFFF;   /* TODO */
+  --c-text-muted:   #9A9AA2;   /* TODO */
+  --c-accent:       #821890;   /* TODO */
+  --c-border:       rgba(255, 255, 255, 0.12);
+ 
+  /* ---- ТИПОГРАФИКА ---- */
+  --font-body: system-ui, -apple-system, "Segoe UI", sans-serif; /* TODO */
+  --font-display: var(--font-body);
+ 
+  --fs-100: 0.875rem;
+  --fs-200: 1rem;
+  --fs-300: 1.125rem;
+  --fs-400: 1.375rem;
+  --fs-500: clamp(1.75rem, 1.2rem + 2.2vw, 2.25rem);
+  --fs-600: clamp(2.25rem, 1.4rem + 3.6vw, 3.5rem);
+  --fs-700: clamp(2.75rem, 1.5rem + 5.4vw, 5rem);
+ 
+  --lh-tight: 1.08;
+  --lh-heading: 1.2;
+  --lh-body: 1.55;
+ 
+  /* ---- ПРОСТРАНСТВО: шаг 4px ---- */
+  --s-1: 4px;
+  --s-2: 8px;
+  --s-3: 12px;
+  --s-4: 16px;
+  --s-5: 24px;
+  --s-6: 32px;
+  --s-7: 48px;
+  --s-8: 64px;
+  --s-9: 96px;
+  --s-10: 128px;
+ 
+  /* ---- СЕТКА ---- */
+  --container: 1200px;   /* TODO */
+  --gutter: var(--s-5);
+ 
+  /* ---- ПРОЧЕЕ ---- */
+  --radius: 4px;
+  --dur: 180ms;
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --header-h: 76px;      /* TODO */
+}
+ 
+
+
