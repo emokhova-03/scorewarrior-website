@@ -1,19 +1,142 @@
 ---
-interface NavLink {
-  label: string;
-  href: string;
-  children?: NavLink[];
-}
-
-const navigation: NavLink[] = [
-  {
-    label: "Careers",
-    href: "/careers",
-    children: [
-      { label: "Open positions", href: "/careers/open-positions" },
-    ],
-  },
+const nav = [
+{ label: "Company", href: "/company" },
+{ label: "Game", href: "/games" },
+{ label: "Careers", href: "/careers" },
+{ label: "Contacts", href: "/contacts" },
 ];
-
-const currentPath = Astro.url.pathname;
+const SUPPORT = "https://scorewarrior.theymes.com/hc/en/total-battle";
+const path = Astro.url.pathname;
 ---
+<header class="site-header">
+<div class="container bar">
+<a class="logo" href="/" aria-label="Scorewarrior — home">
+<img
+src="/brand/logo-scorewarrior-white.svg"
+alt="Scorewarrior"
+width="168"
+height="24"
+/>
+</a>
+<button
+class="burger"
+type="button"
+aria-expanded="false"
+aria-controls="site-nav"
+>
+<span aria-hidden="true"></span>
+<span aria-hidden="true"></span>
+<span class="sr-only">Menu</span>
+</button>
+<nav id="site-nav" class="nav" aria-label="Main">
+<ul class="nav-list">
+{nav.map((item) => (
+<li>
+<a
+href={item.href}
+aria-current={path.startsWith(item.href) ? "page" : undefined}
+>
+{item.label}
+</a>
+</li>
+))}
+</ul>
+<a class="support" href={SUPPORT} rel="noopener">Support</a>
+</nav>
+</div>
+</header>
+<style>
+.site-header {
+position: sticky;
+top: 0;
+z-index: 50;
+background: var(--c-bg);
+border-bottom: 1px solid var(--c-border);
+}
+.bar {
+height: var(--header-h);
+display: flex;
+align-items: center;
+gap: var(--s-6);
+}
+.logo img { width: 168px; height: auto; }
+.nav {
+margin-left: auto;
+display: flex;
+align-items: center;
+gap: var(--s-7);
+}
+.nav-list {
+display: flex;
+gap: var(--s-6);
+list-style: none;
+padding: 0;
+}
+.nav-list a,
+.support {
+font-size: var(--fs-100);
+letter-spacing: 0.02em;
+color: var(--c-text);
+opacity: 0.75;
+transition: opacity var(--dur) var(--ease);
+}
+.nav-list a:hover,
+.support:hover,
+.nav-list a[aria-current="page"] { opacity: 1; }
+.support {
+padding: var(--s-2) var(--s-4);
+border: 1px solid var(--c-border);
+border-radius: var(--radius);
+}
+.burger { display: none; }
+/* ---------- мобильная версия ---------- */
+@media (max-width: 860px) {
+.burger {
+display: grid;
+gap: 5px;
+margin-left: auto;
+padding: var(--s-2);
+}
+.burger span[aria-hidden] {
+display: block;
+width: 22px;
+height: 2px;
+background: var(--c-text);
+}
+.nav {
+position: fixed;
+inset: var(--header-h) 0 auto 0;
+flex-direction: column;
+align-items: flex-start;
+gap: var(--s-5);
+padding: var(--s-6) var(--gutter) var(--s-8);
+background: var(--c-bg);
+border-bottom: 1px solid var(--c-border);
+transform: translateY(-8px);
+opacity: 0;
+pointer-events: none;
+transition: opacity var(--dur) var(--ease),
+transform var(--dur) var(--ease);
+
+}
+.nav.is-open {
+transform: translateY(0);
+opacity: 1;
+pointer-events: auto;
+}
+.nav-list {
+flex-direction: column;
+gap: var(--s-5);
+}
+.nav-list a { font-size: var(--fs-300); }
+}
+</style>
+<script>
+const burger = document.querySelector(".burger");
+const nav = document.getElementById("site-nav");
+burger?.addEventListener("click", () => {
+const open = burger.getAttribute("aria-expanded") === "true";
+burger.setAttribute("aria-expanded", String(!open));
+nav?.classList.toggle("is-open", !open);
+});
+</script>
