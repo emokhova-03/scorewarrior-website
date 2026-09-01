@@ -45,12 +45,12 @@ get 635bdc563444bf1e9633f9c1_Christina.jpg "$SRC/team/christina.jpg"
 get 635bdffcb5eec820cbe75569_Stelios.jpg "$SRC/team/stelios.jpg"
 echo "open source logos"
 get 6797b8fdbbbf42ec44c40265_logo_large_color_light.svg \
-"$SRC/opensource/godot.svg"
+"$PUB/opensource/godot.svg"
 get 6799f8fbed265521b3d1935a_bevy_logo_light.png \
-"$SRC/opensource/bevy.png"
+"$PUB/opensource/bevy.png"
 get 67bc953b1bd6a849e49f0645_dearimgui-logo.png \
-"$SRC/opensource/dearimgui.png"
-get 6797b99505b237372af1508d_68747470733a2f2f61786d6f6c656e67696e652e6769746875622e696f2f6c6f676f2e706e67.png "$SRC/opensource/axmol.png"
+"$PUB/opensource/dearimgui.png"
+get 6797b99505b237372af1508d_68747470733a2f2f61786d6f6c656e67696e652e6769746875622e696f2f6c6f676f2e706e67.png "$PUB/opensource/axmol.png"
 echo "great place to work badges"
 get 64677d15bd65b05cce0c1f53_SCOREWARRIOR_LIMITED_2023_Certification_Badge.png \
 "$SRC/badges/gptw-2023.png"
