@@ -1,58 +1,105 @@
-
-/* ============================================================
-   Дизайн-токены Scorewarrior
-   Значения с пометкой TODO нужно заменить измеренными
-   в DevTools (Sprint Day 1, Часть III, действие 3.1).
-   Метод и результаты записываются в docs/design-tokens.md
-   ============================================================ */
- 
 :root {
-  /* ---- ЦВЕТ (измерено, см. docs/design-tokens.md) ---- */
-  --c-bg:           #0E0E10;   /* TODO */
-  --c-bg-elevated:  #17171A;   /* TODO */
-  --c-text:         #FFFFFF;   /* TODO */
-  --c-text-muted:   #9A9AA2;   /* TODO */
-  --c-accent:       #821890;   /* TODO */
-  --c-border:       rgba(255, 255, 255, 0.12);
- 
-  /* ---- ТИПОГРАФИКА ---- */
-  --font-body: system-ui, -apple-system, "Segoe UI", sans-serif; /* TODO */
-  --font-display: var(--font-body);
- 
+  /* =========================================================
+     COLOR TOKENS
+     Measured from the current scorewarrior.com on 31.08.2026
+     via getComputedStyle in Chrome DevTools.
+     See docs/design-tokens.md for measurement notes.
+     ========================================================= */
+
+  --c-bg: #ffffff;
+
+  /*
+   * The vacancy card itself is transparent.
+   * Its visual separation comes from border + shadow,
+   * while the page background shows through.
+   */
+  --c-bg-elevated: transparent;
+
+  --c-text: #000000;
+
+  /*
+   * rgb(102, 112, 133)
+   * Observed among the site's secondary / muted colors.
+   */
+  --c-text-muted: #667085;
+
+  /*
+   * rgb(130, 24, 144)
+   * Current Scorewarrior purple accent.
+   */
+  --c-accent: #821890;
+
+  /*
+   * Measured directly from the vacancy card border:
+   * rgb(244, 244, 244)
+   */
+  --c-border: #f4f4f4;
+
+  /* =========================================================
+     TYPOGRAPHY
+     ========================================================= */
+
+  /*
+   * Measured on body and headings:
+   * Inter, sans-serif
+   */
+  --font-body: "Inter", sans-serif;
+  --font-display: "Inter", sans-serif;
+
+  /*
+   * Type scale.
+   * The h1 measured on the current homepage is:
+   * 48px / 700 / 57.6px line-height.
+   *
+   * The scale below keeps the structure from the guide,
+   * while the actual font family comes from the corporate site.
+   */
   --fs-100: 0.875rem;
   --fs-200: 1rem;
   --fs-300: 1.125rem;
   --fs-400: 1.375rem;
   --fs-500: clamp(1.75rem, 1.2rem + 2.2vw, 2.25rem);
   --fs-600: clamp(2.25rem, 1.4rem + 3.6vw, 3.5rem);
-  --fs-700: clamp(2.75rem, 1.5rem + 5.4vw, 5rem);
- 
-  --lh-tight: 1.08;
-  --lh-heading: 1.2;
-  --lh-body: 1.55;
- 
-  /* ---- ПРОСТРАНСТВО: шаг 4px ---- */
-  --s-1: 4px;
-  --s-2: 8px;
-  --s-3: 12px;
-  --s-4: 16px;
-  --s-5: 24px;
-  --s-6: 32px;
-  --s-7: 48px;
-  --s-8: 64px;
-  --s-9: 96px;
-  --s-10: 128px;
- 
-  /* ---- СЕТКА ---- */
-  --container: 1200px;   /* TODO */
-  --gutter: var(--s-5);
- 
-  /* ---- ПРОЧЕЕ ---- */
-  --radius: 4px;
-  --dur: 180ms;
-  --ease: cubic-bezier(0.4, 0, 0.2, 1);
-  --header-h: 76px;      /* TODO */
+
+  /* =========================================================
+     FONT WEIGHTS
+     ========================================================= */
+
+  --fw-regular: 400;
+  --fw-bold: 700;
+
+  /* =========================================================
+     LAYOUT
+     ========================================================= */
+
+  /*
+   * Measured at viewport width 1444px:
+   * content container = 1280px
+   * left/right offset = 82px
+   */
+  --container-max: 1280px;
+
+  /* =========================================================
+     SPACING
+     These are system choices, not directly measured tokens.
+     Keep them as a consistent scale.
+     ========================================================= */
+
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4rem;
+
+  /* =========================================================
+     RADIUS
+     System values for reuse.
+     ========================================================= */
+
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
 }
- 
-
-
