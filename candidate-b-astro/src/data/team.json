@@ -1,0 +1,44 @@
+{
+  "katerina": {
+    "order": 1,
+    "name": "Katerina",
+    "role": "HR Manager",
+    "photo": "team/katerina",
+    "quote": "The management are great and very forward-thinking. They go the extra mile for their team, making it a great place to work with great colleagues, which also shows in the quality of the work produced."
+  },
+  "grigory": {
+    "order": 2,
+    "name": "Grigory",
+    "role": "Creative producer",
+    "photo": "team/grigory",
+    "quote": "Seriously, what is this place? This is my idea of heaven :)"
+  },
+  "michalis": {
+    "order": 3,
+    "name": "Michalis",
+    "role": "Senior Financial Analyst",
+    "photo": "team/michalis",
+    "quote": "Scorewarrior is like my extended family. We have really good times here, and I look forward to coming in to work every day."
+  },
+  "anastasia": {
+    "order": 4,
+    "name": "Anastasia",
+    "role": "Middle Financial Analyst",
+    "photo": "team/anastasia",
+    "quote": "I couldn't ask for a better environment to work in! I am blessed to be part of this team."
+  },
+  "christina": {
+    "order": 5,
+    "name": "Christina",
+    "role": "Legal Team Lead",
+    "photo": "team/christina",
+    "quote": "I could never have imagined that working with games would be a part of my job. Every day is like 'let's have fun at work'."
+  },
+  "stelios": {
+    "order": 6,
+    "name": "Stelios",
+    "role": "House manager",
+    "photo": "team/stelios",
+    "quote": "I'm grateful to be part of a company that prioritises employees' self improvement and makes us feel valued and appreciated."
+  }
+}

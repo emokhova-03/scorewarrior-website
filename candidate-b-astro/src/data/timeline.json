@@ -1,0 +1,32 @@
+{
+  "founded": {
+    "order": 1,
+    "year": "2015",
+    "text": "Our company was founded in 2015 in Cyprus with the initial goal of publishing and operating third-party games."
+  },
+  "own-games": {
+    "order": 2,
+    "year": "2016",
+    "text": "In 2016 we decided that we wanted to work with our own games instead of ready-made products. We were excited by the idea of being a full-cycle game development studio: to launch a game, gain initial traction, and then scale up the game globally and become a leader in the genre."
+  },
+  "total-battle": {
+    "order": 3,
+    "year": "2017",
+    "text": "2017 saw the arrival of our first game, Total Battle. We discovered the game in its very early stages, and we believed in its great potential, so we made it our goal to focus on this single title and become the leader in the 4X strategy genre."
+  },
+  "full-cycle": {
+    "order": 4,
+    "year": "2021",
+    "text": "In 2021, we began to transform the company into a full-cycle game development studio, adding game developers, designers, and artists to our already existing publishing team, which consisted of our finance, legal, marketing, community, and support staff. We finished this process in 2022, and we now operate from our two offices in Limassol."
+  },
+  "top-grossing": {
+    "order": 5,
+    "year": "2023",
+    "text": "Since 2023, we've proudly ranked among Europe's top mobile video game developers on the top-grossing charts."
+  },
+  "top-ten": {
+    "order": 6,
+    "year": "2024",
+    "text": "In 2024, our game Total Battle earned a spot in the prestigious top-10 chart for 4X strategy games on mobile platforms."
+  }
+}
