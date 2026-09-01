@@ -6,8 +6,13 @@ import Footer from "../components/siteFooter.astro";
 interface Props {
   title: string;
   description?: string;
+  headerVariant?: "solid" | "over";
 }
-const { title, description = "Exciting game. Uniting players." } = Astro.props;
+const {
+  title,
+  description = "Exciting game. Uniting players.",
+  headerVariant = "solid",
+} = Astro.props;
 ---
 
 <!doctype html>
@@ -23,7 +28,8 @@ const { title, description = "Exciting game. Uniting players." } = Astro.props;
     <meta property="og:type" content="website" />
   </head>
   <body>
-    <a class="skip" href="#main">Skip to content</a>
+    <Header variant={headerVariant} />
+      <a class="skip" href="#main">Skip to content</a>
     <Header />
     <main id="main">
       <slot />

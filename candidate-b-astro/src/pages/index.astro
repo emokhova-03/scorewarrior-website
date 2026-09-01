@@ -1,17 +1,25 @@
 ---
 import { Image } from "astro:assets";
-
 import BaseLayout from "../layouts/BaseLayout.astro";
-
 import { img } from "../lib/images";
 ---
 
 <BaseLayout
   title="Scorewarrior"
   description="Exciting game. Uniting players. Scorewarrior is a game development studio in Limassol, Cyprus."
+  headerVariant="over"
 >
   <section class="hero">
-    <div class="container inner">
+    <Image
+      class="hero-bg"
+      src={img("game/art-3")}
+      alt=""
+      widths={[768, 1280, 1920]}
+      sizes="100vw"
+      loading="eager"
+    />
+
+    <div class="container hero-inner">
       <h1>
         We create our game with <em>the</em> mission to unite and excite
         people all over the world.
@@ -29,25 +37,63 @@ import { img } from "../lib/images";
       </a>
     </div>
   </section>
-
-  <div class="container">
-    <Image
-      src={img("game/art-3")}
-      alt="Total Battle key art"
-      widths={[640, 960, 1440]}
-      sizes="(max-width: 1240px) 100vw, 1200px"
-      loading="eager"
-      class="art"
-    />
-  </div>
 </BaseLayout>
 
 <style>
   .hero {
-    padding-block: var(--s-10) var(--s-8);
+    position: relative;
+    isolation: isolate;
+    display: grid;
+    align-items: center;
+    min-height: min(86svh, 820px);
+    padding-block: calc(var(--header-h) + var(--s-9)) var(--s-9);
+
+    /* Локальная тёмная тема поверх арта.
+       Переопределяем токены, а не переписываем правила. */
+    --c-text: #ffffff;
+    --c-text-muted: rgba(255, 255, 255, 0.82);
+    --c-border: rgba(255, 255, 255, 0.45);
+    --c-bg-elevated: rgba(255, 255, 255, 0.14);
+
+    color: var(--c-text);
   }
 
-  .inner {
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+
+  /* Подложка: без неё белый текст читается не на всех участках арта */
+  .hero::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(
+      100deg,
+      rgba(8, 6, 20, 0.5) 0%,
+      rgba(8, 6, 20, 0.22) 45%,
+      rgba(8, 6, 20, 0) 78%
+    );
+  }
+
+  @media (max-width: 860px) {
+    .hero::after {
+      background: linear-gradient(
+        180deg,
+        rgba(8, 6, 20, 0.72) 0%,
+        rgba(8, 6, 20, 0.62) 60%,
+        rgba(8, 6, 20, 0.72) 100%
+      );
+    }
+  }
+
+  .hero-inner {
     display: grid;
     gap: var(--s-6);
     justify-items: start;
@@ -58,11 +104,9 @@ import { img } from "../lib/images";
     line-height: var(--lh-tight);
     max-width: 18ch;
   }
+  h1 { max-width: 28ch; }
 
-  h1 em {
-    font-style: normal;
-    color: var(--c-accent);
-  }
+  h1 em { font-style: normal; }
 
   .lead {
     font-size: var(--fs-300);
@@ -74,19 +118,13 @@ import { img } from "../lib/images";
     padding: var(--s-3) var(--s-5);
     border: 1px solid var(--c-border);
     border-radius: var(--radius);
-    transition:
-      border-color var(--dur) var(--ease),
-      background var(--dur) var(--ease);
+    transition: border-color var(--dur) var(--ease),
+    background var(--dur) var(--ease);
   }
 
   .cta:hover,
   .cta:focus-visible {
     border-color: var(--c-text);
     background: var(--c-bg-elevated);
-  }
-
-  .art {
-    width: 100%;
-    border-radius: var(--radius);
   }
 </style>
