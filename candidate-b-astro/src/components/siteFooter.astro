@@ -1,129 +1,172 @@
 ---
 const columns = [
-{
-title: "Scorewarrior",
-links: [
-{ label: "Company", href: "/company" },
-{ label: "Game", href: "/games" },
-{ label: "Careers", href: "/careers" },
-{ label: "Contacts", href: "/contacts" },
-{
-label: "Support",
-href: "https://scorewarrior.theymes.com/hc/en/total-battle",
-},
-],
-},
-{
-title: "Total Battle",
-links: [
-{ label: "Totalbattle.com", href: "https://totalbattle.com" },
-{
-label: "Google Play",
-href: "https://play.google.com/store/apps/details?id=com.totalbattle",
-},
-{
-label: "App Store",
-href: "https://apps.apple.com/us/app/total-battle-war-strategy/id1274132545",
-},
-],
-},
-{
-title: "Follow us",
-links: [
-{ label: "LinkedIn", href: "https://cy.linkedin.com/company/scorewarrior" },
-],
-},
+  {
+    title: "Scorewarrior",
+    links: [
+      { label: "Company", href: "/company" },
+      { label: "Game", href: "/games" },
+      { label: "Careers", href: "/careers" },
+      { label: "Contacts", href: "/contacts" },
+      {
+        label: "Support",
+        href: "https://scorewarrior.theymes.com/hc/en/total-battle",
+      },
+    ],
+  },
+  {
+    title: "Total Battle",
+    links: [
+      { label: "Totalbattle.com", href: "https://totalbattle.com" },
+      {
+        label: "Google Play",
+        href: "https://play.google.com/store/apps/details?id=com.totalbattle",
+      },
+      {
+        label: "App Store",
+        href: "https://apps.apple.com/us/app/total-battle-war-strategy/id1274132545",
+      },
+    ],
+  },
+  {
+    title: "Follow us",
+    links: [
+      {
+        label: "LinkedIn",
+        href: "https://cy.linkedin.com/company/scorewarrior",
+      },
+    ],
+  },
 ];
 const policies = [
-{
-label: "Privacy Policy",
-href: "https://totalbattle.com/en/policies/privacy_policy",
-},
-{
-label: "Terms of Service",
-href: "https://totalbattle.com/en/policies/terms_of_service",
-},
+  {
+    label: "Privacy Policy",
+    href: "https://totalbattle.com/en/policies/privacy_policy",
+  },
+  {
+    label: "Terms of Service",
+    href: "https://totalbattle.com/en/policies/terms_of_service",
+  },
 ];
 const year = new Date().getFullYear();
 ---
+
 <footer class="site-footer">
-<div class="container">
-<div class="top">
-<div class="brand">
-<img
-src="/brand/logo-triangle.svg"
-alt=""
-width="48"
-height="48"
-aria-hidden="true"
-/>
-<p class="tagline">Exciting game. Uniting players.</p>
-</div>
-<div class="cols">
-{columns.map((col) => (
-<div class="col">
-<h2 class="col-title">{col.title}</h2>
-<ul>
-{col.links.map((link) => (
-<li><a href={link.href}>{link.label}</a></li>
-))}
-</ul>
-</div>
-))}
-</div>
-</div>
-<div class="bottom">
-<p>&copy; {year} SCOREWARRIOR LIMITED. All rights reserved.</p>
-<ul class="policies">
-{policies.map((p) => (
-<li><a href={p.href}>{p.label}</a></li>
-))}
-</ul>
-</div>
-</div>
+  <div class="container">
+    <div class="top">
+      <div class="brand">
+        <img
+          src="/brand/logo-triangle.svg"
+          alt=""
+          width="48"
+          height="48"
+          aria-hidden="true"
+        />
+        <p class="tagline">Exciting game. Uniting players.</p>
+      </div>
+      <div class="cols">
+        {
+          columns.map((col) => (
+            <div class="col">
+              <h2 class="col-title">{col.title}</h2>
+              <ul>
+                {col.links.map((link) => (
+                  <li>
+                    <a href={link.href}>{link.label}</a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+    <div class="bottom">
+      <p>&copy; {year} SCOREWARRIOR LIMITED. All rights reserved.</p>
+      <ul class="policies">
+        {
+          policies.map((p) => (
+            <li>
+              <a href={p.href}>{p.label}</a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
 </footer>
 <style>
-.site-footer {
-margin-top: var(--s-10);
-padding-block: var(--s-8) var(--s-6);
-border-top: 1px solid var(--c-border);
-color: var(--c-text-muted);
-font-size: var(--fs-100);
-}
-.top {
-display: grid;
-gap: var(--s-8);
-padding-bottom: var(--s-8);
-}
-@media (min-width: 860px) {
-.top { grid-template-columns: minmax(0, 1fr) auto; gap: var(--s-10); }
-}
-.brand { display: grid; gap: var(--s-4); justify-items: start; }
-.tagline { color: var(--c-text); font-size: var(--fs-300); max-width: 22ch; }
-.cols { display: grid; gap: var(--s-7); }
-@media (min-width: 560px) {
-.cols { grid-template-columns: repeat(3, minmax(0, auto)); gap: var(--s-8); }
-}
-.col-title {
-font-size: var(--fs-100);
-font-weight: 600;
-color: var(--c-text);
-margin-bottom: var(--s-4);
-}
-.col ul, .policies { list-style: none; padding: 0; }
-.col ul { display: grid; gap: var(--s-3); }
-.col a, .policies a {
-transition: color var(--dur) var(--ease);
-}
-.col a:hover, .policies a:hover { color: var(--c-text); }
-.bottom {
-display: flex;
-flex-wrap: wrap;
-gap: var(--s-3) var(--s-6);
-justify-content: space-between;
-align-items: center;
-padding-top: var(--s-5);
-border-top: 1px solid var(--c-border);
-}
-.policies { display: flex; gap: var(--s-5); }
+  .site-footer {
+    margin-top: var(--s-10);
+    padding-block: var(--s-8) var(--s-6);
+    border-top: 1px solid var(--c-border);
+    color: var(--c-text-muted);
+    font-size: var(--fs-100);
+  }
+  .top {
+    display: grid;
+    gap: var(--s-8);
+    padding-bottom: var(--s-8);
+  }
+  @media (min-width: 860px) {
+    .top {
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: var(--s-10);
+    }
+  }
+  .brand {
+    display: grid;
+    gap: var(--s-4);
+    justify-items: start;
+  }
+  .tagline {
+    color: var(--c-text);
+    font-size: var(--fs-300);
+    max-width: 22ch;
+  }
+  .cols {
+    display: grid;
+    gap: var(--s-7);
+  }
+  @media (min-width: 560px) {
+    .cols {
+      grid-template-columns: repeat(3, minmax(0, auto));
+      gap: var(--s-8);
+    }
+  }
+  .col-title {
+    font-size: var(--fs-100);
+    font-weight: 600;
+    color: var(--c-text);
+    margin-bottom: var(--s-4);
+  }
+  .col ul,
+  .policies {
+    list-style: none;
+    padding: 0;
+  }
+  .col ul {
+    display: grid;
+    gap: var(--s-3);
+  }
+  .col a,
+  .policies a {
+    transition: color var(--dur) var(--ease);
+  }
+  .col a:hover,
+  .policies a:hover {
+    color: var(--c-text);
+  }
+  .bottom {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-3) var(--s-6);
+    justify-content: space-between;
+    align-items: center;
+    padding-top: var(--s-5);
+    border-top: 1px solid var(--c-border);
+  }
+  .policies {
+    display: flex;
+    gap: var(--s-5);
+  }
 </style>
