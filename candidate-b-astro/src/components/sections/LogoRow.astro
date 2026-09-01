@@ -1,0 +1,59 @@
+---
+interface Logo {
+  name: string;
+  url: string;
+  logo: string;
+}
+
+interface Props {
+  logos: Logo[];
+}
+
+const { logos } = Astro.props;
+---
+
+<ul class="row">
+  {
+    logos.map((item) => (
+      <li>
+        <a
+          href={item.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={item.name}
+        >
+          <img src={item.logo} alt="" aria-hidden="true" loading="lazy" />
+        </a>
+      </li>
+    ))
+  }
+</ul>
+
+<style>
+  .row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--s-8);
+    list-style: none;
+    padding: 0;
+  }
+
+  .row li {
+    min-height: 48px;
+    display: grid;
+    place-items: center;
+  }
+
+  .row img {
+    height: 40px;
+    width: auto;
+    opacity: 0.7;
+    transition: opacity var(--dur) var(--ease);
+  }
+
+  .row a:hover img,
+  .row a:focus-visible img {
+    opacity: 1;
+  }
+</style>

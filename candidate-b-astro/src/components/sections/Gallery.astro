@@ -1,0 +1,140 @@
+---
+import { Image } from "astro:assets";
+import { img } from "../../lib/images";
+
+interface Slide {
+    image: string;
+alt: string;
+}
+interface Props {
+slides: Slide[];
+label: string;
+}
+const { slides, label } = Astro.props;
+--- 
+<div class="gallery" data-gallery>
+  <ul class="track" tabindex="0" aria-label={label}>
+    {slides.map((slide) => (
+      <li class="slide">
+        <Image
+          src={img(slide.image)}
+          alt={slide.alt}
+          widths={[480, 800, 1200]}
+          sizes="(max-width: 860px) 86vw, 720px"
+          loading="lazy"
+        />
+      </li>
+    ))}
+  </ul>
+
+  <div class="controls">
+    <button type="button" data-dir="-1" aria-label="Previous">
+      <img
+        src="/ui/arrow-left.svg"
+        alt=""
+        width="24"
+        height="24"
+      />
+    </button>
+
+    <button type="button" data-dir="1" aria-label="Next">
+      <img
+        src="/ui/arrow-right.svg"
+        alt=""
+        width="24"
+        height="24"
+      />
+    </button>
+  </div>
+</div>
+
+<style>
+  .gallery {
+    display: grid;
+    gap: var(--s-5);
+  }
+
+  .track {
+    display: flex;
+    gap: var(--s-5);
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+
+  .track::-webkit-scrollbar {
+    display: none;
+  }
+
+  .slide {
+    flex: 0 0 min(86vw, 720px);
+    scroll-snap-align: start;
+  }
+
+  .slide img {
+    width: 100%;
+    border-radius: var(--radius);
+  }
+
+  .controls {
+    display: flex;
+    gap: var(--s-3);
+    justify-content: flex-end;
+  }
+
+  .controls button {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border: 1px solid var(--c-border);
+    border-radius: 50%;
+    transition:
+      border-color var(--dur) var(--ease),
+      background var(--dur) var(--ease);
+  }
+
+  .controls button:hover,
+  .controls button:focus-visible {
+    border-color: var(--c-text);
+    background: var(--c-bg-elevated);
+  }
+</style>
+
+<script>
+  document
+    .querySelectorAll<HTMLElement>("[data-gallery]")
+    .forEach((root) => {
+      const track = root.querySelector<HTMLElement>(".track");
+
+      if (!track) return;
+
+      const step = () => {
+        const slide = track.querySelector<HTMLElement>(".slide");
+
+        const gap =
+          Number.parseFloat(getComputedStyle(track).columnGap) || 0;
+
+        const width =
+          slide?.getBoundingClientRect().width ?? track.clientWidth;
+
+        return width + gap;
+      };
+
+      root
+        .querySelectorAll<HTMLButtonElement>("[data-dir]")
+        .forEach((btn) => {
+          btn.addEventListener("click", () => {
+            const dir = Number(btn.dataset.dir);
+
+            track.scrollBy({
+              left: dir * step(),
+              behavior: "smooth",
+            });
+          });
+        });
+    });
+</script>

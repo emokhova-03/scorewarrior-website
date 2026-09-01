@@ -1,0 +1,57 @@
+---
+interface Props {
+  name: string;
+  address: string;
+  mapUrl: string;
+}
+
+const { name, address, mapUrl } = Astro.props;
+---
+
+<article class="office">
+  <p class="label">Office</p>
+
+  <h3 class="name">{name}</h3>
+
+  <a
+    class="address"
+    href={mapUrl}
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    {address}
+  </a>
+</article>
+
+<style>
+  .office {
+    display: grid;
+    gap: var(--s-2);
+    padding: var(--s-6);
+    background: var(--c-bg-elevated);
+    border: 1px solid var(--c-border);
+    border-radius: var(--radius);
+  }
+
+  .label {
+    font-size: var(--fs-100);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--c-text-muted);
+  }
+
+  .name {
+    font-size: var(--fs-400);
+  }
+
+  .address {
+    color: var(--c-text-muted);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    transition: color var(--dur) var(--ease);
+  }
+
+  .address:hover {
+    color: var(--c-text);
+  }
+</style>

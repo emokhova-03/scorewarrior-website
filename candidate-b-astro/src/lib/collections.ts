@@ -6,5 +6,5 @@ type WithOrder = { data: { order: number } };
 * Поэтому каждый список сортируется явно.
 */
 export function byOrder<T extends WithOrder>(entries: T[]): T[] {
-return [...entries].sort((a, b) => a.data.order - b.data.order);
+  return [...entries].sort((a, b) => a.data.order - b.data.order);
 }

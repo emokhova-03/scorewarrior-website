@@ -1,0 +1,66 @@
+---
+import { Image } from "astro:assets";
+import { img } from "../../lib/images";
+interface Props {
+  quote: string;
+  name: string;
+  role: string;
+  photo: string;
+}
+const { quote, name, role, photo } = Astro.props;
+---
+
+<figure class="card">
+  <blockquote class="quote">{quote}</blockquote>
+  <figcaption class="person">
+    <Image src={img(photo)} alt="" width={112} loading="lazy" class="avatar" />
+    <span class="who">
+      <span class="name">{name}</span>
+      <span class="role">{role}</span>
+    </span>
+  </figcaption>
+</figure>
+<style>
+  .card {
+    display: grid;
+    gap: var(--s-5);
+    align-content: start;
+    padding: var(--s-6);
+    background: var(--c-bg-elevated);
+    border: 1px solid var(--c-border);
+    border-radius: var(--radius);
+    height: 100%;
+  }
+  .quote {
+    font-size: var(--fs-300);
+    line-height: var(--lh-body);
+  }
+  .quote::before {
+    content: "\201C";
+  }
+  .quote::after {
+    content: "\201D";
+  }
+  .person {
+    display: flex;
+    align-items: center;
+    gap: var(--s-4);
+  }
+  .avatar {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex: 0 0 auto;
+  }
+  .who {
+    display: grid;
+  }
+  .name {
+    font-weight: 600;
+  }
+  .role {
+    font-size: var(--fs-100);
+    color: var(--c-text-muted);
+  }
+</style>
