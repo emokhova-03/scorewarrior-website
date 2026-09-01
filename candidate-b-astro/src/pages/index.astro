@@ -1,13 +1,92 @@
 ---
+import { Image } from "astro:assets";
+
 import BaseLayout from "../layouts/BaseLayout.astro";
+
+import { img } from "../lib/images";
 ---
 
-<!--Использование компонента как тега -->
-<BaseLayout title="Scorewarrior">
-  <section class="container">
-    <h1>
-      We create our game with the mission to unite and excite people all over
-      the world.
-    </h1>
+<BaseLayout
+  title="Scorewarrior"
+  description="Exciting game. Uniting players. Scorewarrior is a game development studio in Limassol, Cyprus."
+>
+  <section class="hero">
+    <div class="container inner">
+      <h1>
+        We create our game with <em>the</em> mission to unite and excite
+        people all over the world.
+      </h1>
+
+      <p class="lead">
+        Our game development studio is headquartered in Cyprus, where we
+        focus on Total Battle, a top 10 mid-core 4X Strategy game.
+        The key to our game is players socializing and making new friends
+        worldwide in the fantasy world that we passionately create for them!
+      </p>
+
+      <a class="cta" href="/company">
+        Learn more <span aria-hidden="true">&rarr;</span>
+      </a>
+    </div>
   </section>
+
+  <div class="container">
+    <Image
+      src={img("game/art-3")}
+      alt="Total Battle key art"
+      widths={[640, 960, 1440]}
+      sizes="(max-width: 1240px) 100vw, 1200px"
+      loading="eager"
+      class="art"
+    />
+  </div>
 </BaseLayout>
+
+<style>
+  .hero {
+    padding-block: var(--s-10) var(--s-8);
+  }
+
+  .inner {
+    display: grid;
+    gap: var(--s-6);
+    justify-items: start;
+  }
+
+  h1 {
+    font-size: var(--fs-700);
+    line-height: var(--lh-tight);
+    max-width: 18ch;
+  }
+
+  h1 em {
+    font-style: normal;
+    color: var(--c-accent);
+  }
+
+  .lead {
+    font-size: var(--fs-300);
+    color: var(--c-text-muted);
+    max-width: 58ch;
+  }
+
+  .cta {
+    padding: var(--s-3) var(--s-5);
+    border: 1px solid var(--c-border);
+    border-radius: var(--radius);
+    transition:
+      border-color var(--dur) var(--ease),
+      background var(--dur) var(--ease);
+  }
+
+  .cta:hover,
+  .cta:focus-visible {
+    border-color: var(--c-text);
+    background: var(--c-bg-elevated);
+  }
+
+  .art {
+    width: 100%;
+    border-radius: var(--radius);
+  }
+</style>

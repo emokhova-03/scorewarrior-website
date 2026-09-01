@@ -1,0 +1,89 @@
+---
+import { getCollection } from "astro:content";
+import { Image } from "astro:assets";
+
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Section from "../components/sections/Section.astro";
+import LogoRow from "../components/sections/LogoRow.astro";
+import QuoteCard from "../components/sections/QuoteCard.astro";
+import TimelineList from "../components/sections/TimelineList.astro";
+
+import { byOrder } from "../lib/collections";
+import { img } from "../lib/images";
+
+const timeline = byOrder(await getCollection("timeline"));
+const quotes = byOrder(await getCollection("team"));
+const logos = byOrder(await getCollection("openSource"));
+---
+
+<BaseLayout
+  title="Company x Scorewarrior"
+  description="Scorewarrior is a game developer from Limassol, Cyprus, founded in 2015."
+>
+  <Section
+    headingLevel="h1"
+    title="Exciting game. Uniting players."
+    lead="Scorewarrior is a game developer from Limassol, Cyprus. The company was founded in 2015 and is focused o"
+  >
+    <Image
+      src={img("team/team-office")}
+      alt="The Scorewarrior team in the Limassol office"
+      widths={[640, 960, 1440]}
+      sizes="(max-width: 1240px) 100vw, 1200px"
+      loading="lazy"
+      class="team-photo"
+    />
+  </Section>
+
+  <Section title="Our story">
+    <TimelineList items={timeline.map((entry) => entry.data)} />
+  </Section>
+
+  <Section title="We're supporting amazing Open Source projects.">
+    <LogoRow logos={logos.map((entry) => entry.data)} />
+  </Section>
+
+  <Section
+    title="Let's hear from the team."
+    lead="Our employees' opinions are the most important driving force behind the company."
+  >
+    <ul class="quotes">
+      {quotes.map((entry) => (
+        <li>
+          <QuoteCard
+            quote={entry.data.quote}
+            name={entry.data.name}
+            role={entry.data.role}
+            photo={entry.data.photo}
+          />
+        </li>
+      ))}
+    </ul>
+  </Section>
+</BaseLayout>
+
+<style>
+  .team-photo {
+    width: 100%;
+    border-radius: var(--radius);
+  }
+
+  .quotes {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: var(--s-5);
+  }
+
+  @media (min-width: 720px) {
+    .quotes {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 1080px) {
+    .quotes {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+</style>

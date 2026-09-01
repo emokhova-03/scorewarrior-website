@@ -1,0 +1,72 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Section from "../components/sections/Section.astro";
+import OfficeCard from "../components/sections/OfficeCard.astro";
+import { byOrder } from "../lib/collections";
+
+const offices = byOrder(await getCollection("offices"));
+---
+
+<BaseLayout
+  title="Contacts x Scorewarrior"
+  description="Scorewarrior offices in Limassol, Cyprus, and how to reach us."
+>
+  <Section headingLevel="h1" title="We live and work in Limassol, Cyprus.">
+    <div class="contacts">
+      <p>
+        For in-game support queries, please email
+        <a href="mailto:support@totalbattle.com">support@totalbattle.com</a>
+      </p>
+
+      <p>
+        For general corporate queries, including partnership opportunities,
+        please email
+        <a href="mailto:info@scorewarrior.com">info@scorewarrior.com</a>
+      </p>
+    </div>
+  </Section>
+
+  <Section>
+    <ul class="offices">
+      {offices.map((entry) => (
+        <li>
+          <OfficeCard
+            name={entry.data.name}
+            address={entry.data.address}
+            mapUrl={entry.data.mapUrl}
+          />
+        </li>
+      ))}
+    </ul>
+  </Section>
+</BaseLayout>
+
+<style>
+  .contacts {
+    display: grid;
+    gap: var(--s-4);
+    max-width: 60ch;
+    font-size: var(--fs-300);
+    color: var(--c-text-muted);
+  }
+
+  .contacts a {
+    color: var(--c-text);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .offices {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: var(--s-5);
+  }
+
+  @media (min-width: 720px) {
+    .offices {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+</style>

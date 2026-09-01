@@ -1,0 +1,141 @@
+---
+import { getCollection } from "astro:content";
+
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Section from "../components/sections/Section.astro";
+import Gallery from "../components/sections/Gallery.astro";
+import { byOrder } from "../lib/collections";
+
+const art = byOrder(await getCollection("gameArt"));
+
+// Три ссылки, которые не меняются и никем, кроме разработчика,
+// не правятся. Коллекция здесь была бы лишней сущностью.
+const stores = [
+  {
+    label: "Google Play",
+    href: "https://play.google.com/store/apps/details?id=com.totalbattle",
+  },
+  {
+    label: "App Store",
+    href: "https://apps.apple.com/us/app/total-battle/id1274132545",
+  },
+  {
+    label: "Totalbattle.com",
+    href: "https://totalbattle.com",
+  },
+];
+---
+
+<BaseLayout
+  title="Games x Scorewarrior"
+  description="Total Battle — a cross-platform MMO strategy game by Scorewarrior."
+>
+  <Section headingLevel="h1" title="Total Battle">
+    <div class="meta">
+      <span class="tag">Free to play</span>
+      <span class="rating">(4.5 stars) &bull; 250k+ reviews</span>
+    </div>
+
+    <div class="body">
+      <p>
+        We proudly present our current flagship game — Total Battle,
+        an MMO strategy game in an amazing fantasy world.
+      </p>
+
+      <p>
+        In 2017 we launched the game globally, focusing on the web browser
+        as the main platform.
+      </p>
+
+      <p>
+        A bit later, we launched Total Battle on mobile platforms:
+        Google Play and the Apple App Store, making the game a unique
+        cross-platform MMO whereby players can access the game on multiple
+        platforms with the same game progress.
+      </p>
+    </div>
+
+    <p class="play">Play now for free:</p>
+
+    <ul class="stores">
+      {stores.map((store) => (
+        <li>
+          <a
+            href={store.href}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {store.label}
+          </a>
+        </li>
+      ))}
+    </ul>
+  </Section>
+
+  <Section>
+    <Gallery
+      label="Total Battle artwork"
+      slides={art.map((entry) => entry.data)}
+    />
+  </Section>
+</BaseLayout>
+
+<style>
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--s-4);
+    margin-bottom: var(--s-6);
+  }
+
+  .tag {
+    padding: var(--s-1) var(--s-3);
+    border: 1px solid var(--c-border);
+    border-radius: var(--radius);
+    font-size: var(--fs-100);
+  }
+
+  .rating {
+    color: var(--c-text-muted);
+    font-size: var(--fs-100);
+  }
+
+  .body {
+    display: grid;
+    gap: var(--s-4);
+    max-width: 62ch;
+    color: var(--c-text-muted);
+    font-size: var(--fs-300);
+  }
+
+  .play {
+    margin-top: var(--s-7);
+    color: var(--c-text-muted);
+  }
+
+  .stores {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-4);
+    margin-top: var(--s-4);
+  }
+
+  .stores a {
+    display: inline-block;
+    padding: var(--s-3) var(--s-5);
+    border: 1px solid var(--c-border);
+    border-radius: var(--radius);
+    transition:
+      border-color var(--dur) var(--ease),
+      background var(--dur) var(--ease);
+  }
+
+  .stores a:hover,
+  .stores a:focus-visible {
+    border-color: var(--c-text);
+    background: var(--c-bg-elevated);
+  }
+</style>
