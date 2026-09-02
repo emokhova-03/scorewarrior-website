@@ -1,36 +1,136 @@
 ---
-import { getCollection } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import type { Role } from "../../lib/roles/schema";
+import { readRolesSnapshot } from "../../lib/roles/read";
 
-// getStaticPaths стал async, потому что getCollection возвращает Promise.
-export async function getStaticPaths() {
-  const entries = await getCollection("roles");
+// Server-rendered. This page is the main reason Careers cannot
+// be fully static: a newly added role must have a page without
+// waiting for the next deployment.
+export const prerender = false;
 
-  return entries.map((entry) => ({
-    // entry.id — это slug: так его положил loader (store.set({ id: role.slug })).
-    // Маршруты строятся из id коллекции, а не из отдельного чтения файла.
-    params: { slug: entry.id },
-    // Данные передаются в страницу пропсом, чтобы не запрашивать коллекцию
-    // ещё раз внутри самой страницы.
-    props: { role: entry.data },
-  }));
+const { slug } = Astro.params;
+
+const { snapshot } = await readRolesSnapshot();
+
+const role = snapshot.roles.find((item) => item.slug === slug);
+
+if (!role) {
+  // Return a real HTTP 404 rather than a page that merely says
+  // "not found". The status code matters to search engines
+  // and monitoring.
+  return new Response(null, { status: 404 });
 }
 
-interface Props {
-  role: Role;
-}
-
-const { role } = Astro.props;
+Astro.response.headers.set(
+  "cache-control",
+  "public, max-age=0, s-maxage=600, stale-while-revalidate=3600",
+);
 ---
 
 <BaseLayout
-  title={`[TEST] ${role.title} - Scorewarrior`}
-  description={`[TEST] Role page for ${role.title}.`}
+  title={`${role.title} - Scorewarrior`}
+  description={`${role.title} at Scorewarrior — on-site in ${role.location}. ${role.department} team.`}
 >
-  <p><a href="/careers">Back to all roles</a></p>
+  <article class="container role">
+    <p class="back">
+      <a href="/careers">&larr; All open roles</a>
+    </p>
 
-  <h1>{role.title}</h1>
-  <p>{role.department}</p>
-  <p><strong>{role.location}</strong></p>
+    <h1>{role.title}</h1>
+
+    <!-- F2.AC1: location and studio-life link appear before the first scroll. -->
+    <p class="location">
+      <strong>On-site — {role.location}</strong>
+    </p>
+
+    <p class="location-note">
+      We work together in one office.
+      <a href="/company">See what that means</a>
+    </p>
+
+    <dl class="facts">
+      <dt>Department</dt>
+      <dd>{role.department}</dd>
+
+      <dt>Location</dt>
+      <dd>{role.location}</dd>
+
+      <dt>Type</dt>
+      <dd>Full-time, on-site</dd>
+    </dl>
+
+    <section class="body">
+      <h2>About the role</h2>
+
+      <p>
+        [TEXT] Placeholder. Role description content has not been provided yet.
+        The page structure is ready for additional fields when they are added
+        to the role schema and source data.
+      </p>
+    </section>
+
+    <!-- Part VI will replace this placeholder with the application form. -->
+    <section id="apply" class="apply-slot">
+      <h2>Apply</h2>
+      <p>[TEXT] The application form will be added in Part VI.</p>
+    </section>
+  </article>
 </BaseLayout>
+
+<style>
+  .role {
+    padding-block: calc(var(--header-h) + var(--s-8)) var(--s-9);
+    max-width: 72ch;
+  }
+
+  .back {
+    color: var(--c-text-muted);
+  }
+
+  h1 {
+    font-size: var(--fs-600);
+    line-height: var(--lh-tight);
+    margin-top: var(--s-4);
+  }
+
+  .location {
+    margin-top: var(--s-4);
+    font-size: var(--fs-300);
+  }
+
+  .location-note {
+    color: var(--c-text-muted);
+  }
+
+  .facts {
+    margin-top: var(--s-6);
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    gap: var(--s-2) var(--s-5);
+    border-top: 1px solid var(--c-border);
+    padding-top: var(--s-5);
+  }
+
+  .facts dt {
+    color: var(--c-text-muted);
+    font-size: var(--fs-100);
+  }
+
+  .facts dd {
+    margin: 0;
+  }
+
+  .body,
+  .apply-slot {
+    margin-top: var(--s-8);
+  }
+
+  .body h2,
+  .apply-slot h2 {
+    font-size: var(--fs-400);
+  }
+
+  .body p {
+    margin-top: var(--s-3);
+    color: var(--c-text-muted);
+  }
+</style>

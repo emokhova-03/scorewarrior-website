@@ -4,12 +4,54 @@ import type { Role } from "../lib/roles/schema";
 interface Props {
   role: Role;
 }
+
 const { role } = Astro.props;
 ---
 
-<!--семантический контейнер самостоятельной единицы контента. -->
-<article>
-  <!--атрибут из строки с подстановкой: вставляем slug в URL. -->
-  <h2><a href={`/careers/${role.slug}`}>{role.title}</a></h2>
-  <p>{role.department} - {role.location}</p>
+<article class="card">
+  <h2>
+    <a href={`/careers/${role.slug}`}>{role.title}</a>
+  </h2>
+
+  <p class="meta">
+    <span>{role.department}</span>
+    <span aria-hidden="true">·</span>
+    <span>On-site — {role.location}</span>
+  </p>
 </article>
+
+<style>
+  .card {
+    position: relative;
+    border: 1px solid var(--c-border);
+    border-radius: var(--radius);
+    padding: var(--s-5);
+    transition: border-color var(--dur) var(--ease);
+  }
+
+  .card:hover,
+  .card:focus-within {
+    border-color: var(--c-text);
+  }
+
+  h2 {
+    font-size: var(--fs-400);
+    line-height: var(--lh-tight);
+  }
+
+  /* The link covers the entire card, so clicking outside the heading also works. */
+  h2 a::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+  }
+
+  .meta {
+    margin-top: var(--s-2);
+    color: var(--c-text-muted);
+    font-size: var(--fs-100);
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-2);
+  }
+</style>

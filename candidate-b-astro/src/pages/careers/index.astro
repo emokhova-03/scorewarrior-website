@@ -1,57 +1,152 @@
 ---
-import { getCollection } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import RoleCard from "../../components/RoleCard.astro";
+import { readRolesSnapshot } from "../../lib/roles/read";
 
-// getCollection читает уже провалидированные данные из store.
-// Никакого чтения файлов и никакой валидации на уровне страницы:
-// всё это случилось в loader'е, на границе. Страница работает
-// только с корректными Role — это и есть смысл границы.
-const entries = await getCollection("roles");
+// This page is rendered on request because the list of open roles
+// must stay fresh without requiring a new deployment.
+export const prerender = false;
 
-// Порядок, в котором getCollection возвращает записи, не гарантирован
-// (тот же урок, что в lib/collections.ts). Сортируем явно, иначе
-// вакансии будут переставляться между сборками без причины.
-const roles = entries
-  .map((entry) => entry.data)
+const { snapshot, source } = await readRolesSnapshot();
+
+// Department filtering comes from the query string rather than
+// client-side JavaScript.
+const selected = Astro.url.searchParams.get("department");
+
+const departments = [
+  ...new Set(snapshot.roles.map((role) => role.department)),
+].sort((a, b) => a.localeCompare(b));
+
+const roles = snapshot.roles
+  .filter((role) => !selected || role.department === selected)
   .sort(
     (a, b) =>
       a.department.localeCompare(b.department) ||
       a.title.localeCompare(b.title),
   );
 
-// Ветка "источник недоступен" из старой версии здесь отсутствует
-// осознанно: при сломанном источнике билд падает в loader'е и деплой
-// не состоится (F2.AC3 через fail-the-build). Ветка вернётся на Шаге 3,
-// когда появится рантайм-путь через KV — там отказ источника возможен
-// уже после сборки, и его придётся показывать пользователю.
+// Cache the rendered page at Cloudflare's edge for ten minutes.
+// Browsers revalidate normally, while Cloudflare may continue
+// serving stale content during a background refresh.
+Astro.response.headers.set(
+  "cache-control",
+  "public, max-age=0, s-maxage=600, stale-while-revalidate=3600",
+);
 ---
 
 <BaseLayout
-  title="[TEST] Open roles - Scorewarrior"
-  description="[TEST] Placeholder description for the careers listing."
+  title="Open roles - Scorewarrior"
+  description="Open roles at Scorewarrior, a game development studio in Limassol, Cyprus. All roles are on-site."
 >
-  <h1>Open roles</h1>
+  <section class="container roles">
+    <h1>Open roles</h1>
 
-  {
-    roles.length === 0 ? (
-      // F2.AC4: пустое состояние — это законное состояние, а не отказ
-      <section>
-        <p>No open roles right now</p>
-        <p>
-          [TEST] Placeholder empty-state text.
+    <p class="lead">
+      All roles are on-site in Limassol, Cyprus.
+      <a href="/company">What the studio is like</a>
+    </p>
+
+    {
+      departments.length > 1 && (
+        <nav class="filters" aria-label="Filter roles by department">
+          <a href="/careers" aria-current={!selected ? "page" : undefined}>
+            All
+          </a>
+
+          {departments.map((department) => (
+            <a
+              href={`/careers?department=${encodeURIComponent(department)}`}
+              aria-current={selected === department ? "page" : undefined}
+            >
+              {department}
+            </a>
+          ))}
+        </nav>
+      )
+    }
+
+    {
+      roles.length === 0 ? (
+        <p class="empty">
+          {selected
+            ? "No open roles in this department right now."
+            : "No open roles right now."}{" "}
           <a href="mailto:hello@scorewarrior.com">Email us</a> and we will get
           back to you when something opens.
         </p>
-      </section>
-    ) : (
-      <ul>
-        {roles.map((role) => (
-          <li>
-            <RoleCard role={role} />
-          </li>
-        ))}
-      </ul>
-    )
-  }
+      ) : (
+        <ul class="list">
+          {roles.map((role) => (
+            <li>
+              <RoleCard role={role} />
+            </li>
+          ))}
+        </ul>
+      )
+    }
+
+    {
+      source === "bundled" && (
+        <p class="notice">
+          Showing the last published list. Live data is temporarily unavailable.
+        </p>
+      )
+    }
+  </section>
 </BaseLayout>
+
+<style>
+  .roles {
+    padding-block: calc(var(--header-h) + var(--s-8)) var(--s-9);
+  }
+
+  h1 {
+    font-size: var(--fs-700);
+    line-height: var(--lh-tight);
+  }
+
+  .lead {
+    color: var(--c-text-muted);
+    max-width: 58ch;
+    margin-top: var(--s-3);
+  }
+
+  .filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-2);
+    margin-top: var(--s-6);
+  }
+
+  .filters a {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    padding-inline: var(--s-4);
+    border: 1px solid var(--c-border);
+    border-radius: var(--radius);
+  }
+
+  .filters a[aria-current="page"] {
+    background: var(--c-bg-elevated);
+    border-color: var(--c-text);
+  }
+
+  .list {
+    list-style: none;
+    padding: 0;
+    margin-top: var(--s-7);
+    display: grid;
+    gap: var(--s-4);
+  }
+
+  .empty,
+  .notice {
+    margin-top: var(--s-7);
+    color: var(--c-text-muted);
+  }
+
+  .notice {
+    font-size: var(--fs-100);
+  }
+</style>
