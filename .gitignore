@@ -8,3 +8,5 @@
 #Editors
 .vscode/
 .idea/
+
+.wrangler/
