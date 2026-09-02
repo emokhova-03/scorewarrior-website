@@ -1,14 +1,20 @@
 [
-    {
-        "title": "[TEST] Backend Engineer",
-        "department": "Engineering",
-        "location": "Limassol, Cyprus",
-        "slug": "test-backend-engineer"
-    },
-    {
-        "title": "[TEST] Game Designer",
-        "department": "Design",
-        "location":"Limassol, Cyprus",
-        "slug": "test-game-designer"
-    }
+  {
+    "slug": "test-backend-engineer",
+    "title": "[TEST] Backend Engineer",
+    "department": "Engineering",
+    "location": "Limassol, Cyprus"
+  },
+  {
+    "slug": "test-game-designer",
+    "title": "[TEST] Game Designer",
+    "department": "Design",
+    "location": "Limassol, Cyprus"
+  },
+  {
+    "slug": "test-qa-engineer",
+    "title": "[TEST] QA Engineer",
+    "department": "QA",
+    "location": "Limassol, Cyprus"
+  }
 ]
