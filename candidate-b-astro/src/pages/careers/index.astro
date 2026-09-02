@@ -1,17 +1,29 @@
 ---
+import { getCollection } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import RoleCard from "../../components/RoleCard.astro";
-import { loadRoles } from "../../lib/roles";
 
-const { status, roles, problems } = loadRoles(); //вызываем загрузку и разбиваем результат на три переменные
+// getCollection читает уже провалидированные данные из store.
+// Никакого чтения файлов и никакой валидации на уровне страницы:
+// всё это случилось в loader'е, на границе. Страница работает
+// только с корректными Role — это и есть смысл границы.
+const entries = await getCollection("roles");
 
-if (problems.length > 0) {
-  console.warn(`[careers] roles source status: ${status}`);
-  for (const problem of problems) {
-    console.warn(`[careers] ${problem}`); //console.warn печатает предупреждение в лог сборки
-  }
-}
-const sourceUsable = status === "ok";
+// Порядок, в котором getCollection возвращает записи, не гарантирован
+// (тот же урок, что в lib/collections.ts). Сортируем явно, иначе
+// вакансии будут переставляться между сборками без причины.
+const roles = entries
+  .map((entry) => entry.data)
+  .sort(
+    (a, b) =>
+      a.department.localeCompare(b.department) || a.title.localeCompare(b.title),
+  );
+
+// Ветка "источник недоступен" из старой версии здесь отсутствует
+// осознанно: при сломанном источнике билд падает в loader'е и деплой
+// не состоится (F2.AC3 через fail-the-build). Ветка вернётся на Шаге 3,
+// когда появится рантайм-путь через KV — там отказ источника возможен
+// уже после сборки, и его придётся показывать пользователю.
 ---
 
 <BaseLayout
@@ -19,32 +31,21 @@ const sourceUsable = status === "ok";
   description="[TEST] Placeholder description for the careers listing."
 >
   <h1>Open roles</h1>
+
   {
-    //Ветка источник непригоден
-    !sourceUsable && (
-      <section>
-        <p>The list of open roles is temporarily unavailable</p>
-        <p>
-          [TEST] Placeholder fallback text for the unavailable source state.
-        </p>
-      </section>
-    )
-  }
-  {
-    //Ветка empty state
-    sourceUsable && roles.length === 0 && (
+    roles.length === 0 ? (
+      // F2.AC4: пустое состояние — это законное состояние, а не отказ
       <section>
         <p>No open roles right now</p>
-        <p>[TEST] Placeholder empty-state text.</p>
+        <p>
+          [TEST] Placeholder empty-state text.
+          <a href="mailto:hello@scorewarrior.com">Email us</a> and we will get
+          back to you when something opens.
+        </p>
       </section>
-    )
-  }
-  {
-    //нормальный список
-    sourceUsable && roles.length > 0 && (
+    ) : (
       <ul>
         {roles.map((role) => (
-          //для каждой роли элемент списка
           <li>
             <RoleCard role={role} />
           </li>

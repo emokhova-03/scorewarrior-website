@@ -1,18 +1,22 @@
 ---
+import { getCollection } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import { loadRoles } from "../../lib/roles";
-import type { Role } from "../../lib/roles";
+import type { Role } from "../../lib/roles/schema";
 
-export function getStaticPaths() {
-  const { roles } = loadRoles();
+// getStaticPaths стал async, потому что getCollection возвращает Promise.
+export async function getStaticPaths() {
+  const entries = await getCollection("roles");
 
-  return roles.map((role) => ({
-    //превращаем каждую роль в описание одной страницы
-    params: { slug: role.slug },
-    props: { role }, //передаем саму роль в страницу, чтобы не читатаь файл во второй раз
+  return entries.map((entry) => ({
+    // entry.id — это slug: так его положил loader (store.set({ id: role.slug })).
+    // Маршруты строятся из id коллекции, а не из отдельного чтения файла.
+    params: { slug: entry.id },
+    // Данные передаются в страницу пропсом, чтобы не запрашивать коллекцию
+    // ещё раз внутри самой страницы.
+    props: { role: entry.data },
   }));
 }
-//типизация того, что придет в astro.props
+
 interface Props {
   role: Role;
 }

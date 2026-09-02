@@ -1,6 +1,17 @@
 import { defineCollection } from "astro:content";
 import { file } from "astro/loaders";
 import { z } from "astro/zod";
+import { rolesFileLoader } from "./lib/roles/loader";
+import { roleSchema } from "./lib/roles/schema";
+
+// Вакансии — единственная коллекция со своим loader'ом: у неё другой контракт
+// отказа, чем у бренд-контента (см. комментарий в lib/roles/loader.ts).
+// Схема лежит в lib/roles/schema.ts, а не здесь, потому что она нужна ещё
+// и в тестах, и на Шаге 3 — в рантайме, при чтении из KV.
+const roles = defineCollection({
+  loader: rolesFileLoader({ path: "data/roles.json" }),
+  schema: roleSchema,
+});
 
 // Поле, которое есть во всех коллекциях: явный порядок вывода.
 // Объявлено один раз и подмешивается спредом в каждую схему.
@@ -49,4 +60,11 @@ const offices = defineCollection({
     mapUrl: z.string().url(),
   }),
 });
-export const collections = { timeline, team, openSource, gameArt, offices };
+export const collections = {
+  timeline,
+  team,
+  openSource,
+  gameArt,
+  offices,
+  roles,
+};
