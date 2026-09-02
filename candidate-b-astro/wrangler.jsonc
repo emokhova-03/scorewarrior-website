@@ -1,9 +1,32 @@
 {
+  "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "scorewarrior-website",
   "compatibility_date": "2026-08-01",
+  // Точка входа воркера. Пока — стандартная точка адаптера.
+  // В Части IV заменим на свою, чтобы добавить обработчик cron.
+  "main": "./src/worker.ts",
+  "triggers": {
+    "crons": ["*/10 * * * *"],
+  },
   "assets": {
-    "directory": "./dist",
-    "not_found_handling": "404-page",
+    // Обязательно при серверном рендере: обработчик адаптера
+    // раздаёт статику через env.ASSETS.fetch().
+    "binding": "ASSETS",
     "html_handling": "auto-trailing-slash",
+    // "not_found_handling" УБРАНО СОЗНАТЕЛЬНО — см. разбор ниже
+    // "directory" УБРАНО: путь теперь подставляет плагин Cloudflare
+  },
+  "kv_namespaces": [
+    {
+      "binding": "ROLES_KV",
+      "id": "c6f72d2ae0484b6db5b718a147023e27",
+    },
+  ],
+  "vars": {
+    "ROLES_SOURCE_URL": "https://raw.githubusercontent.com/emokhova-03/scorewarrior-website/main/data/roles.json",
+    "ROLES_MAX_AGE_MINUTES": "15",
+  },
+  "observability": {
+    "enabled": true,
   },
 }

@@ -16,7 +16,8 @@ const roles = entries
   .map((entry) => entry.data)
   .sort(
     (a, b) =>
-      a.department.localeCompare(b.department) || a.title.localeCompare(b.title),
+      a.department.localeCompare(b.department) ||
+      a.title.localeCompare(b.title),
   );
 
 // Ветка "источник недоступен" из старой версии здесь отсутствует

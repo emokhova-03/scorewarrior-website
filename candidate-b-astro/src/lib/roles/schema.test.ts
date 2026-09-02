@@ -41,9 +41,15 @@ describe("roleSchema", () => {
   });
 
   it("отклоняет slug с заглавными буквами и пробелами", () => {
-    expect(roleSchema.safeParse({ ...validRole, slug: "Backend Engineer" }).success).toBe(false);
-    expect(roleSchema.safeParse({ ...validRole, slug: "backend_engineer" }).success).toBe(false);
-    expect(roleSchema.safeParse({ ...validRole, slug: "-backend" }).success).toBe(false);
+    expect(
+      roleSchema.safeParse({ ...validRole, slug: "Backend Engineer" }).success,
+    ).toBe(false);
+    expect(
+      roleSchema.safeParse({ ...validRole, slug: "backend_engineer" }).success,
+    ).toBe(false);
+    expect(
+      roleSchema.safeParse({ ...validRole, slug: "-backend" }).success,
+    ).toBe(false);
   });
 
   it("выбрасывает лишние поля, а не падает на них", () => {
@@ -81,7 +87,10 @@ describe("parseRoles", () => {
   });
 
   it("пропускает невалидную запись и сохраняет остальные", () => {
-    const result = parseRoles([validRole, { ...validRole, slug: "role-two", title: "" }]);
+    const result = parseRoles([
+      validRole,
+      { ...validRole, slug: "role-two", title: "" },
+    ]);
 
     expect(result.ok).toBe(true);
     expect(result.ok && result.roles).toHaveLength(1);
@@ -90,7 +99,10 @@ describe("parseRoles", () => {
   });
 
   it("отклоняет повторяющийся slug", () => {
-    const result = parseRoles([validRole, { ...validRole, title: "[TEST] Role One Again" }]);
+    const result = parseRoles([
+      validRole,
+      { ...validRole, title: "[TEST] Role One Again" },
+    ]);
 
     expect(result.ok).toBe(true);
     expect(result.ok && result.roles).toHaveLength(1);

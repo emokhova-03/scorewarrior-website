@@ -48,16 +48,18 @@ const logos = byOrder(await getCollection("openSource"));
     lead="Our employees' opinions are the most important driving force behind the company."
   >
     <ul class="quotes">
-      {quotes.map((entry) => (
-        <li>
-          <QuoteCard
-            quote={entry.data.quote}
-            name={entry.data.name}
-            role={entry.data.role}
-            photo={entry.data.photo}
-          />
-        </li>
-      ))}
+      {
+        quotes.map((entry) => (
+          <li>
+            <QuoteCard
+              quote={entry.data.quote}
+              name={entry.data.name}
+              role={entry.data.role}
+              photo={entry.data.photo}
+            />
+          </li>
+        ))
+      }
     </ul>
   </Section>
 </BaseLayout>

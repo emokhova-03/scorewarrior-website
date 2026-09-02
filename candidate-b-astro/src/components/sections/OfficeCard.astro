@@ -13,12 +13,7 @@ const { name, address, mapUrl } = Astro.props;
 
   <h3 class="name">{name}</h3>
 
-  <a
-    class="address"
-    href={mapUrl}
-    target="_blank"
-    rel="noopener noreferrer"
-  >
+  <a class="address" href={mapUrl} target="_blank" rel="noopener noreferrer">
     {address}
   </a>
 </article>

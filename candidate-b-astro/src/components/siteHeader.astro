@@ -16,71 +16,71 @@ const path = Astro.url.pathname;
 <header class:list={["site-header", variant]}>
   <div class="container">
     <div class="bar">
-        <a class="logo" href="/" aria-label="Scorewarrior — home">
-      <img
-        src="/brand/logo-scorewarrior-white.svg"
-        alt="Scorewarrior"
-        width="168"
-        height="24"
-      />
-        </a>
-    <button
-      class="burger"
-      type="button"
-      aria-expanded="false"
-      aria-controls="site-nav"
-    >
-      <span aria-hidden="true"></span>
-      <span aria-hidden="true"></span>
-      <span class="sr-only">Menu</span>
-    </button>
-    <nav id="site-nav" class="nav" aria-label="Main">
-      <ul class="nav-list">
-        {
-          nav.map((item) => (
-            <li>
-              <a
-                href={item.href}
-                aria-current={path.startsWith(item.href) ? "page" : undefined}
-              >
-                {item.label}
-              </a>
-            </li>
-          ))
-        }
-      </ul>
-      <a class="support" href={SUPPORT} rel="noopener">Support</a>
-    </nav>
+      <a class="logo" href="/" aria-label="Scorewarrior — home">
+        <img
+          src="/brand/logo-scorewarrior-white.svg"
+          alt="Scorewarrior"
+          width="168"
+          height="24"
+        />
+      </a>
+      <button
+        class="burger"
+        type="button"
+        aria-expanded="false"
+        aria-controls="site-nav"
+      >
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+        <span class="sr-only">Menu</span>
+      </button>
+      <nav id="site-nav" class="nav" aria-label="Main">
+        <ul class="nav-list">
+          {
+            nav.map((item) => (
+              <li>
+                <a
+                  href={item.href}
+                  aria-current={path.startsWith(item.href) ? "page" : undefined}
+                >
+                  {item.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+        <a class="support" href={SUPPORT} rel="noopener">Support</a>
+      </nav>
     </div>
   </div>
 </header>
 <style>
-.site-header {
-  position: relative;
-  z-index: 50;
-  padding-block: var(--s-4);
-}
+  .site-header {
+    position: relative;
+    z-index: 50;
+    padding-block: var(--s-4);
+  }
 
-.site-header.over {
-  position: absolute;
-  inset: 0 0 auto 0;
-}
+  .site-header.over {
+    position: absolute;
+    inset: 0 0 auto 0;
+  }
 
-.bar {
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: var(--s-6);
-  min-height: var(--header-h);
-  padding-inline: var(--s-6);
-  background: var(--c-accent);
-  border-radius: 999px;
+  .bar {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: var(--s-6);
+    min-height: var(--header-h);
+    padding-inline: var(--s-6);
+    background: var(--c-accent);
+    border-radius: 999px;
 
-  /* Внутри пилюли всё светлое — тот же приём, что в hero */
-  --c-text: #ffffff;
-  --c-border: rgba(255, 255, 255, 0.5);
-  color: var(--c-text);
-}
+    /* Внутри пилюли всё светлое — тот же приём, что в hero */
+    --c-text: #ffffff;
+    --c-border: rgba(255, 255, 255, 0.5);
+    color: var(--c-text);
+  }
   .logo img {
     width: 168px;
     height: auto;
@@ -133,23 +133,24 @@ const path = Astro.url.pathname;
       background: var(--c-text);
     }
     .nav {
-        position: absolute;
-        top: calc(100% + var(--s-2));
-        left: 0;
-        right: 0;
-        flex-direction: column;
-        align-items: flex-start;
-        gap: var(--s-5);
-        margin-left: 0;
-        padding: var(--s-6);
-        background: var(--c-accent);
-        border-radius: var(--radius);
-        transform: translateY(-8px);
-        opacity: 0;
-        pointer-events: none;
-        transition: opacity var(--dur) var(--ease),
-                    transform var(--dur) var(--ease);
-  }
+      position: absolute;
+      top: calc(100% + var(--s-2));
+      left: 0;
+      right: 0;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--s-5);
+      margin-left: 0;
+      padding: var(--s-6);
+      background: var(--c-accent);
+      border-radius: var(--radius);
+      transform: translateY(-8px);
+      opacity: 0;
+      pointer-events: none;
+      transition:
+        opacity var(--dur) var(--ease),
+        transform var(--dur) var(--ease);
+    }
     .nav.is-open {
       transform: translateY(0);
       opacity: 1;

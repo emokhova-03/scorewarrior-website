@@ -12,12 +12,14 @@ const { items } = Astro.props;
 ---
 
 <ol class="timeline">
-  {items.map((item) => (
-    <li class="row">
-      <p class="year">{item.year}</p>
-      <p class="text">{item.text}</p>
-    </li>
-  ))}
+  {
+    items.map((item) => (
+      <li class="row">
+        <p class="year">{item.year}</p>
+        <p class="text">{item.text}</p>
+      </li>
+    ))
+  }
 </ol>
 
 <style>

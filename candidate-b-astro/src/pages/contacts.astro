@@ -29,15 +29,17 @@ const offices = byOrder(await getCollection("offices"));
 
   <Section>
     <ul class="offices">
-      {offices.map((entry) => (
-        <li>
-          <OfficeCard
-            name={entry.data.name}
-            address={entry.data.address}
-            mapUrl={entry.data.mapUrl}
-          />
-        </li>
-      ))}
+      {
+        offices.map((entry) => (
+          <li>
+            <OfficeCard
+              name={entry.data.name}
+              address={entry.data.address}
+              mapUrl={entry.data.mapUrl}
+            />
+          </li>
+        ))
+      }
     </ul>
   </Section>
 </BaseLayout>
