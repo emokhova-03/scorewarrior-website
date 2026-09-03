@@ -39,6 +39,8 @@ Astro.response.headers.set(
   description="Open roles at Scorewarrior, a game development studio in Limassol, Cyprus. All roles are on-site."
 >
   <section class="container roles">
+    <p class="eyebrow">We're hiring</p>
+
     <h1>Open roles</h1>
 
     <p class="lead">
@@ -97,56 +99,106 @@ Astro.response.headers.set(
 
 <style>
   .roles {
-    padding-block: calc(var(--header-space) + var(--s-8)) var(--s-9);
+    padding-block: calc(var(--header-space) + var(--s-8)) var(--section-large);
   }
 
+  /* .text-weight-semibold.text-color-gray500 above the heading, as the
+     original's careers section does with "We're hiring". */
+  .eyebrow {
+    margin-bottom: var(--space-xxsmall);
+    color: var(--c-text-muted);
+    font-weight: var(--fw-semibold);
+  }
+
+  /* Headings on the original's careers page are accent-coloured, at the h2
+     step rather than h1 — the visually largest heading there is 3rem. */
   h1 {
-    font-size: var(--fs-700);
-    line-height: var(--lh-tight);
+    color: var(--c-accent);
+    font-size: var(--fs-h2);
+    font-weight: var(--fw-bold);
+    line-height: var(--lh-heading);
   }
 
   .lead {
+    max-width: var(--mw-large);
+    margin-top: var(--space-xsmall);
     color: var(--c-text-muted);
-    max-width: 58ch;
-    margin-top: var(--s-3);
+    font-size: var(--fs-medium);
   }
 
+  .lead a {
+    color: var(--c-accent);
+    text-decoration: underline;
+  }
+
+  /**
+   * Department filter. Plain links carrying a query string, so it works with
+   * JavaScript disabled — the page is server-rendered per request and reads
+   * the parameter on the server.
+   */
   .filters {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--s-2);
-    margin-top: var(--s-6);
+    gap: var(--space-xxsmall);
+    margin-top: var(--space-medium);
   }
 
   .filters a {
-    min-height: 44px;
     display: inline-flex;
     align-items: center;
-    padding-inline: var(--s-4);
+    min-height: 44px;
+    padding-inline: var(--space-xsmall);
     border: 1px solid var(--c-border);
     border-radius: var(--radius);
+    font-size: var(--fs-small);
+    font-weight: var(--fw-semibold);
+    transition:
+      border-color var(--dur) var(--ease),
+      background-color var(--dur) var(--ease),
+      color var(--dur) var(--ease);
+  }
+
+  .filters a:hover {
+    border-color: var(--c-accent);
+    color: var(--c-accent);
   }
 
   .filters a[aria-current="page"] {
-    background: var(--c-bg-elevated);
-    border-color: var(--c-text);
+    background: var(--c-accent);
+    border-color: var(--c-accent);
+    color: var(--white);
   }
 
+  /* .career23_list — two columns, 2rem apart, collapsing at 767px */
   .list {
-    list-style: none;
-    padding: 0;
-    margin-top: var(--s-7);
     display: grid;
-    gap: var(--s-4);
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-medium);
+    align-items: start;
+    margin-top: var(--space-large);
+    padding: 0;
+    list-style: none;
   }
 
   .empty,
   .notice {
-    margin-top: var(--s-7);
+    margin-top: var(--space-large);
     color: var(--c-text-muted);
   }
 
+  .empty a {
+    color: var(--c-accent);
+    text-decoration: underline;
+  }
+
   .notice {
-    font-size: var(--fs-100);
+    font-size: var(--fs-small);
+  }
+
+  @media screen and (max-width: 767px) {
+    .list {
+      grid-template-columns: 1fr;
+      gap: var(--space-small);
+    }
   }
 </style>

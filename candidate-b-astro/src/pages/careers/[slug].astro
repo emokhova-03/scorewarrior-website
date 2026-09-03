@@ -139,43 +139,61 @@ Astro.response.headers.set(
 
 <style>
   .role {
-    padding-block:
-      calc(var(--header-space) + var(--s-8))
-      var(--s-9);
-    max-width: 72ch;
+    /* .max-width-large — the original clamps long-form copy at 48rem */
+    max-width: var(--mw-large);
+    padding-block: calc(var(--header-space) + var(--s-8))
+      var(--section-large);
   }
 
-  .back {
+  .back a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
     color: var(--c-text-muted);
+    transition: color var(--dur) var(--ease);
   }
 
+  .back a:hover {
+    color: var(--c-accent);
+  }
+
+  /* Accent heading at the h3 step, matching the original's role headings */
   h1 {
-    font-size: var(--fs-600);
-    line-height: var(--lh-tight);
-    margin-top: var(--s-4);
+    margin-top: var(--space-xxsmall);
+    color: var(--c-accent);
+    font-size: var(--fs-h3);
+    font-weight: var(--fw-bold);
+    line-height: var(--lh-heading);
   }
 
+  /* F2.AC1 — this and the studio-life link stay above the first scroll. */
   .location {
-    margin-top: var(--s-4);
-    font-size: var(--fs-300);
+    margin-top: var(--space-xsmall);
+    font-size: var(--fs-large);
   }
 
   .location-note {
+    margin-top: var(--space-tiny);
     color: var(--c-text-muted);
   }
 
+  .location-note a {
+    color: var(--c-accent);
+    text-decoration: underline;
+  }
+
   .facts {
-    margin-top: var(--s-6);
     display: grid;
     grid-template-columns: max-content 1fr;
-    gap: var(--s-2) var(--s-5);
+    gap: var(--space-xxsmall) var(--space-small);
+    margin-top: var(--space-medium);
+    padding-top: var(--space-small);
     border-top: 1px solid var(--c-border);
-    padding-top: var(--s-5);
   }
 
   .facts dt {
     color: var(--c-text-muted);
-    font-size: var(--fs-100);
+    font-size: var(--fs-small);
   }
 
   .facts dd {
@@ -184,16 +202,19 @@ Astro.response.headers.set(
 
   .body,
   .apply {
-    margin-top: var(--s-8);
+    margin-top: var(--space-xlarge);
   }
 
   .body h2,
   .apply h2 {
-    font-size: var(--fs-400);
+    color: var(--c-accent);
+    font-size: var(--fs-h5);
+    font-weight: var(--fw-bold);
+    line-height: var(--lh-h5);
   }
 
   .body p {
-    margin-top: var(--s-3);
+    margin-top: var(--space-xsmall);
     color: var(--c-text-muted);
   }
 </style>

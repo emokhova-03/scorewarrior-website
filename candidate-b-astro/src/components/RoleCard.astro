@@ -1,57 +1,186 @@
 ---
 import type { Role } from "../lib/roles/schema";
 
+/**
+ * Role card, matched to .career23_item.shadow-medium on the original:
+ * a 1px light-grey border, 1rem radius, 2rem of padding (1.5rem below 767px)
+ * and the medium shadow, with the title and department chip on one row, the
+ * location and job-type details below, and an outlined "Learn more →".
+ *
+ * The pin and clock glyphs are the original's, inlined rather than referenced
+ * from its CDN: our CSP is `img-src 'self' data:`, and inlining also lets them
+ * take currentColor so they match the muted detail text.
+ */
+
 interface Props {
   role: Role;
 }
 
 const { role } = Astro.props;
+
+const href = `/careers/${role.slug}`;
 ---
 
 <article class="card">
-  <h2>
-    <a href={`/careers/${role.slug}`}>{role.title}</a>
-  </h2>
+  <div class="title-wrapper">
+    <h2 class="title">
+      <a href={href}>{role.title}</a>
+    </h2>
 
-  <p class="meta">
-    <span>{role.department}</span>
-    <span aria-hidden="true">·</span>
-    <span>On-site — {role.location}</span>
+    <p class="department">{role.department}</p>
+  </div>
+
+  <ul class="details">
+    <li>
+      <svg
+        class="icon"
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        aria-hidden="true"
+      >
+        <path
+          d="M12.0001 2C8.00613 2 4.75684 5.2493 4.75684 9.2432C4.75684 14.1998 11.2388 21.4763 11.5148 21.7836C11.774 22.0723 12.2266 22.0718 12.4854 21.7836C12.7613 21.4763 19.2433 14.1998 19.2433 9.2432C19.2432 5.2493 15.994 2 12.0001 2ZM12.0001 12.8875C9.99062 12.8875 8.35586 11.2527 8.35586 9.2432C8.35586 7.23375 9.99066 5.59898 12.0001 5.59898C14.0095 5.59898 15.6443 7.23379 15.6443 9.24324C15.6443 11.2527 14.0095 12.8875 12.0001 12.8875Z"
+          fill="currentColor"></path>
+      </svg>
+
+      <span>{role.location}</span>
+    </li>
+
+    <li>
+      <svg
+        class="icon"
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        aria-hidden="true"
+      >
+        <path
+          fill-rule="evenodd"
+          clip-rule="evenodd"
+          d="M12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22C17.5228 22 22 17.5228 22 12C22 9.34784 20.9464 6.8043 19.0711 4.92893C17.1957 3.05357 14.6522 2 12 2ZM12 20C7.58172 20 4 16.4183 4 12C4 7.58172 7.58172 4 12 4C16.4183 4 20 7.58172 20 12C20 14.1217 19.1571 16.1566 17.6569 17.6569C16.1566 19.1571 14.1217 20 12 20ZM12.88 6.5V11.64L16.51 15.27C16.7018 15.4678 16.7018 15.7822 16.51 15.98L15.98 16.51C15.7822 16.7018 15.4678 16.7018 15.27 16.51L11.27 12.51C11.1784 12.4159 11.1249 12.2912 11.12 12.16V6.5C11.12 6.22386 11.3439 6 11.62 6H12.38C12.6561 6 12.88 6.22386 12.88 6.5Z"
+          fill="currentColor"></path>
+      </svg>
+
+      <span>Full-time, on-site</span>
+    </li>
+  </ul>
+
+  <p class="cta">
+    <a
+      class="button"
+      href={href}
+      aria-label={`Learn more about ${role.title}`}
+    >
+      Learn more &rarr;
+    </a>
   </p>
 </article>
 
 <style>
+  /* .career23_item + .shadow-medium */
   .card {
-    position: relative;
+    padding: var(--space-medium);
     border: 1px solid var(--c-border);
     border-radius: var(--radius);
-    padding: var(--s-5);
-    transition: border-color var(--dur) var(--ease);
+    box-shadow: var(--shadow-card);
+    overflow: hidden;
+    transition: box-shadow var(--dur) var(--ease);
   }
 
   .card:hover,
   .card:focus-within {
-    border-color: var(--c-text);
+    box-shadow: var(--shadow-large);
   }
 
-  h2 {
-    font-size: var(--fs-400);
-    line-height: var(--lh-tight);
+  /* .career23_title-wrapper */
+  .title-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: var(--space-xsmall);
   }
 
-  /* The link covers the entire card, so clicking outside the heading also works. */
-  h2 a::after {
-    content: "";
-    position: absolute;
-    inset: 0;
+  /* .heading-style-h5.text-color-fuchsia800 */
+  .title {
+    color: var(--c-accent);
+    font-size: var(--fs-h5);
+    font-weight: var(--fw-bold);
+    line-height: var(--lh-h5);
   }
 
-  .meta {
-    margin-top: var(--s-2);
-    color: var(--c-text-muted);
-    font-size: var(--fs-100);
+  /* .career23_department-label — a light-grey chip, deliberately unrounded */
+  .department {
+    flex: none;
+    padding: var(--space-tiny) var(--space-xxsmall);
+    background: var(--light-grey);
+    color: var(--c-text);
+    font-size: var(--fs-small);
+    font-weight: var(--fw-semibold);
+  }
+
+  /* .career23_job-details-wrapper + .career23_detail-wrapper */
+  .details {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--s-2);
+    gap: var(--space-xxsmall) var(--space-small);
+    margin-top: var(--space-small);
+    padding: 0;
+    list-style: none;
+    color: var(--c-text-muted);
+  }
+
+  .details li {
+    display: flex;
+    align-items: center;
+    font-size: var(--fs-medium);
+  }
+
+  /* .career23_icon-wrapper { flex: none; margin-right: .75rem } */
+  .icon {
+    flex: none;
+    margin-right: 0.75rem;
+  }
+
+  /* .margin-top.margin-medium wrapping .button-2.is-secondary.is-small */
+  .cta {
+    margin-top: var(--space-medium);
+  }
+
+  .button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    /* 44px tap target; the original's .75rem padding lands just under it */
+    min-height: 44px;
+    padding: 0.75rem var(--space-small);
+    border: 1px solid var(--c-text);
+    border-radius: var(--radius);
+    color: var(--c-text);
+    text-align: center;
+    transition:
+      background-color var(--dur) var(--ease),
+      color var(--dur) var(--ease);
+  }
+
+  .button:hover,
+  .button:focus-visible {
+    background: var(--c-text);
+    color: var(--c-bg);
+  }
+
+  @media screen and (max-width: 767px) {
+    .card {
+      padding: var(--space-small);
+    }
+
+    /* The chip beside a long title leaves too little room at 360px, so the
+       two stack rather than squeeze. */
+    .title-wrapper {
+      flex-direction: column;
+      gap: var(--space-xxsmall);
+    }
   }
 </style>

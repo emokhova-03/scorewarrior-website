@@ -60,11 +60,14 @@ const policies = [
 ];
 
 /**
- * The original reads "© 2025 SCOREWARRIOR LIMITED. All rights reserved." —
- * a hardcoded year, now a year out of date. Kept verbatim rather than
- * silently corrected, because the brief is to reproduce the original's copy.
+ * A deliberate divergence from the original, agreed rather than assumed.
+ *
+ * The original reads "© 2025 SCOREWARRIOR LIMITED. All rights reserved." — a
+ * hardcoded year that is now a year out of date, which is exactly what
+ * hardcoding a year gets you. Ours derives it, so it cannot go stale. Every
+ * other word of the line is the original's.
  */
-const COPYRIGHT = "© 2025 SCOREWARRIOR LIMITED. All rights reserved.";
+const COPYRIGHT = `© ${new Date().getFullYear()} SCOREWARRIOR LIMITED. All rights reserved.`;
 
 /** Anything off-origin gets the same treatment, so it is decided once. */
 function isExternal(href: string): boolean {
