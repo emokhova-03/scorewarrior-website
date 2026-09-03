@@ -40,9 +40,17 @@ document.querySelectorAll("[data-gallery]").forEach((root) => {
     btn.addEventListener("click", () => {
       const dir = Number(btn.dataset.dir);
 
+      // Read the preference per click, not once at load: a visitor can change
+      // it mid-session, and on iOS toggling Reduce Motion does not reload the
+      // page. The CSS rule in global.css cannot reach this, because `behavior`
+      // is a script argument rather than a style.
+      const reduced = window.matchMedia(
+        "(prefers-reduced-motion: reduce)",
+      ).matches;
+
       track.scrollBy({
         left: dir * step(),
-        behavior: "smooth",
+        behavior: reduced ? "auto" : "smooth",
       });
     });
   });

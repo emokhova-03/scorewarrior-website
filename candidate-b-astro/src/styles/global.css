@@ -80,14 +80,33 @@ button {
   outline: 2px solid var(--c-accent);
   outline-offset: 3px;
 }
+/**
+ * PRD §6 — respect prefers-reduced-motion.
+ *
+ * Near-zero rather than `none`: a 0.01ms duration still fires transitionend
+ * and animationend, so anything sequenced off those events keeps working
+ * instead of hanging.
+ *
+ * Four things matter here beyond duration:
+ *  - iteration-count, or an infinite animation still loops forever, just
+ *    faster — a flicker rather than a movement.
+ *  - the delays, or a long delay still stalls the interface even though the
+ *    transition itself is instant.
+ *  - scroll-behavior on everything, not only html: the gallery track is its
+ *    own scroll container, and so is any future one.
+ *
+ * gallery.js additionally checks this at click time, because scrollBy's
+ * `behavior` option is a script argument that CSS cannot reach.
+ */
 @media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
   *,
   *::before,
   *::after {
     animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+    animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+    transition-delay: 0ms !important;
+    scroll-behavior: auto !important;
   }
 }
