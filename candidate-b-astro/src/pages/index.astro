@@ -2,12 +2,19 @@
 import { Image } from "astro:assets";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { img } from "../lib/images";
+
+/**
+ * The original's home page is the hero and nothing else — .section_header5
+ * followed by an empty .section_space spacer — so this page stays single
+ * section rather than gaining anything the original does not have.
+ *
+ * Copy is the original's, verbatim, including the <strong> around "the".
+ */
 ---
 
 <BaseLayout
   title="Scorewarrior"
   description="Exciting game. Uniting players. Scorewarrior is a game development studio in Limassol, Cyprus."
-  headerVariant="over"
 >
   <section class="hero">
     <Image
@@ -20,44 +27,67 @@ import { img } from "../lib/images";
     />
 
     <div class="container hero-inner">
-      <h1>
-        We create our game with <em>the</em> mission to unite and excite people all
-        over the world.
-      </h1>
+      <div class="hero-copy">
+        <h1>
+          We create our game with <strong>the</strong> mission to unite and
+          excite people all over the world.
+        </h1>
 
-      <p class="lead">
-        Our game development studio is headquartered in Cyprus, where we focus
-        on Total Battle, a top 10 mid-core 4X Strategy game. The key to our game
-        is players socializing and making new friends worldwide in the fantasy
-        world that we passionately create for them!
-      </p>
+        <p class="lead">
+          Our game development studio is headquartered in Cyprus, where we focus
+          on Total Battle, a top 10 mid-core 4X Strategy game. The key to our
+          game is players socializing and making new friends worldwide in the
+          fantasy world that we passionately create for them!
+        </p>
 
-      <a class="cta" href="/company">
-        Learn more <span aria-hidden="true">&rarr;</span>
-      </a>
+        <p class="actions">
+          <a class="button" href="/company">Learn more &rarr;</a>
+        </p>
+      </div>
     </div>
   </section>
 </BaseLayout>
 
 <style>
+  /**
+   * .section_header5 { position: relative } wrapping
+   * .header-100vh { min-height: 100vh; max-height: 60rem; align-items: center }
+   *
+   * min() rather than a hard max-height: the effect is the same 100vh capped at
+   * 60rem, but a max-height on a box whose content can grow taller — long text
+   * at 360px, or large type — would clip instead of scroll.
+   *
+   * svh rather than vh so mobile browser chrome cannot make the hero taller
+   * than the visible viewport.
+   */
   .hero {
     position: relative;
     isolation: isolate;
     display: grid;
-    align-items: center;
-    min-height: min(86svh, 820px);
-    padding-block: calc(var(--header-space) + var(--s-9)) var(--s-9);
+    align-content: center;
+    min-height: min(100svh, 60rem);
 
-    /* Локальная тёмная тема поверх арта.
-       Переопределяем токены, а не переписываем правила. */
-    --c-text: #ffffff;
-    --c-text-muted: rgba(255, 255, 255, 0.82);
-    --c-border: rgba(255, 255, 255, 0.45);
-    --c-bg-elevated: rgba(255, 255, 255, 0.14);
+    /**
+     * The original pads .padding-section-large, i.e. 7rem, symmetrically and
+     * centres the content inside 100vh. At desktop that 7rem (112px) already
+     * exceeds the 96px the fixed header occupies, so the header overlaps only
+     * padding. Below 767px the original's padding drops to 4rem (64px) while
+     * the header still needs 84px — so the clearance is taken as a floor here
+     * rather than trusting the padding to cover it.
+     */
+    padding-block: max(
+        var(--section-large),
+        calc(var(--header-space) + var(--space-xsmall))
+      )
+      var(--section-large);
 
+    /* Everything in the hero sits on the art, so light text throughout.
+       .text-color-white on both the heading and the lead. */
+    --c-text: var(--white);
     color: var(--c-text);
   }
 
+  /* .header5_background-image */
   .hero-bg {
     position: absolute;
     inset: 0;
@@ -68,68 +98,82 @@ import { img } from "../lib/images";
     object-position: center;
   }
 
-  /* Подложка: без неё белый текст читается не на всех участках арта */
+  /**
+   * The scrim. The original stacks .cta4_background-image-wrapper, whose own
+   * background is linear-gradient(#00000080, #00000080), with an
+   * .image-overlay-layer of #00000080 painted above the image — so what
+   * actually lands on the art is one flat 50% black, not a directional
+   * gradient. The previous version invented a three-stop diagonal gradient.
+   */
   .hero::after {
     content: "";
     position: absolute;
     inset: 0;
     z-index: -1;
-    background: linear-gradient(
-      100deg,
-      rgba(8, 6, 20, 0.5) 0%,
-      rgba(8, 6, 20, 0.22) 45%,
-      rgba(8, 6, 20, 0) 78%
-    );
+    background: rgb(0 0 0 / 50%);
   }
 
-  @media (max-width: 860px) {
-    .hero::after {
-      background: linear-gradient(
-        180deg,
-        rgba(8, 6, 20, 0.72) 0%,
-        rgba(8, 6, 20, 0.62) 60%,
-        rgba(8, 6, 20, 0.72) 100%
-      );
-    }
+  /* .max-width-medium — the text block, not the section, is what is clamped */
+  .hero-copy {
+    max-width: var(--mw-medium);
   }
 
-  .hero-inner {
-    display: grid;
-    gap: var(--s-6);
-    justify-items: start;
-  }
-
+  /**
+   * The h1 carries .heading-style-h2 on the original, so it is the h2 step —
+   * 3rem, stepping to 2.75rem at 991px and 2.25rem at 767px — not the 3.5rem
+   * an h1 would otherwise get.
+   */
   h1 {
-    font-size: var(--fs-700);
-    line-height: var(--lh-tight);
-    max-width: 18ch;
-  }
-  h1 {
-    max-width: 28ch;
+    font-size: var(--fs-h2);
+    font-weight: var(--fw-bold);
+    line-height: var(--lh-heading);
   }
 
-  h1 em {
-    font-style: normal;
+  /* <strong> inside a heading that is already 700 should not go heavier. */
+  h1 strong {
+    font-weight: inherit;
   }
 
+  /* .margin-bottom.margin-small below the heading; .text-size-medium-2 lead,
+     white rather than muted. */
   .lead {
-    font-size: var(--fs-300);
-    color: var(--c-text-muted);
-    max-width: 58ch;
+    margin-top: var(--space-small);
+    font-size: var(--fs-medium);
   }
 
-  .cta {
-    padding: var(--s-3) var(--s-5);
-    border: 1px solid var(--c-border);
+  /* .margin-top.margin-medium wrapping .button-group */
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-xsmall);
+    margin-top: var(--space-medium);
+  }
+
+  /* .button-2.is-secondary.is-alternate — white border and text on transparent */
+  .button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: 0.75rem var(--space-small);
+    border: 1px solid var(--white);
     border-radius: var(--radius);
+    color: var(--white);
+    text-align: center;
     transition:
-      border-color var(--dur) var(--ease),
-      background var(--dur) var(--ease);
+      background-color var(--dur) var(--ease),
+      color var(--dur) var(--ease);
   }
 
-  .cta:hover,
-  .cta:focus-visible {
-    border-color: var(--c-text);
-    background: var(--c-bg-elevated);
+  /**
+   * The original defines no hover state for this variant. A primary call to
+   * action with no pointer feedback is worse than a small divergence, so it
+   * inverts on hover and focus.
+   */
+  .button:hover,
+  .button:focus-visible {
+    background: var(--white);
+    color: var(--black);
   }
 </style>

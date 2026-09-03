@@ -52,6 +52,9 @@ Date: 2026-09-01
   it.
 - Reference screenshots are local-only; downsample and commit them if the
   parity work continues past the demo.
+- careers: mission block, stats row (2015 / Limassol / 200+ / 30m+) and nine
+  perks cards — copy exists on the original, icons already in public/perks/,
+  needs a perks data file.
 - Component scripts are external files because the CSP forbids inline scripts;
   revisit if we ever adopt nonce-based CSP, which needs every page
   server-rendered.
