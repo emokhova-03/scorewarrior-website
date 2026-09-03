@@ -32,3 +32,6 @@ worker-configuration.d.ts
 
 # local-only parity reference screenshots
 docs/reference/
+
+# something in `astro dev` writes a Vite dep cache rooted at src/ — see docs/backlog.md
+/src/node_modules/
