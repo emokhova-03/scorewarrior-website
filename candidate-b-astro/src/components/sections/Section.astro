@@ -34,6 +34,13 @@ interface Props {
   tone?: "accent" | "muted";
   /** Heading step. h2 is the original's plain section heading. */
   size?: "h2" | "h3" | "h6";
+  /**
+   * Centres the slotted content as well as the head. Opt-in, and deliberately
+   * not folded into `align`: on the original only the contacts intro has its
+   * body centred, while the grids and lists in every other section stay
+   * left-aligned. Centring those by default would be wrong everywhere else.
+   */
+  contentAlign?: "center" | "start";
 }
 
 const {
@@ -46,6 +53,7 @@ const {
   align = "center",
   tone = "accent",
   size = "h2",
+  contentAlign = "start",
 } = Astro.props;
 
 const Heading = headingLevel;
@@ -70,7 +78,9 @@ const hasHead = Boolean(eyebrow || title || lead);
       )
     }
 
-    <slot />
+    <div class:list={["body", `content-${contentAlign}`]}>
+      <slot />
+    </div>
   </div>
 </section>
 
@@ -137,6 +147,16 @@ const hasHead = Boolean(eyebrow || title || lead);
   .title.size-h6 {
     font-size: var(--fs-h6);
     line-height: var(--lh-h5);
+  }
+
+  /**
+   * Only the contacts intro opts in. Everything else keeps its own alignment,
+   * so grids and card lists are untouched.
+   */
+  .body.content-center {
+    max-width: var(--mw-large);
+    margin-inline: auto;
+    text-align: center;
   }
 
   /* .text-size-medium.text-color-gray500 */

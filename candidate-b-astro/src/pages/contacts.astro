@@ -12,10 +12,19 @@ const offices = byOrder(await getCollection("offices"));
   title="Contacts x Scorewarrior"
   description="Scorewarrior offices in Limassol, Cyprus, and how to reach us."
 >
+  {
+    /*
+    contentAlign is opt-in here and nowhere else. On the original these two
+    sentences are one centred <p class="text-size-medium text-color-gray500">
+    inside the same .text-align-center wrapper as the heading; the office
+    cards below, and every grid on the other pages, stay left-aligned.
+  */
+  }
   <Section
     first
     headingLevel="h1"
     title="We live and work in Limassol, Cyprus."
+    contentAlign="center"
   >
     <div class="contacts">
       <p>
@@ -49,16 +58,17 @@ const offices = byOrder(await getCollection("offices"));
 </BaseLayout>
 
 <style>
+  /* .text-size-medium.text-color-gray500 — the centring comes from Section */
   .contacts {
     display: grid;
-    gap: var(--s-4);
-    max-width: 60ch;
-    font-size: var(--fs-300);
+    gap: var(--space-xsmall);
+    font-size: var(--fs-medium);
     color: var(--c-text-muted);
   }
 
+  /* .text-style-link — underlined, in the accent colour */
   .contacts a {
-    color: var(--c-text);
+    color: var(--c-accent);
     text-decoration: underline;
     text-underline-offset: 3px;
   }

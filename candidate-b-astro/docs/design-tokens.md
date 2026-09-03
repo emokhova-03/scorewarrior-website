@@ -223,6 +223,37 @@ The header's Support button is `.button.is-small` — white pill, fuchsia text.
 
 ---
 
+## Section heads — and the one that is not centred
+
+Measured 03.09.2026. Section heads on the original sit inside
+`section_about1-header`: a `.text-align-center` wrapper holding an accent
+heading and a gray500 lead. `.text-align-center` is simply
+`{ text-align: center }`. That is the house rule, and `Section`'s default.
+
+There are exactly two exceptions, both real:
+
+| Where                   | Selector                                  | Treatment                         |
+| ----------------------- | ----------------------------------------- | --------------------------------- |
+| `/games` "Total Battle" | `.heading-style-h3.text-color-fuchsia800` | accent, h3 step, **left-aligned** |
+| `/company` open-source  | `.heading-style-h6.text-color-gray500`    | **muted**, h6 step, centred       |
+
+**Do not "fix" the Total Battle heading to centred.** It is left-aligned on the
+original because it is not a section head at all: it sits in
+`product-header6` → `product-header6_content-right` →
+`product-header6_content-inner-wrapper`, the copy column of a two-column
+product-header grid whose other column holds the game art. There is no
+`text-align-center` anywhere in its ancestry. Centring it would break the grid's
+reading order and diverge from the original. It is `align="start" size="h3"` in
+`Section` for this reason.
+
+The open-source heading is the mirror-image trap: it is centred like the others
+but is **not** accent-coloured and is far smaller — 1.25rem against 3rem. Making
+it accent at h2 would be equally wrong.
+
+Slot content is left-aligned everywhere except the contacts intro, where the
+original centres the body copy along with the heading — `contentAlign="center"`,
+opt-in per section.
+
 ## Open questions
 
 1. ~~**Inter is not loaded by this project.**~~ **Resolved 03.09.2026.** Inter
