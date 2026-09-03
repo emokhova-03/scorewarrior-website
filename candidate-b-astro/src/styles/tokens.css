@@ -1,51 +1,277 @@
-:root {
-  /* ---- ЦВЕТ (измерено 31.08.2026, см. docs/design-tokens.md) ---- */
-  --c-bg: #ffffff;
-  --c-bg-elevated: #ffffff; /* карточка отделяется border + shadow */
-  --c-text: #000000;
-  --c-text-muted: #667085;
-  --c-accent: #821890;
-  --c-border: #f4f4f4;
-  --shadow-card: 0 1px 2px rgba(16, 24, 40, 0.06);
+/**
+ * Design tokens measured from the original scorewarrior.com on 03.09.2026.
+ *
+ * Source of truth: the Webflow CSS bundle linked from every page,
+ * cdn.prod.website-files.com/633da33305ac754156026dd8/css/scorewarrior-cb4b17.shared.f0187b778.css
+ * Every value below is quoted from a real declaration in that bundle — see
+ * docs/design-tokens.md for the selector each one came from.
+ *
+ * Two layers on purpose:
+ *
+ *   1. Semantic tokens (--space-small, --fs-h2, --shadow-medium …) use the
+ *      original's own vocabulary. These are the source of truth.
+ *   2. Legacy numeric aliases (--s-4, --fs-300 …) map onto layer 1. Existing
+ *      components reference them, so they stay until those components are
+ *      rewritten in step 3, then they can go.
+ *
+ * The original is responsive at three Webflow breakpoints — 991px, 767px and
+ * 479px. Rather than make every component repeat those media queries, the
+ * scales are re-declared on :root at each breakpoint, so a component that
+ * writes var(--fs-h1) gets the right size at every width for free.
+ */
 
-  /* ---- ТИПОГРАФИКА ---- */
-  --font-body: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+:root {
+  /* ---------------- COLOR ---------------- */
+
+  /* The four Webflow swatches, verbatim from the bundle's :root */
+  --black: #000000;
+  --white: #ffffff;
+  --light-grey: #f4f4f4;
+  --dark-magenta: #821890;
+
+  /* Semantic roles */
+  --c-bg: var(--white);
+  --c-bg-elevated: var(--white); /* cards separate via border + shadow */
+  --c-text: var(--black);
+  --c-text-muted: #667085; /* .text-color-gray500 */
+  --c-accent: var(--dark-magenta); /* .background-color-fuchsia800 */
+  --c-accent-strong: #6f1877; /* fuchsia900 — the darker step */
+  --c-border: var(--light-grey);
+
+  /* Nav link states, measured on .navbar14_link.text-color-white */
+  --c-nav-link: var(--white);
+  --c-nav-link-hover: #ffffff80;
+  --c-nav-link-current: #ffffffb3;
+
+  /* Fuchsia ramp */
+  --c-fuchsia-25: #fefaff;
+  --c-fuchsia-50: #fdf4ff;
+  --c-fuchsia-100: #fbe8ff;
+  --c-fuchsia-200: #f6d0fe;
+  --c-fuchsia-300: #eeaafd;
+  --c-fuchsia-400: #e478fa;
+  --c-fuchsia-500: #d444f1;
+  --c-fuchsia-600: #ba24d5;
+  --c-fuchsia-700: #9f1ab1;
+  --c-fuchsia-800: #821890;
+  --c-fuchsia-900: #6f1877;
+
+  /* Gray ramp */
+  --c-gray-25: #fcfcfd;
+  --c-gray-50: #f9fafb;
+  --c-gray-100: #f2f4f7;
+  --c-gray-200: #e4e7ec;
+  --c-gray-300: #d0d5dd;
+  --c-gray-400: #98a2b3;
+  --c-gray-500: #667085;
+  --c-gray-600: #475467;
+  --c-gray-700: #344054;
+  --c-gray-800: #1d2939;
+  --c-gray-900: #101828;
+
+  /* ---------------- TYPOGRAPHY ---------------- */
+
+  /**
+   * The original loads Inter from Google Fonts at 300,400,500,600,700 and sets
+   * `font-family: Inter, sans-serif` on body. Headings declare no family of
+   * their own, so --font-display is deliberately the same stack.
+   *
+   * We self-host it via @fontsource-variable/inter, imported once in
+   * BaseLayout. That package declares the family as "Inter Variable" — not
+   * "Inter" — so that name has to come first in the stack or the whole import
+   * is dead weight. Plain "Inter" stays as the second step for anyone who has
+   * it installed locally, ahead of the system fallbacks.
+   */
+  --font-body:
+    "Inter Variable", "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-display: var(--font-body);
 
-  --fs-100: 0.875rem;
-  --fs-200: 1rem;
-  --fs-300: 1.125rem;
-  --fs-400: 1.375rem;
-  --fs-500: clamp(1.75rem, 1.2rem + 2.2vw, 2.25rem);
-  --fs-600: clamp(2.25rem, 1.4rem + 3.6vw, 3.5rem);
-  --fs-700: clamp(2.5rem, 1.6rem + 4vw, 3rem); /* h1 = 48px, как измерено */
+  /* Body copy scale (.text-size-*) */
+  --fs-tiny: 0.75rem; /* 12px */
+  --fs-small: 0.875rem; /* 14px */
+  --fs-regular: 1rem; /* 16px */
+  --fs-medium: 1.125rem; /* 18px */
+  --fs-large: 1.25rem; /* 20px */
 
+  /* Heading scale (h1–h6 / .heading-style-h*) */
+  --fs-h1: 3.5rem; /* 56px */
+  --fs-h2: 3rem; /* 48px */
+  --fs-h3: 2.5rem; /* 40px */
+  --fs-h4: 2rem; /* 32px */
+  --fs-h5: 1.5rem; /* 24px */
+  --fs-h6: 1.25rem; /* 20px */
+
+  /* Weights. 800 exists as a utility in the bundle but is NOT among the
+     loaded Google weights, so it would be synthesised — avoid it. */
+  --fw-light: 300;
   --fw-regular: 400;
+  --fw-medium: 500;
+  --fw-semibold: 600;
   --fw-bold: 700;
 
-  --lh-tight: 1.2; /* 57.6 / 48 = 1.2 — с твоего замера h1 */
-  --lh-heading: 1.2;
-  --lh-body: 1.55;
+  /* Line heights, per heading level */
+  --lh-body: 1.5; /* body */
+  --lh-heading: 1.2; /* h1, h2, h3 */
+  --lh-h4: 1.3;
+  --lh-h5: 1.4; /* h5, h6 */
 
-  /* ---- ПРОСТРАНСТВО (те же значения, имена под код) ---- */
-  --s-1: 0.25rem; /* 4px  */
-  --s-2: 0.5rem; /* 8px  */
-  --s-3: 0.75rem; /* 12px */
-  --s-4: 1rem; /* 16px */
-  --s-5: 1.5rem; /* 24px */
-  --s-6: 2rem; /* 32px */
-  --s-7: 3rem; /* 48px */
-  --s-8: 4rem; /* 64px */
-  --s-9: 6rem; /* 96px  — не было, нужен для отбивки секций */
-  --s-10: 8rem; /* 128px — не было */
+  /* ---------------- SPACE ---------------- */
 
-  /* ---- СЕТКА ---- */
-  --container: 1280px; /* измерено при ширине окна 1444px */
-  --gutter: var(--s-5);
+  /* The .margin-* / .padding-* utility scale */
+  --space-tiny: 0.25rem;
+  --space-xxsmall: 0.5rem;
+  --space-xsmall: 1rem;
+  --space-small: 1.5rem;
+  --space-medium: 2rem;
+  --space-large: 3rem;
+  --space-xlarge: 4rem;
+  --space-xxlarge: 5rem;
+  --space-huge: 6rem;
+  --space-xhuge: 7rem;
+  --space-xxhuge: 10rem;
 
-  /* ---- ПРОЧЕЕ ---- */
-  --radius: 0.5rem;
-  --dur: 180ms;
-  --ease: cubic-bezier(0.4, 0, 0.2, 1);
-  --header-h: 76px; /* не измерен — замерь на оригинале и поправь */
+  /* Vertical rhythm between sections (.padding-section-*) */
+  --section-small: 3rem;
+  --section-medium: 5rem;
+  --section-large: 7rem;
+
+  /* ---------------- GRID ---------------- */
+
+  --container: 80rem; /* .container-large  = 1280px */
+  --container-medium: 64rem; /* .container-medium = 1024px */
+  --container-small: 48rem; /* .container-small  =  768px */
+
+  /* .padding-global is a percentage, not a fixed step — the original's
+     gutters grow with the viewport instead of snapping at breakpoints. */
+  --gutter: 5%;
+
+  /* .max-width-* content clamps */
+  --mw-xxsmall: 20rem;
+  --mw-xsmall: 25rem;
+  --mw-small: 30rem;
+  --mw-medium: 35rem;
+  --mw-large: 48rem;
+  --mw-xlarge: 64rem;
+  --mw-xxlarge: 80rem;
+
+  /* ---------------- SHELL ---------------- */
+
+  /**
+   * The header is a pill floating over the page: .navbar14_component is
+   * position:fixed with a 1.5rem top margin, and .navbar14_container has
+   * min-height 4.5rem. So the space it occupies is offset + height.
+   */
+  --header-h: 4.5rem; /* 72px */
+  --header-offset: 1.5rem; /* 24px gap above the pill */
+  --header-space: calc(var(--header-offset) + var(--header-h));
+
+  /* ---------------- RADIUS ---------------- */
+
+  --radius: 1rem; /* the dominant value across the bundle */
+  --radius-pill: 100px;
+  --radius-circle: 100%;
+
+  /* ---------------- SHADOW ---------------- */
+
+  --shadow-xxsmall: 0 1px 2px #0000000d;
+  --shadow-xsmall: 0 1px 3px #0000001a, 0 1px 2px #0000000f;
+  --shadow-small: 0 4px 8px -2px #0000001a, 0 2px 4px -2px #0000000f;
+  --shadow-medium: 0 12px 16px -4px #00000014, 0 4px 6px -2px #00000008;
+  --shadow-large: 0 20px 24px -4px #00000014, 0 8px 8px -4px #00000008;
+  --shadow-xlarge: 0 24px 48px -12px #0000002e;
+  --shadow-xxlarge: 0 32px 64px -12px #00000024;
+
+  /* Role cards use .shadow-medium on the original */
+  --shadow-card: var(--shadow-medium);
+
+  /* ---------------- MOTION ---------------- */
+
+  --dur: 200ms;
+  --dur-slow: 300ms;
+  --ease: ease;
+
+  /* ---------------- LEGACY ALIASES ----------------
+     Kept so existing components keep compiling while step 3 rewrites them.
+     Do not add new usages. */
+
+  --fs-100: var(--fs-small);
+  --fs-200: var(--fs-regular);
+  --fs-300: var(--fs-medium);
+  --fs-400: var(--fs-large);
+  --fs-500: var(--fs-h5);
+  --fs-600: var(--fs-h4);
+  --fs-700: var(--fs-h3);
+
+  --lh-tight: var(--lh-heading);
+
+  --s-1: var(--space-tiny);
+  --s-2: var(--space-xxsmall);
+  /* 0.75rem has no equivalent in the original base scale; it is the ≤767px
+     step of .margin-xsmall. Kept literal because components rely on it. */
+  --s-3: 0.75rem;
+  --s-4: var(--space-xsmall);
+  --s-5: var(--space-small);
+  --s-6: var(--space-medium);
+  --s-7: var(--space-large);
+  --s-8: var(--space-xlarge);
+  --s-9: var(--space-huge);
+  --s-10: var(--space-xhuge);
+}
+
+/* ---------------- BREAKPOINT: ≤991px (Webflow "tablet") ---------------- */
+
+@media screen and (max-width: 991px) {
+  :root {
+    --fs-h1: 3.25rem;
+    --fs-h2: 2.75rem;
+    --fs-h3: 2.25rem;
+    --fs-h4: 1.75rem;
+
+    --space-large: 2.5rem;
+    --space-xlarge: 3.5rem;
+    --space-xxlarge: 4.5rem;
+    --space-huge: 5rem;
+    --space-xhuge: 6rem;
+    --space-xxhuge: 7.5rem;
+
+    --section-medium: 4rem;
+    --section-large: 6rem;
+  }
+}
+
+/* ---------------- BREAKPOINT: ≤767px (Webflow "mobile landscape") -------- */
+
+@media screen and (max-width: 767px) {
+  :root {
+    --fs-medium: 1rem;
+    --fs-large: 1.125rem;
+
+    --fs-h1: 2.5rem;
+    --fs-h2: 2.25rem;
+    --fs-h3: 2rem;
+    --fs-h4: 1.5rem;
+    --fs-h5: 1.25rem;
+    --fs-h6: 1.125rem;
+
+    /* h4 alone relaxes its line-height on mobile */
+    --lh-h4: 1.4;
+
+    --space-xsmall: 0.75rem;
+    --space-small: 1.25rem;
+    --space-medium: 1.5rem;
+    --space-large: 2rem;
+    --space-xlarge: 2.5rem;
+    --space-xxlarge: 3rem;
+    --space-huge: 3.5rem;
+    --space-xhuge: 4rem;
+    --space-xxhuge: 5rem;
+
+    --section-small: 2rem;
+    --section-medium: 3rem;
+    --section-large: 4rem;
+
+    /* The pill shrinks and sits closer to the top edge */
+    --header-h: 4rem; /* 64px */
+    --header-offset: 1.25rem;
+  }
 }

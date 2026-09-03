@@ -1,4 +1,10 @@
 ---
+// Self-hosted Inter, imported before our own styles so the @font-face rules
+// are in place by the time tokens.css names the family. Self-hosting is also
+// what lets public/_headers keep `default-src 'self'`: the woff2 files are
+// served from our own origin, so no font-src exception is needed.
+import "@fontsource-variable/inter";
+
 import "../styles/tokens.css";
 import "../styles/global.css";
 import Header from "../components/siteHeader.astro";
