@@ -74,6 +74,9 @@ Kept here so a reviewer can tell an intentional difference from a mistake.
   is the actual thing to fix.
 - Reference screenshots are local-only; downsample and commit them if the
   parity work continues past the demo.
+- role descriptions — 25 titles imported from the public careers page; the
+  descriptions live behind their client-rendered detail pages and were not
+  copied. Fill from the ATS.
 - gallery lightbox — the original has none, would be a deliberate divergence;
   needs a script and a CSP review.
 - gallery dots (slide-nav) — would let the arrows hide on mobile as the

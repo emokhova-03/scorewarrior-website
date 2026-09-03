@@ -36,15 +36,22 @@ Astro.response.headers.set(
 
 <BaseLayout
   title="Open roles - Scorewarrior"
-  description="Open roles at Scorewarrior, a game development studio in Limassol, Cyprus. All roles are on-site."
+  description="Open roles at Scorewarrior, a game development studio in Limassol, Cyprus. Most roles are on-site."
 >
   <section class="container roles">
     <p class="eyebrow">We're hiring</p>
 
     <h1>Open roles</h1>
 
+    {
+      /*
+      "Most", not "All". One role in the list is remote, and the previous
+      wording made the very first sentence on the page contradict the data
+      sitting a few hundred pixels below it.
+    */
+    }
     <p class="lead">
-      All roles are on-site in Limassol, Cyprus.{" "}
+      Most roles are on-site in Limassol, Cyprus.{" "}
       <a href="/company">What the studio is like</a>
     </p>
 
@@ -52,7 +59,7 @@ Astro.response.headers.set(
       departments.length > 1 && (
         <nav class="filters" aria-label="Filter roles by department">
           <a href="/careers" aria-current={!selected ? "page" : undefined}>
-            All
+            All departments
           </a>
 
           {departments.map((department) => (
@@ -143,13 +150,20 @@ Astro.response.headers.set(
     margin-top: var(--space-medium);
   }
 
+  /**
+   * Chip states follow the original, which inverts the usual convention:
+   * the unselected chips are filled with the accent colour and the selected
+   * one is white with an accent border. Ours had it the other way round.
+   */
   .filters a {
     display: inline-flex;
     align-items: center;
     min-height: 44px;
     padding-inline: var(--space-xsmall);
-    border: 1px solid var(--c-border);
+    background: var(--c-accent);
+    border: 1px solid var(--c-accent);
     border-radius: var(--radius);
+    color: var(--white);
     font-size: var(--fs-small);
     font-weight: var(--fw-semibold);
     transition:
@@ -159,14 +173,20 @@ Astro.response.headers.set(
   }
 
   .filters a:hover {
+    background: var(--c-accent-strong);
+    border-color: var(--c-accent-strong);
+  }
+
+  .filters a[aria-current="page"] {
+    background: var(--white);
     border-color: var(--c-accent);
     color: var(--c-accent);
   }
 
-  .filters a[aria-current="page"] {
-    background: var(--c-accent);
+  .filters a[aria-current="page"]:hover {
+    background: var(--c-fuchsia-50);
     border-color: var(--c-accent);
-    color: var(--white);
+    color: var(--c-accent);
   }
 
   /* .career23_list — two columns, 2rem apart, collapsing at 767px */

@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { feedAgeSeconds, snapshotSchema, SNAPSHOT_KEY } from "./snapshot";
 import type { RolesSnapshot } from "./snapshot";
+import type { Role } from "./schema";
 
 /**
  * Every case passes `now` explicitly. feedAgeSeconds takes it as an argument
@@ -9,11 +10,17 @@ import type { RolesSnapshot } from "./snapshot";
  * Date.now() is a test that fails at midnight or on a slow machine.
  */
 
-const validRole = {
+/**
+ * Fixture typed as Role, so adding a field to roleSchema fails this file at
+ * compile time rather than letting the test drift away from the schema.
+ */
+const validRole: Role = {
   slug: "test-role-one",
   title: "[TEST] Role One",
   department: "[TEST] Department",
   location: "Limassol, Cyprus",
+  remote: false,
+  employmentType: "FullTime",
 };
 
 function snapshotAt(fetchedAt: string): RolesSnapshot {

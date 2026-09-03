@@ -19,6 +19,14 @@ interface Props {
 const { role } = Astro.props;
 
 const href = `/careers/${role.slug}`;
+
+/**
+ * Both details come from the data rather than from an assumption about it.
+ * One role in the list is remote, so a hardcoded "on-site" would have been
+ * false on that card.
+ */
+const place = role.remote ? "Remote" : role.location;
+const arrangement = role.remote ? "Full-time, remote" : "Full-time, on-site";
 ---
 
 <article class="card">
@@ -45,7 +53,7 @@ const href = `/careers/${role.slug}`;
           fill="currentColor"></path>
       </svg>
 
-      <span>{role.location}</span>
+      <span>{place}</span>
     </li>
 
     <li>
@@ -64,7 +72,7 @@ const href = `/careers/${role.slug}`;
           fill="currentColor"></path>
       </svg>
 
-      <span>Full-time, on-site</span>
+      <span>{arrangement}</span>
     </li>
   </ul>
 

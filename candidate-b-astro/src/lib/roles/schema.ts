@@ -29,6 +29,37 @@ export const roleSchema = z.object({
   location: z.string().trim().min(1, "location is required"),
 
   postedAt: z.iso.date().optional(),
+
+  /**
+   * Whether the role is remote. Defaults to false because on-site is the
+   * house rule — one role in the source list is the exception.
+   *
+   * This exists so no page has to infer it from the location string. A page
+   * that hardcodes "on-site" while the data says otherwise is a page telling
+   * a candidate something untrue about a job they might apply for.
+   */
+  remote: z.boolean().default(false),
+
+  /**
+   * "FullTime" is the only value the source uses. Kept in the source's own
+   * spelling rather than schema.org's FULL_TIME; the JSON-LD on the role page
+   * maps it, since that mapping belongs to the consumer, not the data.
+   */
+  employmentType: z.literal("FullTime").default("FullTime"),
+
+  /**
+   * Long-form content. Deliberately optional and, for now, unset.
+   *
+   * The imported titles come from the public job board; the prose for each
+   * role lives behind its client-rendered detail page, which we did not
+   * scrape. Writing 25 job descriptions ourselves would be fabrication at
+   * scale, and a candidate cannot tell invented responsibilities from real
+   * ones. The role page renders a marked placeholder instead. See
+   * docs/backlog.md — these come from the ATS.
+   */
+  description: z.string().trim().min(1).optional(),
+  responsibilities: z.array(z.string().trim().min(1)).optional(),
+  requirements: z.array(z.string().trim().min(1)).optional(),
 });
 
 export type Role = z.infer<typeof roleSchema>;

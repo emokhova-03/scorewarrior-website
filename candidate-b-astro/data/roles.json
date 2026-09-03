@@ -1,23 +1,227 @@
 [
   {
-    "slug": "test-backend-engineer",
-    "title": "[TEST] Backend Engineer",
-    "department": "Engineering",
-    "location": "Limassol, Cyprus",
-    "postedAt": "2026-08-18"
+    "slug": "senior-qa-engineer-gameplay-team",
+    "title": "Senior QA Engineer (GamePlay team)",
+    "department": "Product",
+    "location": "Limassol Cyprus",
+    "remote": false,
+    "employmentType": "FullTime",
+    "postedAt": "2026-07-16"
   },
   {
-    "slug": "test-game-designer",
-    "title": "[TEST] Game Designer",
-    "department": "Design",
-    "location": "Limassol, Cyprus",
-    "postedAt": "2026-08-27"
+    "slug": "hr-specialist",
+    "title": "HR Specialist",
+    "department": "Administrative",
+    "location": "Limassol Cyprus",
+    "remote": false,
+    "employmentType": "FullTime",
+    "postedAt": "2026-08-13"
   },
   {
-    "slug": "test-qa-engineer",
-    "title": "[TEST] QA Engineer",
-    "department": "QA",
-    "location": "Limassol, Cyprus",
-    "postedAt": "2026-09-01"
+    "slug": "recruitment-sourcer",
+    "title": "Recruitment Sourcer",
+    "department": "Core",
+    "location": "Remote",
+    "remote": true,
+    "employmentType": "FullTime",
+    "postedAt": "2026-06-10"
+  },
+  {
+    "slug": "game-backend-cpp-engineer-gameplay-team",
+    "title": "Game Backend C++ Engineer (Gameplay team)",
+    "department": "Product",
+    "location": "Limassol Cyprus",
+    "remote": false,
+    "employmentType": "FullTime",
+    "postedAt": "2026-04-28"
+  },
+  {
+    "slug": "senior-product-analyst-gameplay-team",
+    "title": "Senior Product Analyst (Gameplay team)",
+    "department": "Product",
+    "location": "Limassol Cyprus",
+    "remote": false,
+    "employmentType": "FullTime",
+    "postedAt": "2026-03-27"
+  },
+  {
+    "slug": "senior-client-cpp-developer-core-team",
+    "title": "Senior Client C++ Developer (Core team)",
+    "department": "Core",
+    "location": "Limassol Cyprus",
+    "remote": false,
+    "employmentType": "FullTime",
+    "postedAt": "2026-03-26"
+  },
+  {
+    "slug": "senior-backend-cpp-developer-core-team",
+    "title": "Senior Backend C++ Developer (Core team)",
+    "department": "Core",
+    "location": "Limassol Cyprus",
+    "remote": false,
+    "employmentType": "FullTime",
+    "postedAt": "2026-03-26"
+  },
+  {
+    "slug": "senior-legal-consultant-talent-pool",
+    "title": "Senior Legal Consultant (Talent Pool)",
+    "department": "Legal & Finance",
+    "location": "Limassol Cyprus",
+    "remote": false,
+    "employmentType": "FullTime",
+    "postedAt": "2026-03-24"
+  },
+  {
+    "slug": "ua-manager-talent-pool",
+    "title": "UA Manager (Talent Pool)",
+    "department": "Marketing",
+    "location": "Limassol Cyprus",
+    "remote": false,
+    "employmentType": "FullTime",
+    "postedAt": "2026-03-24"
+  },
+  {
+    "slug": "senior-project-manager-gameplay-team",
+    "title": "Senior Project Manager (Gameplay team)",
+    "department": "Product",
+    "location": "Limassol Cyprus",
+    "remote": false,
+    "employmentType": "FullTime",
+    "postedAt": "2026-03-31"
+  },
+  {
+    "slug": "hr-operations-specialist",
+    "title": "HR Operations Specialist",
+    "department": "Administrative",
+    "location": "Limassol Cyprus",
+    "remote": false,
+    "employmentType": "FullTime",
+    "postedAt": "2026-03-31"
+  },
+  {
+    "slug": "senior-client-cpp-developer-gameplay-team",
+    "title": "Senior Client C++ Developer (Gameplay team)",
+    "department": "Product",
+    "location": "Limassol Cyprus",
+    "remote": false,
+    "employmentType": "FullTime",
+    "postedAt": "2026-03-31"
+  },
+  {
+    "slug": "relocation-specialist",
+    "title": "Relocation Specialist",
+    "department": "Administrative",
+    "location": "Limassol Cyprus",
+    "remote": false,
+    "employmentType": "FullTime",
+    "postedAt": "2026-04-02"
+  },
+  {
+    "slug": "talent-pool",
+    "title": "Talent Pool",
+    "department": "Talent Acquisition",
+    "location": "Limassol Cyprus",
+    "remote": false,
+    "employmentType": "FullTime",
+    "postedAt": "2026-05-20"
+  },
+  {
+    "slug": "senior-data-scientist-marketing",
+    "title": "Senior Data Scientist (Marketing)",
+    "department": "Marketing",
+    "location": "Limassol Cyprus",
+    "remote": false,
+    "employmentType": "FullTime",
+    "postedAt": "2026-05-27"
+  },
+  {
+    "slug": "ui-ux-designer-gameplay-team",
+    "title": "UI/UX Designer (GamePlay team)",
+    "department": "Product",
+    "location": "Limassol Cyprus",
+    "remote": false,
+    "employmentType": "FullTime",
+    "postedAt": "2026-07-01"
+  },
+  {
+    "slug": "engineering-manager-player-care-technology",
+    "title": "Engineering Manager (Player Care Technology)",
+    "department": "Player Care",
+    "location": "Limassol Cyprus",
+    "remote": false,
+    "employmentType": "FullTime",
+    "postedAt": "2026-07-07"
+  },
+  {
+    "slug": "senior-client-cpp-developer-platform",
+    "title": "Senior Client C++ Developer (Platform)",
+    "department": "Platform",
+    "location": "Limassol Cyprus",
+    "remote": false,
+    "employmentType": "FullTime",
+    "postedAt": "2026-06-10"
+  },
+  {
+    "slug": "engineering-manager-technical-lead-building-blocks",
+    "title": "Engineering Manager / Technical Lead (Building Blocks)",
+    "department": "Product",
+    "location": "Limassol Cyprus",
+    "remote": false,
+    "employmentType": "FullTime",
+    "postedAt": "2026-06-26"
+  },
+  {
+    "slug": "senior-backend-cpp-developer-framework-team",
+    "title": "Senior Backend C++ Developer (Framework Team)",
+    "department": "Platform",
+    "location": "Limassol Cyprus",
+    "remote": false,
+    "employmentType": "FullTime",
+    "postedAt": "2026-07-10"
+  },
+  {
+    "slug": "ui-ux-designer-quality-of-life",
+    "title": "UI / UX Designer (Quality of Life)",
+    "department": "Product",
+    "location": "Limassol Cyprus",
+    "remote": false,
+    "employmentType": "FullTime",
+    "postedAt": "2026-08-06"
+  },
+  {
+    "slug": "senior-recruiter-player-care",
+    "title": "Senior Recruiter (Player Care)",
+    "department": "Player Care",
+    "location": "Limassol Cyprus",
+    "remote": false,
+    "employmentType": "FullTime",
+    "postedAt": "2026-08-17"
+  },
+  {
+    "slug": "head-of-information-security",
+    "title": "Head of Information Security",
+    "department": "Platform",
+    "location": "Limassol Cyprus",
+    "remote": false,
+    "employmentType": "FullTime",
+    "postedAt": "2026-08-21"
+  },
+  {
+    "slug": "senior-security-engineer",
+    "title": "Senior Security Engineer",
+    "department": "Platform",
+    "location": "Limassol Cyprus",
+    "remote": false,
+    "employmentType": "FullTime",
+    "postedAt": "2026-08-21"
+  },
+  {
+    "slug": "senior-recruiter-product-team",
+    "title": "Senior Recruiter (Product team)",
+    "department": "Product",
+    "location": "Limassol Cyprus",
+    "remote": false,
+    "employmentType": "FullTime",
+    "postedAt": "2026-08-17"
   }
 ]

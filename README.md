@@ -8,6 +8,21 @@ The purpose of having two candidates is to collect real implementation evidence 
 
 The technology decision is still **In Discussion**.
 
+## A note on the roles data
+
+`data/roles.json` holds 25 roles whose titles, departments, locations, posted
+dates and employment type are taken from Scorewarrior's public careers page.
+They are **illustrative fixtures for the Careers slice, not our own openings**,
+and they are a snapshot rather than a live feed — some will already have closed.
+
+The role descriptions were deliberately not copied: they live behind
+client-rendered detail pages, and writing 25 of our own would have meant
+inventing job descriptions. Each role page marks the gap explicitly instead.
+
+In production the applicant tracking system is the source of truth. The Astro
+candidate already reads a KV snapshot refreshed on a schedule from a configured
+source URL, so pointing it at the ATS is a configuration change, not a rewrite.
+
 ## Technology candidates
 
 ### Candidate A — Go SSR

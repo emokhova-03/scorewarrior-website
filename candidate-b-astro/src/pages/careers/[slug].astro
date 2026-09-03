@@ -26,6 +26,17 @@ const applied = Astro.url.searchParams.get("applied") === "1";
 
 const formError = Astro.url.searchParams.get("error");
 
+/**
+ * Everything the page says about where and how the role is worked comes from
+ * one place, so the heading, the facts list, the meta description and the
+ * structured data cannot drift apart or contradict the data.
+ */
+const place = role.remote ? "Remote" : role.location;
+const arrangement = role.remote ? "Full-time, remote" : "Full-time, on-site";
+const summary = role.remote
+  ? `${role.title} at Scorewarrior, remote.`
+  : `${role.title} at Scorewarrior, on-site in ${role.location}.`;
+
 // JSON-LD for search engines such as Google Jobs.
 //
 // Build this as a JavaScript object rather than manually constructing
@@ -37,9 +48,11 @@ const jobPosting = {
 
   title: role.title,
 
-  description: `${role.title} at Scorewarrior, on-site in ${role.location}.`,
+  description: summary,
 
-  employmentType: "FULL_TIME",
+  // The data spells it "FullTime"; schema.org wants FULL_TIME. Mapping it
+  // here keeps the fixture in the source's own vocabulary.
+  employmentType: role.employmentType === "FullTime" ? "FULL_TIME" : undefined,
 
   ...(role.postedAt
     ? {
@@ -53,15 +66,26 @@ const jobPosting = {
     sameAs: Astro.site?.href,
   },
 
-  jobLocation: {
-    "@type": "Place",
+  /**
+   * A remote role gets TELECOMMUTE rather than a Limassol address. Claiming
+   * an office location for a remote job is the same untruth as the "all roles
+   * are on-site" line, just told to a search engine instead of a reader.
+   */
+  ...(role.remote
+    ? {
+        jobLocationType: "TELECOMMUTE",
+      }
+    : {
+        jobLocation: {
+          "@type": "Place",
 
-    address: {
-      "@type": "PostalAddress",
-      addressLocality: "Limassol",
-      addressCountry: "CY",
-    },
-  },
+          address: {
+            "@type": "PostalAddress",
+            addressLocality: "Limassol",
+            addressCountry: "CY",
+          },
+        },
+      }),
 };
 
 Astro.response.headers.set(
@@ -72,7 +96,7 @@ Astro.response.headers.set(
 
 <BaseLayout
   title={`${role.title} - Scorewarrior`}
-  description={`${role.title} at Scorewarrior — on-site in ${role.location}. ${role.department} team.`}
+  description={`${summary} ${role.department} team.`}
 >
   <script
     slot="head"
@@ -88,13 +112,19 @@ Astro.response.headers.set(
 
     <h1>{role.title}</h1>
 
-    <!-- F2.AC1: location and studio-life link appear before the first scroll. -->
+    {
+      /* F2.AC1: location and studio-life link appear before the first scroll. */
+    }
     <p class="location">
-      <strong>On-site — {role.location}</strong>
+      <strong>{role.remote ? "Remote" : `On-site — ${role.location}`}</strong>
     </p>
 
     <p class="location-note">
-      We work together in one office.
+      {
+        role.remote
+          ? "This role is worked remotely."
+          : "We work together in one office."
+      }
       <a href="/company">See what that means</a>
     </p>
 
@@ -103,20 +133,27 @@ Astro.response.headers.set(
       <dd>{role.department}</dd>
 
       <dt>Location</dt>
-      <dd>{role.location}</dd>
+      <dd>{place}</dd>
 
       <dt>Type</dt>
-      <dd>Full-time, on-site</dd>
+      <dd>{arrangement}</dd>
     </dl>
 
     <section class="body">
       <h2>About the role</h2>
 
-      <p>
-        [TEXT] Placeholder. Role description content has not been provided yet.
-        The page structure is ready for additional fields when they are added to
-        the role schema and source data.
-      </p>
+      {
+        role.description ? (
+          <p>{role.description}</p>
+        ) : (
+          <p class="placeholder">
+            <strong>Description not imported.</strong> This role's title and
+            details come from the public careers page; the full description
+            lives in the applicant tracking system and has not been copied here.
+            Nothing on this page was written on the role's behalf.
+          </p>
+        )
+      }
     </section>
 
     <section id="apply" class="apply">
@@ -205,5 +242,16 @@ Astro.response.headers.set(
   .body p {
     margin-top: var(--space-xsmall);
     color: var(--c-text-muted);
+  }
+
+  /* Marked as absent content rather than dressed up as copy. */
+  .placeholder {
+    padding: var(--space-xsmall);
+    border: 1px dashed var(--c-border);
+    border-radius: var(--radius);
+  }
+
+  .placeholder strong {
+    color: var(--c-text);
   }
 </style>
