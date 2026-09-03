@@ -1,4 +1,21 @@
 ---
+/**
+ * Section wrapper, with its head matched to the original's
+ * `section_about1-header` pattern: a `.text-align-center` wrapper holding an
+ * accent-coloured h2 and a gray500 lead. That treatment is the house rule
+ * across /company, /contacts and the careers page, so it is the default here.
+ *
+ * The original has exactly two exceptions, both measured rather than guessed:
+ *
+ *  - /games opens with `product-header6`, a two-column grid whose heading is
+ *    `.heading-style-h3.text-color-fuchsia800` and is left-aligned, not
+ *    centred. That is `align="start"` plus `size="h3"`.
+ *  - the open-source section on /company uses
+ *    `.heading-style-h6.text-color-gray500` — still centred, but muted and
+ *    much smaller than a section heading. That is `tone="muted"` with
+ *    `size="h6"`.
+ */
+
 interface Props {
   eyebrow?: string;
   title?: string;
@@ -11,7 +28,14 @@ interface Props {
    * it itself or it renders underneath the floating pill.
    */
   first?: boolean;
+  /** Centred is the original's default; "start" is the /games product header. */
+  align?: "center" | "start";
+  /** Accent is the default; "muted" is the open-source logo section. */
+  tone?: "accent" | "muted";
+  /** Heading step. h2 is the original's plain section heading. */
+  size?: "h2" | "h3" | "h6";
 }
+
 const {
   eyebrow,
   title,
@@ -19,7 +43,11 @@ const {
   id,
   headingLevel = "h2",
   first = false,
+  align = "center",
+  tone = "accent",
+  size = "h2",
 } = Astro.props;
+
 const Heading = headingLevel;
 const hasHead = Boolean(eyebrow || title || lead);
 ---
@@ -28,42 +56,92 @@ const hasHead = Boolean(eyebrow || title || lead);
   <div class="container">
     {
       hasHead && (
-        <header class="head">
+        <header class:list={["head", `align-${align}`]}>
           {eyebrow && <p class="eyebrow">{eyebrow}</p>}
-          {title && <Heading class="title">{title}</Heading>}
+
+          {title && (
+            <Heading class:list={["title", `tone-${tone}`, `size-${size}`]}>
+              {title}
+            </Heading>
+          )}
+
           {lead && <p class="lead">{lead}</p>}
         </header>
       )
     }
+
     <slot />
   </div>
 </section>
+
 <style>
   .section {
     padding-block: var(--s-9);
   }
+
   /* Same shape as the hero clearance in index.astro: the section's own
      spacing token plus the space the fixed header occupies. */
   .section.first {
     padding-top: calc(var(--header-space) + var(--s-9));
   }
+
   .head {
     display: grid;
     gap: var(--s-4);
-    max-width: 46rem;
+    max-width: var(--mw-large);
     margin-bottom: var(--s-8);
   }
+
+  /* .text-align-center, and centred in its column rather than only ragged */
+  .head.align-center {
+    margin-inline: auto;
+    text-align: center;
+    justify-items: center;
+  }
+
+  .head.align-start {
+    margin-inline: 0;
+    text-align: start;
+  }
+
   .eyebrow {
     font-size: var(--fs-100);
     letter-spacing: 0.1em;
     text-transform: uppercase;
     color: var(--c-text-muted);
   }
+
   .title {
-    font-size: var(--fs-600);
+    font-weight: var(--fw-bold);
+    line-height: var(--lh-heading);
   }
+
+  /* .text-color-fuchsia800 */
+  .title.tone-accent {
+    color: var(--c-accent);
+  }
+
+  /* .text-color-gray500 */
+  .title.tone-muted {
+    color: var(--c-text-muted);
+  }
+
+  .title.size-h2 {
+    font-size: var(--fs-h2);
+  }
+
+  .title.size-h3 {
+    font-size: var(--fs-h3);
+  }
+
+  .title.size-h6 {
+    font-size: var(--fs-h6);
+    line-height: var(--lh-h5);
+  }
+
+  /* .text-size-medium.text-color-gray500 */
   .lead {
-    font-size: var(--fs-300);
+    font-size: var(--fs-medium);
     color: var(--c-text-muted);
   }
 </style>
