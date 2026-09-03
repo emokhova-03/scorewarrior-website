@@ -2,6 +2,10 @@
   "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "scorewarrior-website",
   "compatibility_date": "2026-08-01",
+  // nodejs_compat: src/lib/roles/loader.ts imports node:fs and node:url.
+  // Whether the content loader runs in Node or in workerd depends on the
+  // build phase, so the flag stays until that is verified. See docs/backlog.md.
+  "compatibility_flags": ["nodejs_compat"],
   // Точка входа воркера. Пока — стандартная точка адаптера.
   // В Части IV заменим на свою, чтобы добавить обработчик cron.
   "main": "./src/worker.ts",
