@@ -10,18 +10,29 @@ const art = byOrder(await getCollection("gameArt"));
 
 // Три ссылки, которые не меняются и никем, кроме разработчика,
 // не правятся. Коллекция здесь была бы лишней сущностью.
+//
+// Glyphs are the original's own, inlined rather than referenced from its CDN:
+// our CSP is `img-src 'self' data:`, and inlining also lets them take
+// currentColor so they follow the button's accent text. `icon` names the
+// variant rendered below; the paths live in the markup.
+//
+// URLs match the original's games page verbatim, including ?l=en on the
+// Apple one — note that is a different Apple URL from the footer's.
 const stores = [
   {
     label: "Google Play",
     href: "https://play.google.com/store/apps/details?id=com.totalbattle",
+    icon: "play" as const,
   },
   {
     label: "App Store",
-    href: "https://apps.apple.com/us/app/total-battle/id1274132545",
+    href: "https://apps.apple.com/us/app/total-battle/id1274132545?l=en",
+    icon: "apple" as const,
   },
   {
     label: "Totalbattle.com",
     href: "https://totalbattle.com",
+    icon: "browser" as const,
   },
 ];
 ---
@@ -55,19 +66,62 @@ const stores = [
       </p>
     </div>
 
-    <p class="play">Play now for free:</p>
+    {/* .product-header6_option — label above a centred row of buttons */}
+    <div class="option">
+      <p class="play">Play now for free:</p>
 
-    <ul class="stores">
-      {
-        stores.map((store) => (
-          <li>
-            <a href={store.href} target="_blank" rel="noopener noreferrer">
-              {store.label}
-            </a>
-          </li>
-        ))
-      }
-    </ul>
+      <ul class="stores">
+        {
+          stores.map((store) => (
+            <li>
+              <a
+                class="store"
+                href={store.href}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <span class="store-icon" aria-hidden="true">
+                  {store.icon === "play" && (
+                    <svg viewBox="0 0 24 24">
+                      <path
+                        d="M12.954 11.616l2.957-2.957L6.36 3.291c-.633-.342-1.226-.39-1.746-.016l8.34 8.341zm3.461 3.462l3.074-1.729c.6-.336.929-.812.929-1.34c0-.527-.329-1.004-.928-1.34l-2.783-1.563l-3.133 3.132l2.841 2.84zM4.1 4.002c-.064.197-.1.417-.1.658v14.705c0 .381.084.709.236.97l8.097-8.098L4.1 4.002zm8.854 8.855L4.902 20.91c.154.059.32.09.495.09c.312 0 .637-.092.968-.276l9.255-5.197l-2.666-2.67z"
+                        fill="currentColor"
+                      />
+                    </svg>
+                  )}
+
+                  {store.icon === "apple" && (
+                    <svg viewBox="0 0 256 256">
+                      <path
+                        fill="currentColor"
+                        d="M244 168a12 12 0 0 1-12 12h-31.3l17.6 29.9a11.9 11.9 0 0 1-4.2 16.4a11.3 11.3 0 0 1-6.1 1.7a11.9 11.9 0 0 1-10.3-5.9L140.9 126a12 12 0 0 1 20.7-12.2l24.9 42.2H232a12 12 0 0 1 12 12Zm-110.8-12H97.4l64.9-109.9a12 12 0 0 0-20.6-12.2L128 57l-13.7-23.1a12 12 0 1 0-20.6 12.2l20.4 34.5L69.5 156H24a12 12 0 0 0 0 24h109.2a12 12 0 0 0 0-24Zm-74.4 41.7a11.9 11.9 0 0 0-16.4 4.2l-4.7 8a11.9 11.9 0 0 0 4.2 16.4A11.3 11.3 0 0 0 48 228a11.9 11.9 0 0 0 10.3-5.9l4.8-8a12 12 0 0 0-4.3-16.4Z"
+                      />
+                    </svg>
+                  )}
+
+                  {store.icon === "browser" && (
+                    <svg viewBox="0 0 24 24">
+                      <g
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                      >
+                        <rect width="16" height="16" x="4" y="4" rx="1" />
+                        <path d="M4 8h16M8 4v4" />
+                      </g>
+                    </svg>
+                  )}
+                </span>
+
+                <span>{store.label}</span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
   </Section>
 
   <Section>
@@ -107,33 +161,82 @@ const stores = [
     font-size: var(--fs-300);
   }
 
-  .play {
-    margin-top: var(--s-7);
-    color: var(--c-text-muted);
+  /* .product-header6_option { margin-bottom: 1.5rem } */
+  .option {
+    margin-top: var(--space-large);
+    margin-bottom: var(--space-small);
   }
 
+  /**
+   * .field-label.text-weight-semibold.text-align-center.text-color-gray500
+   * — semibold, muted, centred, .5rem above the buttons. The label and the
+   * button row are centred inside the copy column even though the heading and
+   * body text beside them are left-aligned; that is what the original does.
+   */
+  .play {
+    margin-bottom: var(--space-xxsmall);
+    color: var(--c-text-muted);
+    font-weight: var(--fw-semibold);
+    text-align: center;
+  }
+
+  /* .variant-button-row { display: flex; flex-wrap: wrap; gap: 1rem;
+     justify-content: center } — side by side, not stacked */
   .stores {
-    list-style: none;
-    padding: 0;
     display: flex;
     flex-wrap: wrap;
-    gap: var(--s-4);
-    margin-top: var(--s-4);
+    justify-content: center;
+    gap: var(--space-xsmall);
+    margin: 0;
+    padding: 0;
+    list-style: none;
   }
 
-  .stores a {
-    display: inline-block;
-    padding: var(--s-3) var(--s-5);
-    border: 1px solid var(--c-border);
+  /**
+   * .button.is-small.is-icon — white fill, 1px accent border and accent text,
+   * 1rem radius, .5rem/1.25rem padding, weight 700, with a .75rem gap to the
+   * glyph. The old version was a grey --c-border outline with body-coloured
+   * text and no icon.
+   *
+   * min-height is ours: the original's padding lands the button at 40px, under
+   * the 44px floor this project holds itself to.
+   */
+  .store {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    min-height: 44px;
+    padding: var(--space-xxsmall) 1.25rem;
+    background: var(--white);
+    border: 1px solid var(--c-accent);
     border-radius: var(--radius);
+    color: var(--c-accent);
+    font-weight: var(--fw-bold);
+    text-align: center;
     transition:
-      border-color var(--dur) var(--ease),
-      background var(--dur) var(--ease);
+      background-color var(--dur) var(--ease),
+      color var(--dur) var(--ease);
   }
 
-  .stores a:hover,
-  .stores a:focus-visible {
-    border-color: var(--c-text);
-    background: var(--c-bg-elevated);
+  .store:hover,
+  .store:focus-visible {
+    background: var(--c-accent);
+    color: var(--white);
+  }
+
+  /* .icon-embed-xsmall { width: 1.5rem; height: 1.5rem } */
+  .store-icon {
+    display: flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+
+  .store-icon svg {
+    width: 100%;
+    height: 100%;
   }
 </style>
