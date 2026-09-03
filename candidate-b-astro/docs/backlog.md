@@ -50,6 +50,8 @@ Date: 2026-09-01
   measured from somewhere other than the original.
 - `src/node_modules/.vite` keeps reappearing inside `src/` — find what creates
   it.
+- Reference screenshots are local-only; downsample and commit them if the
+  parity work continues past the demo.
 - Retire `--s-3` (0.75rem). It has no equivalent in the original's base spacing
   scale — it is only the ≤767px step of `.margin-xsmall`. Ten component
   declarations still use it.

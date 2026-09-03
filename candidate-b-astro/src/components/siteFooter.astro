@@ -1,4 +1,16 @@
 ---
+/**
+ * Site footer, matched to .footer1_component on the original.
+ *
+ * Structure there: a two-column top wrapper (brand block at .75fr, the three
+ * link lists at 1fr, separated by an 8vw gap), then a 1px #00000040 divider,
+ * then a bottom bar with the copyright and the two policy links.
+ *
+ * Group headings are accent-coloured and semibold; every link is gray500.
+ * That colour split is the main thing the previous version had inverted — it
+ * rendered the headings black.
+ */
+
 const columns = [
   {
     title: "Scorewarrior",
@@ -19,7 +31,7 @@ const columns = [
       { label: "Totalbattle.com", href: "https://totalbattle.com" },
       {
         label: "Google Play",
-        href: "https://play.google.com/store/apps/details?id=com.totalbattle",
+        href: "https://play.google.com/store/apps/details?id=com.totalbattle&hl=en&gl=US",
       },
       {
         label: "App Store",
@@ -27,16 +39,15 @@ const columns = [
       },
     ],
   },
+];
+
+const social = [
   {
-    title: "Follow us",
-    links: [
-      {
-        label: "LinkedIn",
-        href: "https://cy.linkedin.com/company/scorewarrior",
-      },
-    ],
+    label: "LinkedIn",
+    href: "https://cy.linkedin.com/company/scorewarrior",
   },
 ];
+
 const policies = [
   {
     label: "Privacy Policy",
@@ -47,46 +58,107 @@ const policies = [
     href: "https://totalbattle.com/en/policies/terms_of_service",
   },
 ];
-const year = new Date().getFullYear();
+
+/**
+ * The original reads "© 2025 SCOREWARRIOR LIMITED. All rights reserved." —
+ * a hardcoded year, now a year out of date. Kept verbatim rather than
+ * silently corrected, because the brief is to reproduce the original's copy.
+ */
+const COPYRIGHT = "© 2025 SCOREWARRIOR LIMITED. All rights reserved.";
+
+/** Anything off-origin gets the same treatment, so it is decided once. */
+function isExternal(href: string): boolean {
+  return href.startsWith("http");
+}
 ---
 
 <footer class="site-footer">
-  <div class="container">
+  <div class="inner">
     <div class="top">
       <div class="brand">
-        <img
-          src="/brand/logo-triangle.svg"
-          alt=""
-          width="48"
-          height="48"
-          aria-hidden="true"
-        />
+        <a class="brand-logo" href="/" aria-label="Scorewarrior — home">
+          <img
+            src="/brand/logo-triangle.svg"
+            alt=""
+            width="60"
+            height="60"
+            aria-hidden="true"
+          />
+        </a>
+
         <p class="tagline">Exciting game. Uniting players.</p>
       </div>
+
       <div class="cols">
         {
           columns.map((col) => (
             <div class="col">
               <h2 class="col-title">{col.title}</h2>
+
               <ul>
                 {col.links.map((link) => (
                   <li>
-                    <a href={link.href}>{link.label}</a>
+                    <a
+                      href={link.href}
+                      {...(isExternal(link.href)
+                        ? { target: "_blank", rel: "noopener" }
+                        : {})}
+                    >
+                      {link.label}
+                    </a>
                   </li>
                 ))}
               </ul>
             </div>
           ))
         }
+
+        <div class="col">
+          <h2 class="col-title">Follow us</h2>
+
+          <ul>
+            {
+              social.map((link) => (
+                <li>
+                  <a class="social" href={link.href} target="_blank" rel="noopener">
+                    <svg
+                      class="social-icon"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      aria-hidden="true"
+                    >
+                      <path
+                        fill-rule="evenodd"
+                        clip-rule="evenodd"
+                        d="M5 3H19C20.1046 3 21 3.89543 21 5V19C21 20.1046 20.1046 21 19 21H5C3.89543 21 3 20.1046 3 19V5C3 3.89543 3.89543 3 5 3ZM8 18C8.27614 18 8.5 17.7761 8.5 17.5V10.5C8.5 10.2239 8.27614 10 8 10H6.5C6.22386 10 6 10.2239 6 10.5V17.5C6 17.7761 6.22386 18 6.5 18H8ZM7.25 9C6.42157 9 5.75 8.32843 5.75 7.5C5.75 6.67157 6.42157 6 7.25 6C8.07843 6 8.75 6.67157 8.75 7.5C8.75 8.32843 8.07843 9 7.25 9ZM17.5 18C17.7761 18 18 17.7761 18 17.5V12.9C18.0325 11.3108 16.8576 9.95452 15.28 9.76C14.177 9.65925 13.1083 10.1744 12.5 11.1V10.5C12.5 10.2239 12.2761 10 12 10H10.5C10.2239 10 10 10.2239 10 10.5V17.5C10 17.7761 10.2239 18 10.5 18H12C12.2761 18 12.5 17.7761 12.5 17.5V13.75C12.5 12.9216 13.1716 12.25 14 12.25C14.8284 12.25 15.5 12.9216 15.5 13.75V17.5C15.5 17.7761 15.7239 18 16 18H17.5Z"
+                        fill="currentColor"
+                      />
+                    </svg>
+
+                    <span>{link.label}</span>
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
       </div>
     </div>
+
+    <div class="divider" role="presentation"></div>
+
     <div class="bottom">
-      <p>&copy; {year} SCOREWARRIOR LIMITED. All rights reserved.</p>
+      <p class="credit">{COPYRIGHT}</p>
+
       <ul class="policies">
         {
-          policies.map((p) => (
+          policies.map((policy) => (
             <li>
-              <a href={p.href}>{p.label}</a>
+              <a href={policy.href} target="_blank" rel="noopener">
+                {policy.label}
+              </a>
             </li>
           ))
         }
@@ -94,79 +166,212 @@ const year = new Date().getFullYear();
     </div>
   </div>
 </footer>
+
 <style>
+  /* .padding-global > .container-large > .padding-vertical.padding-xxlarge */
   .site-footer {
-    margin-top: var(--s-10);
-    padding-block: var(--s-8) var(--s-6);
-    border-top: 1px solid var(--c-border);
+    padding-inline: var(--gutter);
     color: var(--c-text-muted);
-    font-size: var(--fs-100);
   }
+
+  .inner {
+    width: 100%;
+    max-width: var(--container);
+    margin-inline: auto;
+    padding-block: var(--space-xxlarge);
+  }
+
+  /* .footer1_top-wrapper — .75fr 1fr with an 8vw column gap */
   .top {
     display: grid;
-    gap: var(--s-8);
-    padding-bottom: var(--s-8);
+    grid-template-columns: 0.75fr 1fr;
+    column-gap: 8vw;
+    row-gap: var(--space-xsmall);
+    align-items: start;
+    padding-bottom: var(--space-xxlarge);
   }
-  @media (min-width: 860px) {
-    .top {
-      grid-template-columns: minmax(0, 1fr) auto;
-      gap: var(--s-10);
-    }
-  }
+
   .brand {
-    display: grid;
-    gap: var(--s-4);
-    justify-items: start;
+    display: flex;
+    flex-direction: column;
   }
+
+  .brand-logo {
+    display: inline-flex;
+    margin-bottom: var(--space-small);
+  }
+
+  .brand-logo img {
+    width: 60px;
+    height: auto;
+  }
+
+  /* .text-color-fuchsia800.text-weight-medium at the inherited 1rem */
   .tagline {
-    color: var(--c-text);
-    font-size: var(--fs-300);
-    max-width: 22ch;
+    margin-bottom: var(--space-small);
+    color: var(--c-accent);
+    font-weight: var(--fw-medium);
   }
+
+  /* .footer1_menu-wrapper — three equal columns, 2rem apart */
   .cols {
     display: grid;
-    gap: var(--s-7);
+    grid-template-columns: repeat(3, 1fr);
+    column-gap: var(--space-medium);
+    row-gap: var(--space-xsmall);
+    align-items: start;
   }
-  @media (min-width: 560px) {
-    .cols {
-      grid-template-columns: repeat(3, minmax(0, auto));
-      gap: var(--s-8);
-    }
+
+  .col {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
   }
+
+  /* .text-weight-semibold.text-color-fuchsia800 above each list */
   .col-title {
-    font-size: var(--fs-100);
-    font-weight: 600;
-    color: var(--c-text);
-    margin-bottom: var(--s-4);
+    margin-bottom: var(--space-xsmall);
+    color: var(--c-accent);
+    font-size: var(--fs-regular);
+    font-weight: var(--fw-semibold);
+    line-height: var(--lh-body);
   }
+
   .col ul,
   .policies {
+    display: flex;
     list-style: none;
     padding: 0;
   }
+
   .col ul {
-    display: grid;
-    gap: var(--s-3);
+    flex-direction: column;
+    align-items: flex-start;
   }
-  .col a,
-  .policies a {
+
+  /* .footer1_link — .875rem, padding-block .5rem, no underline */
+  .col a {
+    display: flex;
+    align-items: center;
+    padding-block: var(--space-xxsmall);
+    font-size: var(--fs-small);
+    color: var(--c-text-muted);
     transition: color var(--dur) var(--ease);
   }
-  .col a:hover,
-  .policies a:hover {
-    color: var(--c-text);
+
+  .col a:hover {
+    color: var(--c-accent);
   }
+
+  /* .footer1_social-link-2 — icon and label .75rem apart */
+  .social {
+    gap: 0.75rem;
+  }
+
+  /* .footer1_social-icon-2 — 1.5rem square, accent-coloured */
+  .social-icon {
+    flex: none;
+    width: 1.5rem;
+    height: 1.5rem;
+    color: var(--c-accent);
+  }
+
+  /* .line-divider */
+  .divider {
+    width: 100%;
+    height: 1px;
+    background: #00000040;
+  }
+
+  /* .padding-top.padding-medium > .footer1_bottom-wrapper */
   .bottom {
     display: flex;
-    flex-wrap: wrap;
-    gap: var(--s-3) var(--s-6);
     justify-content: space-between;
     align-items: center;
-    padding-top: var(--s-5);
-    border-top: 1px solid var(--c-border);
+    padding-top: var(--space-medium);
   }
+
+  .credit,
+  .policies a {
+    font-size: var(--fs-small);
+  }
+
   .policies {
-    display: flex;
-    gap: var(--s-5);
+    gap: var(--space-small);
+  }
+
+  /* .footer1_legal-link is underlined, unlike the nav links above */
+  .policies a {
+    color: var(--c-text-muted);
+    text-decoration: underline;
+    transition: color var(--dur) var(--ease);
+  }
+
+  .policies a:hover {
+    color: var(--c-accent);
+  }
+
+  /* ---------------------------------------------------------------------
+     Original breakpoints: the brand block stops sharing a row at 991px, the
+     three link lists stack at 479px, and the bottom bar reverses at 767px.
+     --------------------------------------------------------------------- */
+  @media screen and (max-width: 991px) {
+    .top {
+      grid-template-columns: 1fr;
+      row-gap: var(--space-xlarge);
+    }
+  }
+
+  @media screen and (max-width: 767px) {
+    .top {
+      row-gap: var(--space-large);
+    }
+
+    .cols {
+      column-gap: var(--space-small);
+    }
+
+    /* column-reverse puts the policy links above the copyright */
+    .bottom {
+      flex-direction: column-reverse;
+      align-items: flex-start;
+      padding-bottom: var(--space-xsmall);
+    }
+
+    .credit {
+      margin-top: var(--space-small);
+    }
+
+    .policies {
+      flex-direction: column;
+      gap: var(--space-xsmall);
+    }
+
+    /**
+     * Deliberate deviation from the original. Its footer links are 14px with
+     * 8px of vertical padding, i.e. a ~37px target — under the 44px floor this
+     * project holds itself to. The links grow to 44px on touch widths; the
+     * desktop layout, where a cursor is precise, keeps the original's density.
+     */
+    .col a,
+    .policies a {
+      min-height: 44px;
+      align-items: center;
+    }
+
+    .policies a {
+      display: flex;
+    }
+  }
+
+  @media screen and (max-width: 479px) {
+    .top {
+      row-gap: 48px;
+    }
+
+    .cols {
+      grid-template-columns: 1fr;
+      row-gap: 2.5rem;
+    }
   }
 </style>

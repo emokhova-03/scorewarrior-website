@@ -1,149 +1,232 @@
 ---
+/**
+ * Site header, matched to .navbar14_component on the original.
+ *
+ * The shape to get right: the header is not a bar in the document flow, it is
+ * a pill floating over the page. On the original .navbar14_component is
+ * `position: fixed; inset: 0 0 auto` with `margin: 1.5rem 5% 0`, and the pill
+ * itself (.navbar14_container) has `min-height: 4.5rem` and nothing else
+ * contributing height.
+ *
+ * That last part is why the old version rendered far too tall: it put
+ * `padding-block: var(--s-4)` on the header *and* `min-height: var(--header-h)`
+ * on the pill, stacking 32px onto the 72px pill for a 104px header. The pill's
+ * min-height is the whole height now.
+ *
+ * Pages clear it with --header-space (offset + height) rather than relying on
+ * the header to occupy flow space, since it no longer does.
+ */
+
 interface Props {
+  /**
+   * Kept for callers that already pass it. The original has a single header
+   * treatment — fixed, always over the page — so both values render the same.
+   */
   variant?: "solid" | "over";
 }
-const { variant = "solid" } = Astro.props;
+
 const nav = [
   { label: "Company", href: "/company" },
   { label: "Game", href: "/games" },
   { label: "Careers", href: "/careers" },
   { label: "Contacts", href: "/contacts" },
 ];
+
 const SUPPORT = "https://scorewarrior.theymes.com/hc/en/total-battle";
+
 const path = Astro.url.pathname;
+
+/** Marks the current section the way .w--current does on the original. */
+function isCurrent(href: string): boolean {
+  return path === href || path.startsWith(`${href}/`);
+}
 ---
 
-<header class:list={["site-header", variant]}>
-  <div class="container">
-    <div class="bar">
-      <a class="logo" href="/" aria-label="Scorewarrior — home">
-        <img
-          src="/brand/logo-scorewarrior-white.svg"
-          alt="Scorewarrior"
-          width="168"
-          height="24"
-        />
-      </a>
-      <button
-        class="burger"
-        type="button"
-        aria-expanded="false"
-        aria-controls="site-nav"
-      >
-        <span aria-hidden="true"></span>
-        <span aria-hidden="true"></span>
-        <span class="sr-only">Menu</span>
-      </button>
-      <nav id="site-nav" class="nav" aria-label="Main">
-        <ul class="nav-list">
-          {
-            nav.map((item) => (
-              <li>
-                <a
-                  href={item.href}
-                  aria-current={path.startsWith(item.href) ? "page" : undefined}
-                >
-                  {item.label}
-                </a>
-              </li>
-            ))
-          }
-        </ul>
-        <a class="support" href={SUPPORT} rel="noopener">Support</a>
-      </nav>
-    </div>
+<header class="site-header">
+  <div class="bar">
+    <a class="logo" href="/" aria-label="Scorewarrior — home">
+      <img
+        src="/brand/logo-scorewarrior-white.svg"
+        alt="Scorewarrior"
+        width="185"
+        height="26"
+      />
+    </a>
+
+    <button
+      class="burger"
+      type="button"
+      aria-expanded="false"
+      aria-controls="site-nav"
+    >
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <span class="sr-only">Menu</span>
+    </button>
+
+    <nav id="site-nav" class="nav" aria-label="Main">
+      <ul class="nav-list">
+        {
+          nav.map((item) => (
+            <li>
+              <a
+                href={item.href}
+                aria-current={isCurrent(item.href) ? "page" : undefined}
+              >
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+
+      <a class="support" href={SUPPORT} rel="noopener">Support</a>
+    </nav>
   </div>
 </header>
+
 <style>
   .site-header {
-    position: relative;
+    position: fixed;
+    inset: 0 0 auto;
     z-index: 50;
-    padding-block: var(--s-4);
+    display: flex;
+    align-items: center;
+    margin-top: var(--header-offset);
+    margin-inline: var(--gutter);
   }
 
-  .site-header.over {
-    position: absolute;
-    inset: 0 0 auto 0;
-  }
-
+  /* The pill. Its min-height IS the header height — nothing else adds to it. */
   .bar {
     position: relative;
     display: flex;
+    justify-content: space-between;
     align-items: center;
-    gap: var(--s-6);
+    gap: var(--space-xsmall);
+    width: 100%;
+    max-width: var(--container);
     min-height: var(--header-h);
-    padding-inline: var(--s-6);
+    margin-inline: auto;
+    padding-inline: var(--space-medium);
     background: var(--c-accent);
-    border-radius: 999px;
+    border-radius: var(--radius);
 
-    /* Внутри пилюли всё светлое — тот же приём, что в hero */
-    --c-text: #ffffff;
-    --c-border: rgba(255, 255, 255, 0.5);
+    /* Everything inside the pill is light, so descendants can keep using
+       --c-text without knowing they sit on the accent colour. */
+    --c-text: var(--c-nav-link);
     color: var(--c-text);
   }
-  .logo img {
-    width: 168px;
-    height: auto;
-  }
-  .nav {
-    margin-left: auto;
+
+  .logo {
     display: flex;
     align-items: center;
-    gap: var(--s-7);
   }
+
+  .logo img {
+    width: 185px;
+    height: auto;
+  }
+
+  .nav {
+    display: flex;
+    align-items: center;
+  }
+
   .nav-list {
     display: flex;
-    gap: var(--s-6);
+    align-items: center;
     list-style: none;
     padding: 0;
   }
-  .nav-list a,
-  .support {
-    font-size: var(--fs-100);
-    letter-spacing: 0.02em;
-    color: var(--c-text);
-    opacity: 0.75;
-    transition: opacity var(--dur) var(--ease);
+
+  /* .navbar14_link — the spacing between links is padding, not gap */
+  .nav-list a {
+    display: block;
+    padding: var(--space-xxsmall) var(--space-xsmall);
+    font-size: var(--fs-regular);
+    color: var(--c-nav-link);
+    transition: color var(--dur) var(--ease);
   }
-  .nav-list a:hover,
-  .support:hover,
+
+  .nav-list a:hover {
+    color: var(--c-nav-link-hover);
+  }
+
   .nav-list a[aria-current="page"] {
-    opacity: 1;
+    color: var(--c-nav-link-current);
+    font-weight: var(--fw-regular);
   }
+
+  /* .navbar14_button-wrapper { margin-left: 2rem } wrapping .button.is-small,
+     which is a white pill with accent text — not an outline. */
   .support {
-    padding: var(--s-2) var(--s-4);
-    border: 1px solid var(--c-border);
+    margin-left: var(--space-medium);
+    padding: var(--space-xxsmall) 1.25rem;
+    background: var(--white);
+    color: var(--c-accent);
+    font-weight: var(--fw-bold);
     border-radius: var(--radius);
+    white-space: nowrap;
+    transition:
+      background-color var(--dur) var(--ease),
+      color var(--dur) var(--ease);
   }
+
+  .support:hover {
+    background: var(--c-fuchsia-50);
+  }
+
   .burger {
     display: none;
   }
-  /* ---------- мобильная версия ---------- */
-  @media (max-width: 860px) {
+
+  /* ---------------------------------------------------------------------
+     The original collapses at 991px (data-collapse="medium"), not 860px.
+     --------------------------------------------------------------------- */
+  @media screen and (max-width: 991px) {
+    /* .menu-icon2 — 48x48 holding three 24x2 white bars. 48px already
+       clears the 44px tap-target minimum. */
     .burger {
       display: grid;
-      gap: 5px;
+      place-content: center;
+      gap: 6px;
+      width: 48px;
+      height: 48px;
+      margin-right: -0.5rem;
       margin-left: auto;
-      padding: var(--s-2);
+      padding: 0;
     }
+
     .burger span[aria-hidden] {
       display: block;
-      width: 22px;
+      width: 24px;
       height: 2px;
-      background: var(--c-text);
+      background: var(--c-nav-link);
     }
+
+    /**
+     * The open panel hangs off the bottom of the pill:
+     * .navbar14_menu-link-wrapper is the accent colour with
+     * border-radius: 0 0 1rem 1rem and padding: 1rem 2rem 2.5rem.
+     * It overlaps the pill by one radius and pads back out, so the two read as
+     * one shape with no seam. The panel paints *over* the pill — same as the
+     * original, where .navbar14_menu sits at top: 80% with z-index: 10 — and
+     * since both are --c-accent the overlap is invisible. Tucking it behind
+     * with a negative z-index would also look right, but only for as long as
+     * .bar never becomes a stacking context.
+     */
     .nav {
       position: absolute;
-      top: calc(100% + var(--s-2));
+      top: calc(100% - var(--radius));
       left: 0;
       right: 0;
       flex-direction: column;
-      align-items: flex-start;
-      gap: var(--s-5);
-      margin-left: 0;
-      padding: var(--s-6);
+      align-items: stretch;
+      padding: calc(var(--radius) + var(--space-xsmall)) var(--space-medium)
+        2.5rem;
       background: var(--c-accent);
-      border-radius: var(--radius);
+      border-radius: 0 0 var(--radius) var(--radius);
       transform: translateY(-8px);
       opacity: 0;
       pointer-events: none;
@@ -151,26 +234,70 @@ const path = Astro.url.pathname;
         opacity var(--dur) var(--ease),
         transform var(--dur) var(--ease);
     }
+
     .nav.is-open {
       transform: translateY(0);
       opacity: 1;
       pointer-events: auto;
     }
+
     .nav-list {
       flex-direction: column;
-      gap: var(--s-5);
+      align-items: stretch;
     }
+
+    /* .navbar14_link at ≤991px — padding: 1rem 0; font-size: 1.125rem.
+       16 + 16 + (18 × 1.5) = 59px, comfortably over 44px. */
     .nav-list a {
-      font-size: var(--fs-300);
+      padding: var(--space-xsmall) 0;
+      font-size: var(--fs-medium);
+    }
+
+    .support {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      margin-top: var(--space-xsmall);
+      margin-left: 0;
+      text-align: center;
+    }
+  }
+
+  /* The pill tightens below 767px: min-height 4rem, padding-inline 1.25rem.
+     --header-h and --header-offset already step down in tokens.css. */
+  @media screen and (max-width: 767px) {
+    .bar,
+    .nav {
+      padding-inline: 1.25rem;
+    }
+
+    /* At 360px the full wordmark would crowd the burger. The original keeps it
+       at 185px; we let it shrink instead of overflowing, which is the one
+       place the 360px floor overrides parity. */
+    .logo img {
+      width: min(185px, 46vw);
     }
   }
 </style>
+
 <script>
-  const burger = document.querySelector(".burger");
+  const burger = document.querySelector<HTMLButtonElement>(".burger");
   const nav = document.getElementById("site-nav");
+
   burger?.addEventListener("click", () => {
     const open = burger.getAttribute("aria-expanded") === "true";
     burger.setAttribute("aria-expanded", String(!open));
     nav?.classList.toggle("is-open", !open);
+  });
+
+  // Escape closes the menu and hands focus back to the control that opened it.
+  document.addEventListener("keydown", (event) => {
+    if (event.key !== "Escape") return;
+    if (burger?.getAttribute("aria-expanded") !== "true") return;
+
+    burger.setAttribute("aria-expanded", "false");
+    nav?.classList.remove("is-open");
+    burger.focus();
   });
 </script>
