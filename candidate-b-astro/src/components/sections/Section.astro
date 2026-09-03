@@ -5,13 +5,26 @@ interface Props {
   lead?: string;
   id?: string;
   headingLevel?: "h1" | "h2";
+  /**
+   * Set on the first section of a page. The site header is position: fixed and
+   * therefore takes no space in the flow, so whatever comes first has to clear
+   * it itself or it renders underneath the floating pill.
+   */
+  first?: boolean;
 }
-const { eyebrow, title, lead, id, headingLevel = "h2" } = Astro.props;
+const {
+  eyebrow,
+  title,
+  lead,
+  id,
+  headingLevel = "h2",
+  first = false,
+} = Astro.props;
 const Heading = headingLevel;
 const hasHead = Boolean(eyebrow || title || lead);
 ---
 
-<section class="section" id={id}>
+<section class:list={["section", { first }]} id={id}>
   <div class="container">
     {
       hasHead && (
@@ -28,6 +41,11 @@ const hasHead = Boolean(eyebrow || title || lead);
 <style>
   .section {
     padding-block: var(--s-9);
+  }
+  /* Same shape as the hero clearance in index.astro: the section's own
+     spacing token plus the space the fixed header occupies. */
+  .section.first {
+    padding-top: calc(var(--header-space) + var(--s-9));
   }
   .head {
     display: grid;

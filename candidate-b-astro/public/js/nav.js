@@ -15,19 +15,41 @@
 const burger = document.querySelector(".burger");
 const nav = document.getElementById("site-nav");
 
-burger?.addEventListener("click", () => {
-  const open = burger.getAttribute("aria-expanded") === "true";
+/** Matches the width at which the header collapses — .navbar14 uses 991px. */
+const collapsed = window.matchMedia("(max-width: 991px)");
 
-  burger.setAttribute("aria-expanded", String(!open));
-  nav?.classList.toggle("is-open", !open);
+function setOpen(open) {
+  burger?.setAttribute("aria-expanded", String(open));
+  nav?.classList.toggle("is-open", open);
+
+  // Stops the page behind the panel from scrolling. The panel scrolls on its
+  // own (max-height + overflow-y in the component's styles), and
+  // overscroll-behavior keeps that scroll from chaining through to the body.
+  document.body.classList.toggle("nav-open", open);
+}
+
+function isOpen() {
+  return burger?.getAttribute("aria-expanded") === "true";
+}
+
+burger?.addEventListener("click", () => {
+  setOpen(!isOpen());
 });
 
 // Escape closes the menu and hands focus back to the control that opened it.
 document.addEventListener("keydown", (event) => {
   if (event.key !== "Escape") return;
-  if (burger?.getAttribute("aria-expanded") !== "true") return;
+  if (!isOpen()) return;
 
-  burger.setAttribute("aria-expanded", "false");
-  nav?.classList.remove("is-open");
+  setOpen(false);
   burger.focus();
+});
+
+/**
+ * Growing past the collapse width turns the panel back into the desktop nav.
+ * Without this the menu would still count as open, and the body scroll lock
+ * would stay on with no visible control to release it.
+ */
+collapsed.addEventListener("change", (event) => {
+  if (!event.matches && isOpen()) setOpen(false);
 });

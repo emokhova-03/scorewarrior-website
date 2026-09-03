@@ -181,6 +181,14 @@ function isCurrent(href: string): boolean {
     display: none;
   }
 
+  /**
+   * Locks the page behind the open panel. Global because it targets body,
+   * which no scoped selector can reach; nav.js adds and removes the class.
+   */
+  :global(body.nav-open) {
+    overflow: hidden;
+  }
+
   /* ---------------------------------------------------------------------
      The original collapses at 991px (data-collapse="medium"), not 860px.
      --------------------------------------------------------------------- */
@@ -233,6 +241,24 @@ function isCurrent(href: string): boolean {
       transition:
         opacity var(--dur) var(--ease),
         transform var(--dur) var(--ease);
+
+      /**
+       * The panel is absolute inside a fixed header, so anything past the
+       * viewport bottom would be unreachable — there is nothing to scroll.
+       * In portrait the content (≈384px at 360px wide) fits any phone, but a
+       * landscape phone is only ~360px tall, and large text or zoom eats the
+       * margin at any width. So the panel gets its own scroll, which is also
+       * what the original does: .navbar14_menu carries `overflow: auto`.
+       *
+       * Available height is the viewport minus the space above the panel:
+       * header offset + header height, less the radius it is pulled up by.
+       * svh rather than vh so mobile browser chrome cannot push it over.
+       */
+      max-height: calc(
+        100svh - var(--header-space) + var(--radius) - var(--space-xsmall)
+      );
+      overflow-y: auto;
+      overscroll-behavior: contain;
     }
 
     .nav.is-open {

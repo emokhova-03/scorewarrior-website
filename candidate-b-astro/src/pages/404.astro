@@ -6,8 +6,49 @@ import BaseLayout from "../layouts/BaseLayout.astro";
   title="[TEST] Page not found - Scorewarrior"
   description="[TEST] Placeholder description for the 404 page."
 >
-  <h1>Page not found</h1>
-  <p>This page does not exist, or it has removed.</p>
-  <p><a href="/">Go to the homepage</a></p>
-  <p><a href="/careers">See open roles</a></p>
+  <section class="container notfound">
+    <h1>Page not found</h1>
+
+    <p>This page does not exist, or it has removed.</p>
+
+    <ul class="links">
+      <li><a href="/">Go to the homepage</a></li>
+      <li><a href="/careers">See open roles</a></li>
+    </ul>
+  </section>
 </BaseLayout>
+
+<style>
+  /* The header is position: fixed and takes no space in the flow, so the
+     first section clears it itself. Same shape as index.astro's hero. */
+  .notfound {
+    padding-block: calc(var(--header-space) + var(--s-9)) var(--s-9);
+  }
+
+  h1 {
+    font-size: var(--fs-600);
+  }
+
+  p {
+    margin-top: var(--s-4);
+    color: var(--c-text-muted);
+  }
+
+  .links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-5);
+    margin-top: var(--s-6);
+    padding: 0;
+    list-style: none;
+  }
+
+  .links a {
+    display: flex;
+    align-items: center;
+    /* 44px minimum tap target */
+    min-height: 44px;
+    color: var(--c-accent);
+    text-decoration: underline;
+  }
+</style>
