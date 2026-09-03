@@ -42,9 +42,52 @@ const stores = [
   description="Total Battle — a cross-platform MMO strategy game by Scorewarrior."
 >
   <Section first headingLevel="h1" title="Total Battle" align="start" size="h3">
+    {
+      /*
+      .product-header6_price-wrapper — "Free to play", a 1px rule, then the
+      stars and the review count. The original draws five glyphs: four full
+      and one half, which is how 4.5 is shown. Both shapes are its own paths,
+      inlined with currentColor; they are not CDN images, and a hotlink would
+      be blocked by img-src 'self' regardless.
+    */
+    }
     <div class="meta">
-      <span class="tag">Free to play</span>
-      <span class="rating">(4.5 stars) &bull; 250k+ reviews</span>
+      <p class="price">Free to play</p>
+
+      <span class="divider" aria-hidden="true"></span>
+
+      <p class="reviews">
+        <span class="stars" role="img" aria-label="4.5 out of 5">
+          {
+            [1, 2, 3, 4].map(() => (
+              <svg
+                class="star"
+                viewBox="0 0 20 20"
+                fill="none"
+                aria-hidden="true"
+              >
+                <path
+                  d="M0.201432 8.35425C0.0324796 8.23123 -0.0397528 8.01452 0.021606 7.81473L0.101529 7.56496C0.159961 7.36756 0.335635 7.22781 0.541103 7.21527L6.92493 6.70573L9.37256 0.821007C9.45466 0.614853 9.66074 0.485543 9.88206 0.501294H10.1418C10.3505 0.496866 10.539 0.62523 10.6114 0.821007L13.069 6.70573L19.4528 7.21527C19.6583 7.22781 19.8339 7.36756 19.8924 7.56496L19.9723 7.81473C20.0403 8.00821 19.9805 8.22355 19.8224 8.35425L15.0071 12.4905L16.4857 18.695C16.5344 18.8936 16.4596 19.1021 16.2959 19.2245L16.0061 19.3843C15.8371 19.4986 15.6157 19.4986 15.4467 19.3843L10.0119 16.0873L4.54723 19.4143C4.37823 19.5286 4.15676 19.5286 3.98777 19.4143L3.76798 19.2645C3.60419 19.142 3.52945 18.9335 3.57816 18.7349L5.01677 12.4905L0.201432 8.35425Z"
+                  fill="currentColor"
+                />
+              </svg>
+            ))
+          }
+
+          {
+            /* The half star — an evenodd inner subpath leaves the right side hollow. */
+          }
+          <svg class="star" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <path
+              fill-rule="evenodd"
+              clip-rule="evenodd"
+              d="M19.8928 7.56999L19.9725 7.81999C20.0381 8.00868 19.9829 8.21839 19.8329 8.34999L14.9863 12.5L16.4223 18.72C16.4709 18.9188 16.3963 19.1275 16.2328 19.25L16.0134 19.4C15.9282 19.467 15.8225 19.5023 15.7143 19.5C15.6229 19.5019 15.533 19.4776 15.455 19.43L9.99999 16.1L4.57492 19.43C4.49692 19.4776 4.40695 19.5019 4.31563 19.5C4.20738 19.5023 4.10167 19.467 4.01646 19.4L3.76714 19.25C3.60364 19.1275 3.52904 18.9188 3.57766 18.72L5.01371 12.5L0.177024 8.35999C0.0192942 8.22917 -0.0404113 8.01364 0.027436 7.81999L0.137134 7.56999C0.195462 7.37241 0.370823 7.23254 0.575926 7.21999L6.94839 6.70999L9.39166 0.819989C9.46995 0.624384 9.66017 0.497222 9.87035 0.499989H10.1296C10.3379 0.495557 10.5261 0.624037 10.5983 0.819989L13.0815 6.70999L19.454 7.21999C19.6591 7.23254 19.8344 7.37241 19.8928 7.56999ZM14.1087 16.56L12.9918 11.88L16.6517 8.74999L11.8549 8.36999L9.99999 3.90999V14.05L14.1087 16.56Z"
+              fill="currentColor"></path>
+          </svg>
+        </span>
+
+        <span class="reviews-text">(4.5 stars) &bull; 250k+ reviews</span>
+      </p>
     </div>
 
     <div class="body">
@@ -133,24 +176,71 @@ const stores = [
 </BaseLayout>
 
 <style>
+  /* .product-header6_price-wrapper { display: flex } — column at ≤479px */
   .meta {
     display: flex;
-    flex-wrap: wrap;
     align-items: center;
-    gap: var(--s-4);
-    margin-bottom: var(--s-6);
+    margin-bottom: var(--space-medium);
   }
 
-  .tag {
-    padding: var(--s-1) var(--s-3);
-    border: 1px solid var(--c-border);
-    border-radius: var(--radius);
-    font-size: var(--fs-100);
-  }
-
-  .rating {
+  /**
+   * .heading-style-h5.text-color-gray500 — 1.5rem, weight 700, muted.
+   * Note it is not a pill: ours had a --c-border outline the original has
+   * nowhere near this element.
+   */
+  .price {
     color: var(--c-text-muted);
-    font-size: var(--fs-100);
+    font-size: var(--fs-h5);
+    font-weight: var(--fw-bold);
+    line-height: var(--lh-h5);
+  }
+
+  /* .product-header6_text-divider — 1px black rule, 1rem either side */
+  .divider {
+    align-self: stretch;
+    width: 1px;
+    margin-inline: var(--space-xsmall);
+    background: var(--black);
+  }
+
+  /* .product-header6_reviews-wrapper */
+  .reviews {
+    display: flex;
+    align-items: center;
+  }
+
+  /* .product-header6_rating-wrapper { display: flex; margin-right: .5rem } */
+  .stars {
+    display: flex;
+    margin-right: var(--space-xxsmall);
+  }
+
+  /* .product-header6_rating-icon — 1rem square, accent, .25rem apart */
+  .star {
+    flex: none;
+    width: 1rem;
+    height: 1rem;
+    margin-right: var(--space-tiny);
+    color: var(--c-accent);
+  }
+
+  /* .text-size-small.text-color-gray500 */
+  .reviews-text {
+    color: var(--c-text-muted);
+    font-size: var(--fs-small);
+  }
+
+  /* The original stacks this row on the smallest screens. */
+  @media screen and (max-width: 479px) {
+    .meta {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--space-xxsmall);
+    }
+
+    .divider {
+      display: none;
+    }
   }
 
   .body {

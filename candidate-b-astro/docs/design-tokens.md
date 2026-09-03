@@ -254,6 +254,30 @@ Slot content is left-aligned everywhere except the contacts intro, where the
 original centres the body copy along with the heading — `contentAlign="center"`,
 opt-in per section.
 
+### Also do not "fix": the /games store buttons are centred
+
+On `/games`, the "Play now for free:" label and the row of store buttons are
+**centred inside the copy column**, while the heading and body paragraphs
+directly above them are left-aligned. That is not our mistake and not a
+leftover: `.field-label` carries `.text-align-center`, and
+`.variant-button-row` is `justify-content: center`. It looks like an
+inconsistency in the original, and reproducing it is the point of a parity
+build — it is not ours to correct.
+
+### An inconsistency in the original we reproduce: two App Store URLs
+
+The original links the iOS app at two different URLs depending on the page:
+
+| Page               | URL                                                                    |
+| ------------------ | ---------------------------------------------------------------------- |
+| `/games` store row | `https://apps.apple.com/us/app/total-battle/id1274132545?l=en`         |
+| footer, every page | `https://apps.apple.com/us/app/total-battle-war-strategy/id1274132545` |
+
+Same app id, different slug, and only one carries `?l=en`. Both are reproduced
+as they are rather than harmonised to whichever looks tidier. Do not
+"deduplicate" them into one constant without deciding which the site should
+actually use — that is a content decision, not a refactor.
+
 ## Open questions
 
 1. ~~**Inter is not loaded by this project.**~~ **Resolved 03.09.2026.** Inter
