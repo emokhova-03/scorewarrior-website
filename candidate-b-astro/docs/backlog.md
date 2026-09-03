@@ -52,6 +52,10 @@ Date: 2026-09-01
   it.
 - Reference screenshots are local-only; downsample and commit them if the
   parity work continues past the demo.
+- gallery lightbox — the original has none, would be a deliberate divergence;
+  needs a script and a CSP review.
+- Company page: the original has a 13-photo slider (gallery18) where we show a
+  single office photo. Assets still need fetching — see journal, Day 2.
 - careers: mission block, stats row (2015 / Limassol / 200+ / 30m+) and nine
   perks cards — copy exists on the original, icons already in public/perks/,
   needs a perks data file.

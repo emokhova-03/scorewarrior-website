@@ -32,11 +32,23 @@ const { slides, label } = Astro.props;
 
   <div class="controls">
     <button type="button" data-dir="-1" aria-label="Previous">
-      <img src="/ui/arrow-left.svg" alt="" width="24" height="24" />
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+        <path
+          fill-rule="evenodd"
+          clip-rule="evenodd"
+          d="M3.31066 8.75001L9.03033 14.4697L7.96967 15.5303L0.439339 8.00001L7.96967 0.469676L9.03033 1.53034L3.31066 7.25001L15.5 7.25L15.5 8.75L3.31066 8.75001Z"
+          fill="currentColor"></path>
+      </svg>
     </button>
 
     <button type="button" data-dir="1" aria-label="Next">
-      <img src="/ui/arrow-right.svg" alt="" width="24" height="24" />
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+        <path
+          fill-rule="evenodd"
+          clip-rule="evenodd"
+          d="M12.6893 7.25L6.96967 1.53033L8.03033 0.469666L15.5607 8L8.03033 15.5303L6.96967 14.4697L12.6893 8.75H0.5V7.25H12.6893Z"
+          fill="currentColor"></path>
+      </svg>
     </button>
   </div>
 </div>
@@ -78,22 +90,55 @@ const { slides, label } = Astro.props;
     justify-content: flex-end;
   }
 
+  /**
+   * Matched to .gallery13_arrow on the original's games page: a white circle,
+   * 3.5rem across and 3rem below 991px, with a light-grey ring and the arrow
+   * glyph in the accent colour.
+   *
+   * That glyph colour is the whole point. The ring really is #f4f4f4 on the
+   * original too — `.gallery13_arrow.hide-mobile-landscape` overrides the base
+   * black border with light-grey — so a near-invisible ring was never the bug.
+   * What was missing is that the original's arrow mark is --dark-magenta, and
+   * ours was a black fill inside an <img>, which cannot inherit a colour. The
+   * glyphs are inlined now so they take currentColor.
+   *
+   * .shadow-medium appears on only the left arrow in the original's markup,
+   * which reads as an authoring slip rather than a design; both get it here.
+   */
   .controls button {
     display: grid;
     place-items: center;
-    width: 44px;
-    height: 44px;
+    width: 3.5rem;
+    height: 3.5rem;
+    color: var(--c-accent);
+    background: var(--white);
     border: 1px solid var(--c-border);
-    border-radius: 50%;
+    border-radius: var(--radius-circle);
+    box-shadow: var(--shadow-medium);
     transition:
       border-color var(--dur) var(--ease),
-      background var(--dur) var(--ease);
+      background-color var(--dur) var(--ease),
+      color var(--dur) var(--ease);
   }
 
-  .controls button:hover,
+  .controls button:hover {
+    border-color: var(--c-accent);
+    background: var(--c-fuchsia-50);
+  }
+
+  /* The global :focus-visible ring is an outline, so it needs offset room to
+     sit outside the circle rather than cutting across it. */
   .controls button:focus-visible {
-    border-color: var(--c-text);
-    background: var(--c-bg-elevated);
+    outline-offset: 2px;
+  }
+
+  /* The original steps its arrows down to 3rem here, which still clears the
+     44px minimum. */
+  @media screen and (max-width: 991px) {
+    .controls button {
+      width: 3rem;
+      height: 3rem;
+    }
   }
 </style>
 
