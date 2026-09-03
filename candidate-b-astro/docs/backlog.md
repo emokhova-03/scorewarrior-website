@@ -52,6 +52,9 @@ Date: 2026-09-01
   it.
 - Reference screenshots are local-only; downsample and commit them if the
   parity work continues past the demo.
+- Component scripts are external files because the CSP forbids inline scripts;
+  revisit if we ever adopt nonce-based CSP, which needs every page
+  server-rendered.
 - Retire `--s-3` (0.75rem). It has no equivalent in the original's base spacing
   scale — it is only the ≤767px step of `.margin-xsmall`. Ten component
   declarations still use it.

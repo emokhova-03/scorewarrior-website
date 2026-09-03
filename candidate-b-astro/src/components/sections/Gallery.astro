@@ -97,31 +97,5 @@ const { slides, label } = Astro.props;
   }
 </style>
 
-<script>
-  document.querySelectorAll<HTMLElement>("[data-gallery]").forEach((root) => {
-    const track = root.querySelector<HTMLElement>(".track");
-
-    if (!track) return;
-
-    const step = () => {
-      const slide = track.querySelector<HTMLElement>(".slide");
-
-      const gap = Number.parseFloat(getComputedStyle(track).columnGap) || 0;
-
-      const width = slide?.getBoundingClientRect().width ?? track.clientWidth;
-
-      return width + gap;
-    };
-
-    root.querySelectorAll<HTMLButtonElement>("[data-dir]").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        const dir = Number(btn.dataset.dir);
-
-        track.scrollBy({
-          left: dir * step(),
-          behavior: "smooth",
-        });
-      });
-    });
-  });
-</script>
+<!-- External file, not an inline block — see the comment in public/js/nav.js. -->
+<script is:inline src="/js/gallery.js" defer></script>

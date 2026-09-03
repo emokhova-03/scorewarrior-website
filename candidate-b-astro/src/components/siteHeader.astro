@@ -281,23 +281,10 @@ function isCurrent(href: string): boolean {
   }
 </style>
 
-<script>
-  const burger = document.querySelector<HTMLButtonElement>(".burger");
-  const nav = document.getElementById("site-nav");
-
-  burger?.addEventListener("click", () => {
-    const open = burger.getAttribute("aria-expanded") === "true";
-    burger.setAttribute("aria-expanded", String(!open));
-    nav?.classList.toggle("is-open", !open);
-  });
-
-  // Escape closes the menu and hands focus back to the control that opened it.
-  document.addEventListener("keydown", (event) => {
-    if (event.key !== "Escape") return;
-    if (burger?.getAttribute("aria-expanded") !== "true") return;
-
-    burger.setAttribute("aria-expanded", "false");
-    nav?.classList.remove("is-open");
-    burger.focus();
-  });
-</script>
+<!--
+  is:inline keeps Astro from bundling this and re-inlining it into the HTML.
+  The src makes it an external reference from our own origin, which is what
+  `script-src 'self'` in public/_headers allows — an inline block is blocked
+  in production and only appears to work in dev, where _headers is not applied.
+-->
+<script is:inline src="/js/nav.js" defer></script>
