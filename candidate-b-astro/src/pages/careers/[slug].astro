@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { readRolesSnapshot } from "../../lib/roles/read";
+import ApplyForm from "../../components/ApplyForm.astro";
 
 // Server-rendered. This page is the main reason Careers cannot
 // be fully static: a newly added role must have a page without
@@ -12,6 +13,9 @@ const { slug } = Astro.params;
 const { snapshot } = await readRolesSnapshot();
 
 const role = snapshot.roles.find((item) => item.slug === slug);
+
+const applied = Astro.url.searchParams.get("applied") === "1";
+const formError = Astro.url.searchParams.get("error");
 
 if (!role) {
   // Return a real HTTP 404 rather than a page that merely says
@@ -68,11 +72,15 @@ Astro.response.headers.set(
       </p>
     </section>
 
-    <!-- Part VI will replace this placeholder with the application form. -->
-    <section id="apply" class="apply-slot">
-      <h2>Apply</h2>
-      <p>[TEXT] The application form will be added in Part VI.</p>
-    </section>
+      <section id="apply" class="apply">
+        <h2>Apply</h2>
+
+        <ApplyForm
+          role={role}
+          applied={applied}
+          error={formError}
+        />
+      </section>
   </article>
 </BaseLayout>
 
@@ -120,12 +128,12 @@ Astro.response.headers.set(
   }
 
   .body,
-  .apply-slot {
+  .apply {
     margin-top: var(--s-8);
   }
 
   .body h2,
-  .apply-slot h2 {
+  .apply h2 {
     font-size: var(--fs-400);
   }
 

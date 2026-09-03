@@ -1,0 +1,238 @@
+---
+import { TURNSTILE_SITE_KEY } from "astro:env/server";
+import type { Role } from "../lib/roles/schema";
+
+interface Props {
+  role: Role;
+  applied: boolean;
+  error: string | null;
+}
+
+const { role, applied, error } = Astro.props;
+
+// Error messages are selected from the query-string error code.
+// Detailed field errors are only returned to API clients.
+// Without JavaScript, the page can only show the error encoded in the URL.
+const errorMessages: Record<string, string> = {
+  invalid: "Some fields need fixing. Please check the form and try again.",
+  rate: "Too many applications from this address. Try again in an hour.",
+  human: "Could not verify that you are human. Please try again.",
+  closed: "This role is no longer open.",
+};
+---
+
+{
+  applied ? (
+    <p class="ok" role="status">
+      Thanks — your application is in. We read every one and reply within two weeks.
+    </p>
+  ) : (
+    <form method="POST" action="/api/apply" class="form">
+      {
+        error && (
+          <p class="error" role="alert">
+            {errorMessages[error] ?? "Something went wrong. Please try again."}
+          </p>
+        )
+      }
+
+      <input type="hidden" name="roleSlug" value={role.slug} />
+
+      <!--
+        Honeypot for bots.
+        Hidden from sight and screen readers, but still present in the DOM
+        so simple autofill bots may fill it.
+        We intentionally do not use display:none because some bots ignore
+        fields hidden that way.
+      -->
+      <div class="trap" aria-hidden="true">
+        <label for="company">Company</label>
+        <input
+          id="company"
+          name="company"
+          type="text"
+          tabindex="-1"
+          autocomplete="off"
+        />
+      </div>
+
+      <p class="field">
+        <label for="name">Your name</label>
+        <input
+          id="name"
+          name="name"
+          type="text"
+          required
+          minlength="2"
+          maxlength="120"
+          autocomplete="name"
+        />
+      </p>
+
+      <p class="field">
+        <label for="email">Email</label>
+        <input
+          id="email"
+          name="email"
+          type="email"
+          required
+          maxlength="200"
+          autocomplete="email"
+        />
+      </p>
+
+      <p class="field">
+        <label for="link">
+          Portfolio or GitHub
+          <span class="hint">optional</span>
+        </label>
+
+        <input
+          id="link"
+          name="link"
+          type="url"
+          maxlength="500"
+          placeholder="https://"
+        />
+      </p>
+
+      <p class="field">
+        <label for="message">Why this role</label>
+
+        <textarea
+          id="message"
+          name="message"
+          required
+          minlength="20"
+          maxlength="4000"
+          rows="6"
+        ></textarea>
+
+        <span class="hint">A couple of sentences is enough.</span>
+      </p>
+
+      <p class="field consent">
+        <input
+          id="consent"
+          name="consent"
+          type="checkbox"
+          required
+        />
+
+        <label for="consent">
+          I agree that Scorewarrior may process my data for this application.
+        </label>
+      </p>
+
+      <div
+        class="cf-turnstile"
+        data-sitekey={TURNSTILE_SITE_KEY}
+      ></div>
+
+      <button type="submit">
+        Send application
+      </button>
+
+      <p class="hint">
+        On-site — {role.location}. We do not offer remote for this role.
+      </p>
+    </form>
+  )
+}
+
+<script
+  is:inline
+  src="https://challenges.cloudflare.com/turnstile/v0/api.js"
+  async
+  defer
+></script>
+
+<style>
+  .form {
+    display: grid;
+    gap: var(--s-5);
+    margin-top: var(--s-5);
+    max-width: 52ch;
+  }
+
+  .field {
+    display: grid;
+    gap: var(--s-2);
+    margin: 0;
+  }
+
+  .field.consent {
+    grid-template-columns: max-content 1fr;
+    align-items: start;
+  }
+
+  label {
+    font-size: var(--fs-100);
+  }
+
+  .hint {
+    color: var(--c-text-muted);
+    font-size: var(--fs-100);
+  }
+
+  input[type="text"],
+  input[type="email"],
+  input[type="url"],
+  textarea {
+    /* 44px is the minimum touch target required by PRD §6. */
+    min-height: 44px;
+    padding: var(--s-3);
+    border: 1px solid var(--c-border);
+    border-radius: var(--radius);
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    width: 100%;
+  }
+
+  textarea {
+    min-height: 132px;
+    resize: vertical;
+  }
+
+  input:focus-visible,
+  textarea:focus-visible,
+  button:focus-visible {
+    outline: 2px solid var(--c-text);
+    outline-offset: 2px;
+  }
+
+  button {
+    min-height: 44px;
+    padding-inline: var(--s-5);
+    border: 1px solid var(--c-text);
+    border-radius: var(--radius);
+    background: var(--c-text);
+    color: var(--c-bg);
+    font: inherit;
+    cursor: pointer;
+    justify-self: start;
+  }
+
+  .ok,
+  .error {
+    padding: var(--s-4);
+    border-radius: var(--radius);
+    border: 1px solid var(--c-border);
+    margin-top: var(--s-5);
+  }
+
+  .error {
+    border-color: #b3261e;
+  }
+
+  /* Keep the honeypot out of the visual flow without using display:none. */
+  .trap {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+</style>
