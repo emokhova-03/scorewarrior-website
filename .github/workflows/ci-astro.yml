@@ -4,35 +4,76 @@ on:
   push:
     branches: [main]
   pull_request:
+
 jobs:
   candidate-b:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: candidate-b-astro
+
+    # Every `run` step below names its own working-directory instead of a
+    # `defaults:` block. The old defaults block set candidate-b-astro for
+    # everything and then tried to opt the fixture-parity step back out with an
+    # empty `working-directory:` — which is not how you override a default, and
+    # is what broke this workflow. One step genuinely needs the repository root,
+    # so no default is the honest arrangement.
+    #
+    # `uses:` steps take no working-directory; only `run` steps do.
+
+    # The Astro env schema in astro.config.mjs declares ROLES_SOURCE_URL as a
+    # required public server var and TURNSTILE_SECRET as a secret, with
+    # validateSecrets: true — so `astro check` and `astro build` fail without
+    # them. That failure is the schema working as intended, not something to
+    # route around: it is the same guard that stops a deploy going out with a
+    # missing binding. CI therefore supplies real values rather than relaxing
+    # the schema.
+    env:
+      ROLES_SOURCE_URL: https://raw.githubusercontent.com/emokhova-03/scorewarrior-website/main/data/roles.json
+      ROLES_MAX_AGE_MINUTES: "15"
+
+      # Cloudflare's published Turnstile test key, which always passes. It is
+      # deliberately open — a real secret must never be inlined here, and CI
+      # never needs to verify a genuine challenge. Production reads its own
+      # value from `wrangler secret`.
+      TURNSTILE_SECRET: 1x0000000000000000000000000000000AA
+
+      BUILD_SHA: ${{ github.sha }}
+
     steps:
       - name: Check out the code
         uses: actions/checkout@v4
+
+      # Runs from the repository root: it compares the root fixture against the
+      # candidate's copy, so it cannot run inside the candidate directory.
       - name: Check fixture parity between candidates
-        working-directory:
+        working-directory: .
         run: diff -u data/roles.json candidate-b-astro/data/roles.json
+
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
           node-version: "22"
           cache: npm
           cache-dependency-path: candidate-b-astro/package-lock.json
+
       - name: Install dependencies
+        working-directory: candidate-b-astro
         run: npm ci
 
+      - name: Audit dependencies
+        working-directory: candidate-b-astro
+        run: npm audit --audit-level=high
+
       - name: Check formatting
+        working-directory: candidate-b-astro
         run: npm run format:check
 
       - name: Type check
+        working-directory: candidate-b-astro
         run: npm run check
 
       - name: Run tests
+        working-directory: candidate-b-astro
         run: npm run test
 
       - name: Build
+        working-directory: candidate-b-astro
         run: npm run build

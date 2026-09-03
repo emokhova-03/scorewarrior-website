@@ -134,11 +134,7 @@ describe("fieldErrors", () => {
     if (!result.success) {
       const errors = fieldErrors(result.error);
 
-      expect(Object.keys(errors).sort()).toEqual([
-        "email",
-        "message",
-        "name",
-      ]);
+      expect(Object.keys(errors).sort()).toEqual(["email", "message", "name"]);
 
       // Значения — строки, а не массивы: по одному сообщению на поле.
       for (const message of Object.values(errors)) {

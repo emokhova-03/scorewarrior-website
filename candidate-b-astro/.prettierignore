@@ -1,1 +1,10 @@
-data/roles.json
+# Build output and generated state — not ours to format, and regenerated
+# on every build, so formatting them only creates noise in CI.
+dist/
+.astro/
+.wrangler/
+node_modules/
+worker-configuration.d.ts
+
+# Local-only reference screenshots
+docs/reference/

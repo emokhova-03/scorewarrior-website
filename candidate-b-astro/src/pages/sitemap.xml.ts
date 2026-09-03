@@ -9,13 +9,7 @@ import { getCollection } from "astro:content";
 // server-rendered pages cannot be enumerated at build time,
 // but collection entries can.
 
-const STATIC_PATHS = [
-  "/",
-  "/company",
-  "/games",
-  "/contacts",
-  "/careers",
-];
+const STATIC_PATHS = ["/", "/company", "/games", "/contacts", "/careers"];
 
 export const GET: APIRoute = async ({ site }) => {
   if (!site) {
@@ -33,10 +27,7 @@ export const GET: APIRoute = async ({ site }) => {
   ];
 
   const urls = paths
-    .map(
-      (path) =>
-        `  <url><loc>${new URL(path, site).href}</loc></url>`,
-    )
+    .map((path) => `  <url><loc>${new URL(path, site).href}</loc></url>`)
     .join("\n");
 
   return new Response(

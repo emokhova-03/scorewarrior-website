@@ -25,27 +25,27 @@ single desktop viewport. It got the palette right and the type scale wrong.
 
 The bundle declares exactly four Webflow swatches in its own `:root`:
 
-| Token             | Value     | Source                                                     |
-| ----------------- | --------- | ---------------------------------------------------------- |
-| `--black`         | `#000000` | `:root { --black }`                                        |
-| `--white`         | `#ffffff` | `:root { --white }`                                        |
-| `--light-grey`    | `#f4f4f4` | `:root { --light-grey }`                                   |
-| `--dark-magenta`  | `#821890` | `:root { --dark-magenta }`                                 |
+| Token            | Value     | Source                     |
+| ---------------- | --------- | -------------------------- |
+| `--black`        | `#000000` | `:root { --black }`        |
+| `--white`        | `#ffffff` | `:root { --white }`        |
+| `--light-grey`   | `#f4f4f4` | `:root { --light-grey }`   |
+| `--dark-magenta` | `#821890` | `:root { --dark-magenta }` |
 
 Semantic roles built on top of them:
 
-| Token                | Value       | Source                                                |
-| -------------------- | ----------- | ----------------------------------------------------- |
-| `--c-bg`             | `#ffffff`   | `body { background-color }` → `.background-color-white` |
-| `--c-bg-elevated`    | `#ffffff`   | cards have no fill of their own; they separate via border + shadow |
-| `--c-text`           | `#000000`   | `body { color: var(--black) }`                        |
-| `--c-text-muted`     | `#667085`   | `.text-color-gray500`                                 |
-| `--c-accent`         | `#821890`   | `.background-color-fuchsia800`, the header pill fill  |
-| `--c-accent-strong`  | `#6f1877`   | `.background-color-fuchsia900`                        |
-| `--c-border`         | `#f4f4f4`   | `.background-color-gray` / role card border           |
-| `--c-nav-link`       | `#ffffff`   | `.navbar14_link.text-color-white`                     |
-| `--c-nav-link-hover` | `#ffffff80` | `.navbar14_link.text-color-white:hover`               |
-| `--c-nav-link-current` | `#ffffffb3` | `.navbar14_link.text-color-white.w--current`        |
+| Token                  | Value       | Source                                                             |
+| ---------------------- | ----------- | ------------------------------------------------------------------ |
+| `--c-bg`               | `#ffffff`   | `body { background-color }` → `.background-color-white`            |
+| `--c-bg-elevated`      | `#ffffff`   | cards have no fill of their own; they separate via border + shadow |
+| `--c-text`             | `#000000`   | `body { color: var(--black) }`                                     |
+| `--c-text-muted`       | `#667085`   | `.text-color-gray500`                                              |
+| `--c-accent`           | `#821890`   | `.background-color-fuchsia800`, the header pill fill               |
+| `--c-accent-strong`    | `#6f1877`   | `.background-color-fuchsia900`                                     |
+| `--c-border`           | `#f4f4f4`   | `.background-color-gray` / role card border                        |
+| `--c-nav-link`         | `#ffffff`   | `.navbar14_link.text-color-white`                                  |
+| `--c-nav-link-hover`   | `#ffffff80` | `.navbar14_link.text-color-white:hover`                            |
+| `--c-nav-link-current` | `#ffffffb3` | `.navbar14_link.text-color-white.w--current`                       |
 
 Full ramps are in `tokens.css` as `--c-fuchsia-25 … 900` and
 `--c-gray-25 … 900`, quoted from the `.text-color-*` / `.background-color-*`
@@ -62,32 +62,32 @@ a family, so h1–h6 inherit it — `--font-display` is the same stack by design
 not by omission. The original loads it from Google Fonts:
 
 ```js
-WebFont.load({ google: { families: ["Inter:300,400,500,600,700"] } })
+WebFont.load({ google: { families: ["Inter:300,400,500,600,700"] } });
 ```
 
-Weight **800** exists as a `.text-weight-xbold` utility but is *not* among the
+Weight **800** exists as a `.text-weight-xbold` utility but is _not_ among the
 loaded weights, so on the original it is synthesised. Don't use it.
 
 **Body scale** — `.text-size-*`:
 
-| Token          | ≤479px | ≤767px    | base       | Source              |
-| -------------- | ------ | --------- | ---------- | ------------------- |
-| `--fs-tiny`    | —      | —         | `0.75rem`  | `.text-size-tiny`   |
-| `--fs-small`   | —      | —         | `0.875rem` | `.text-size-small`  |
-| `--fs-regular` | —      | —         | `1rem`     | `.text-size-regular` |
-| `--fs-medium`  | —      | `1rem`    | `1.125rem` | `.text-size-medium`, `.text-size-medium-2` |
-| `--fs-large`   | —      | `1.125rem`| `1.25rem`  | `.text-size-large`  |
+| Token          | ≤479px | ≤767px     | base       | Source                                     |
+| -------------- | ------ | ---------- | ---------- | ------------------------------------------ |
+| `--fs-tiny`    | —      | —          | `0.75rem`  | `.text-size-tiny`                          |
+| `--fs-small`   | —      | —          | `0.875rem` | `.text-size-small`                         |
+| `--fs-regular` | —      | —          | `1rem`     | `.text-size-regular`                       |
+| `--fs-medium`  | —      | `1rem`     | `1.125rem` | `.text-size-medium`, `.text-size-medium-2` |
+| `--fs-large`   | —      | `1.125rem` | `1.25rem`  | `.text-size-large`                         |
 
 **Heading scale** — `h1`–`h6`, mirrored by `.heading-style-h1`–`h6`:
 
-| Token     | base      | ≤991px    | ≤767px               | weight | line-height |
-| --------- | --------- | --------- | -------------------- | ------ | ----------- |
-| `--fs-h1` | `3.5rem`  | `3.25rem` | `2.5rem`             | 700    | 1.2         |
-| `--fs-h2` | `3rem`    | `2.75rem` | `2.25rem`            | 700    | 1.2         |
-| `--fs-h3` | `2.5rem`  | `2.25rem` | `2rem`               | 700    | 1.2         |
-| `--fs-h4` | `2rem`    | `1.75rem` | `1.5rem` (lh → 1.4)  | 700    | 1.3         |
-| `--fs-h5` | `1.5rem`  | —         | `1.25rem`            | 700    | 1.4         |
-| `--fs-h6` | `1.25rem` | —         | `1.125rem`           | 700    | 1.4         |
+| Token     | base      | ≤991px    | ≤767px              | weight | line-height |
+| --------- | --------- | --------- | ------------------- | ------ | ----------- |
+| `--fs-h1` | `3.5rem`  | `3.25rem` | `2.5rem`            | 700    | 1.2         |
+| `--fs-h2` | `3rem`    | `2.75rem` | `2.25rem`           | 700    | 1.2         |
+| `--fs-h3` | `2.5rem`  | `2.25rem` | `2rem`              | 700    | 1.2         |
+| `--fs-h4` | `2rem`    | `1.75rem` | `1.5rem` (lh → 1.4) | 700    | 1.3         |
+| `--fs-h5` | `1.5rem`  | —         | `1.25rem`           | 700    | 1.4         |
+| `--fs-h6` | `1.25rem` | —         | `1.125rem`          | 700    | 1.4         |
 
 `h1` at `479px` repeats `2.5rem`, i.e. it does not shrink further.
 
@@ -132,12 +132,12 @@ Section rhythm — `.padding-section-*`, applied as symmetric vertical padding:
 
 ## Grid
 
-| Token               | Value   | Source                                        |
-| ------------------- | ------- | --------------------------------------------- |
-| `--container`       | `80rem` | `.container-large { max-width }` — 1280px     |
-| `--container-medium`| `64rem` | `.container-medium`                           |
-| `--container-small` | `48rem` | `.container-small`                            |
-| `--gutter`          | `5%`    | `.padding-global { padding-left/right: 5% }`  |
+| Token                | Value   | Source                                       |
+| -------------------- | ------- | -------------------------------------------- |
+| `--container`        | `80rem` | `.container-large { max-width }` — 1280px    |
+| `--container-medium` | `64rem` | `.container-medium`                          |
+| `--container-small`  | `48rem` | `.container-small`                           |
+| `--gutter`           | `5%`    | `.padding-global { padding-left/right: 5% }` |
 
 The gutter being a **percentage** is the one structural difference from our
 previous guess of a fixed `1.5rem`: on the original the side margins grow with
@@ -152,11 +152,11 @@ small `30rem`, medium `35rem`, large `48rem`, xlarge `64rem`, xxlarge `80rem`.
 
 The header is a pill floating over the page, not a bar in the flow:
 
-| Token             | Value                   | Source                                          |
-| ----------------- | ----------------------- | ----------------------------------------------- |
-| `--header-h`      | `4.5rem` → `4rem` ≤767  | `.navbar14_container { min-height }`            |
-| `--header-offset` | `1.5rem` → `1.25rem` ≤767| `.navbar14_component { margin-top }`           |
-| `--header-space`  | offset + height         | derived — what content must clear               |
+| Token             | Value                     | Source                               |
+| ----------------- | ------------------------- | ------------------------------------ |
+| `--header-h`      | `4.5rem` → `4rem` ≤767    | `.navbar14_container { min-height }` |
+| `--header-offset` | `1.5rem` → `1.25rem` ≤767 | `.navbar14_component { margin-top }` |
+| `--header-space`  | offset + height           | derived — what content must clear    |
 
 So the pill is **72px** tall on desktop and **64px** below 767px, sitting 24px
 (20px on mobile) below the top edge. `.navbar14_component` is
@@ -185,15 +185,15 @@ the header pill, buttons and cards all use. `100%`/`50%` appear for circles,
 
 **Shadow.** A seven-step scale, verbatim:
 
-| Token               | Value                                                   |
-| ------------------- | ------------------------------------------------------- |
-| `--shadow-xxsmall`  | `0 1px 2px #0000000d`                                   |
-| `--shadow-xsmall`   | `0 1px 3px #0000001a, 0 1px 2px #0000000f`              |
-| `--shadow-small`    | `0 4px 8px -2px #0000001a, 0 2px 4px -2px #0000000f`    |
-| `--shadow-medium`   | `0 12px 16px -4px #00000014, 0 4px 6px -2px #00000008`  |
-| `--shadow-large`    | `0 20px 24px -4px #00000014, 0 8px 8px -4px #00000008`  |
-| `--shadow-xlarge`   | `0 24px 48px -12px #0000002e`                           |
-| `--shadow-xxlarge`  | `0 32px 64px -12px #00000024`                           |
+| Token              | Value                                                  |
+| ------------------ | ------------------------------------------------------ |
+| `--shadow-xxsmall` | `0 1px 2px #0000000d`                                  |
+| `--shadow-xsmall`  | `0 1px 3px #0000001a, 0 1px 2px #0000000f`             |
+| `--shadow-small`   | `0 4px 8px -2px #0000001a, 0 2px 4px -2px #0000000f`   |
+| `--shadow-medium`  | `0 12px 16px -4px #00000014, 0 4px 6px -2px #00000008` |
+| `--shadow-large`   | `0 20px 24px -4px #00000014, 0 8px 8px -4px #00000008` |
+| `--shadow-xlarge`  | `0 24px 48px -12px #0000002e`                          |
+| `--shadow-xxlarge` | `0 32px 64px -12px #00000024`                          |
 
 Role cards carry `.shadow-medium` (`.career23_item.shadow-medium`), so
 `--shadow-card` aliases that rather than the invented one-liner it used before.
@@ -209,12 +209,12 @@ Role cards carry `.shadow-medium` (`.career23_item.shadow-medium`), so
 
 Recorded here because step 3 needs them and they are pure token composition:
 
-| Variant                | Fill        | Border           | Text        | Padding          | Radius | Weight |
-| ---------------------- | ----------- | ---------------- | ----------- | ---------------- | ------ | ------ |
-| `.button`              | fuchsia800  | 1px fuchsia800   | white       | `.75rem 1.5rem`  | `1rem` | —      |
-| `.button.is-secondary` | transparent | 1px fuchsia800   | fuchsia800  | `.75rem 1.5rem`  | `1rem` | 700    |
-| `.button.is-small`     | white       | —                | fuchsia800  | `.5rem 1.25rem`  | `1rem` | 700    |
-| `.button.is-link`      | transparent | none             | fuchsia800  | `.25rem 0`       | —      | 600    |
+| Variant                | Fill        | Border         | Text       | Padding         | Radius | Weight |
+| ---------------------- | ----------- | -------------- | ---------- | --------------- | ------ | ------ |
+| `.button`              | fuchsia800  | 1px fuchsia800 | white      | `.75rem 1.5rem` | `1rem` | —      |
+| `.button.is-secondary` | transparent | 1px fuchsia800 | fuchsia800 | `.75rem 1.5rem` | `1rem` | 700    |
+| `.button.is-small`     | white       | —              | fuchsia800 | `.5rem 1.25rem` | `1rem` | 700    |
+| `.button.is-link`      | transparent | none           | fuchsia800 | `.25rem 0`      | —      | 600    |
 
 `.is-alternate` flips a variant for dark backgrounds (white border/text).
 `.button-group` is `display: flex; gap: 1rem; flex-wrap: wrap`.

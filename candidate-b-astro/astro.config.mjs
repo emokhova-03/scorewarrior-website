@@ -46,15 +46,15 @@ export default defineConfig({
       }),
 
       TURNSTILE_SITE_KEY: envField.string({
-      context: "server",
-      access: "public",
-      default: "1x00000000000000000000AA",
-        }),
+        context: "server",
+        access: "public",
+        default: "1x00000000000000000000AA",
+      }),
 
       TURNSTILE_SECRET: envField.string({
-      context: "server",
-      access: "secret",
-        }),
+        context: "server",
+        access: "secret",
+      }),
     },
 
     // Проверять секреты на сборке, а не в проде. Секретов пока нет,

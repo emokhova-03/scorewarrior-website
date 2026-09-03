@@ -2,10 +2,7 @@ import type { APIRoute } from "astro";
 import { env } from "cloudflare:workers";
 import { TURNSTILE_SECRET } from "astro:env/server";
 
-import {
-  applicationSchema,
-  fieldErrors,
-} from "../../lib/apply/schema";
+import { applicationSchema, fieldErrors } from "../../lib/apply/schema";
 
 import { readRolesSnapshot } from "../../lib/roles/read";
 
@@ -28,9 +25,7 @@ function respond(
   },
   redirectTo?: string,
 ): Response {
-  const wantsJson = request.headers
-    .get("accept")
-    ?.includes("application/json");
+  const wantsJson = request.headers.get("accept")?.includes("application/json");
 
   if (wantsJson || !redirectTo) {
     return Response.json(body, {
@@ -52,10 +47,7 @@ function respond(
   });
 }
 
-async function verifyTurnstile(
-  token: string,
-  ip: string,
-): Promise<boolean> {
+async function verifyTurnstile(token: string, ip: string): Promise<boolean> {
   try {
     const response = await fetch(
       "https://challenges.cloudflare.com/turnstile/v0/siteverify",
@@ -93,12 +85,10 @@ async function verifyTurnstile(
 }
 
 export const POST: APIRoute = async ({ request }) => {
-  const ip =
-    request.headers.get("cf-connecting-ip") ?? "unknown";
+  const ip = request.headers.get("cf-connecting-ip") ?? "unknown";
 
   // 1. Is this actually a form submission?
-  const contentType =
-    request.headers.get("content-type") ?? "";
+  const contentType = request.headers.get("content-type") ?? "";
 
   if (!contentType.includes("form")) {
     return respond(request, 415, {
@@ -109,9 +99,7 @@ export const POST: APIRoute = async ({ request }) => {
 
   const form = await request.formData();
 
-  const fields = Object.fromEntries(
-    form,
-  ) as Record<string, string>;
+  const fields = Object.fromEntries(form) as Record<string, string>;
 
   const backTo = `/careers/${fields.roleSlug ?? ""}`;
 
@@ -125,20 +113,13 @@ export const POST: APIRoute = async ({ request }) => {
       }),
     );
 
-    return respond(
-      request,
-      200,
-      { ok: true },
-      `${backTo}?applied=1#apply`,
-    );
+    return respond(request, 200, { ok: true }, `${backTo}?applied=1#apply`);
   }
 
   // 3. Rate limit
   const rateKey = `ratelimit:apply:${ip}`;
 
-  const sent = Number(
-    (await env.ROLES_KV.get(rateKey)) ?? 0,
-  );
+  const sent = Number((await env.ROLES_KV.get(rateKey)) ?? 0);
 
   if (sent >= RATE_LIMIT_PER_HOUR) {
     return respond(
@@ -194,8 +175,7 @@ export const POST: APIRoute = async ({ request }) => {
   }
 
   // 6. Verify Turnstile
-  const token =
-    fields["cf-turnstile-response"] ?? "";
+  const token = fields["cf-turnstile-response"] ?? "";
 
   if (!(await verifyTurnstile(token, ip))) {
     return respond(
@@ -203,8 +183,7 @@ export const POST: APIRoute = async ({ request }) => {
       403,
       {
         ok: false,
-        message:
-          "Could not verify that you are human. Please try again.",
+        message: "Could not verify that you are human. Please try again.",
       },
       `${backTo}?error=human#apply`,
     );
@@ -221,21 +200,16 @@ export const POST: APIRoute = async ({ request }) => {
       roleTitle: role.title,
       receivedAt: new Date().toISOString(),
       ip,
-      userAgent:
-        request.headers.get("user-agent") ?? "",
+      userAgent: request.headers.get("user-agent") ?? "",
     }),
     {
       expirationTtl: APPLICATION_TTL_SECONDS,
     },
   );
 
-  await env.ROLES_KV.put(
-    rateKey,
-    String(sent + 1),
-    {
-      expirationTtl: 3600,
-    },
-  );
+  await env.ROLES_KV.put(rateKey, String(sent + 1), {
+    expirationTtl: 3600,
+  });
 
   console.log(
     JSON.stringify({

@@ -29,10 +29,7 @@ const {
 // Build the canonical URL from the configured site URL rather than Astro.url.
 // This prevents preview deployments from becoming the canonical version
 // that search engines consider the primary page.
-const canonical = new URL(
-  Astro.url.pathname,
-  Astro.site ?? Astro.url,
-).href;
+const canonical = new URL(Astro.url.pathname, Astro.site ?? Astro.url).href;
 
 const resolvedOgImage = new URL(
   ogImage ?? "/og-default.png",

@@ -11,9 +11,7 @@ const { slug } = Astro.params;
 
 const { snapshot } = await readRolesSnapshot();
 
-const role = snapshot.roles.find(
-  (item) => item.slug === slug,
-);
+const role = snapshot.roles.find((item) => item.slug === slug);
 
 if (!role) {
   // Return a real HTTP 404 rather than a page that merely displays
@@ -24,11 +22,9 @@ if (!role) {
   });
 }
 
-const applied =
-  Astro.url.searchParams.get("applied") === "1";
+const applied = Astro.url.searchParams.get("applied") === "1";
 
-const formError =
-  Astro.url.searchParams.get("error");
+const formError = Astro.url.searchParams.get("error");
 
 // JSON-LD for search engines such as Google Jobs.
 //
@@ -87,9 +83,7 @@ Astro.response.headers.set(
 
   <article class="container role">
     <p class="back">
-      <a href="/careers">
-        &larr; All open roles
-      </a>
+      <a href="/careers"> &larr; All open roles </a>
     </p>
 
     <h1>{role.title}</h1>
@@ -119,20 +113,16 @@ Astro.response.headers.set(
       <h2>About the role</h2>
 
       <p>
-        [TEXT] Placeholder. Role description content has not been
-        provided yet. The page structure is ready for additional
-        fields when they are added to the role schema and source data.
+        [TEXT] Placeholder. Role description content has not been provided yet.
+        The page structure is ready for additional fields when they are added to
+        the role schema and source data.
       </p>
     </section>
 
     <section id="apply" class="apply">
       <h2>Apply</h2>
 
-      <ApplyForm
-        role={role}
-        applied={applied}
-        error={formError}
-      />
+      <ApplyForm role={role} applied={applied} error={formError} />
     </section>
   </article>
 </BaseLayout>
@@ -141,8 +131,7 @@ Astro.response.headers.set(
   .role {
     /* .max-width-large — the original clamps long-form copy at 48rem */
     max-width: var(--mw-large);
-    padding-block: calc(var(--header-space) + var(--s-8))
-      var(--section-large);
+    padding-block: calc(var(--header-space) + var(--s-8)) var(--section-large);
   }
 
   .back a {

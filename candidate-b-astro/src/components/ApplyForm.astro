@@ -24,27 +24,33 @@ const errorMessages: Record<string, string> = {
 {
   applied ? (
     <p class="ok" role="status">
-      Thanks — your application is in. We read every one and reply within two weeks.
+      Thanks — your application is in. We read every one and reply within two
+      weeks.
     </p>
   ) : (
     <form method="POST" action="/api/apply" class="form">
-      {
-        error && (
-          <p class="error" role="alert">
-            {errorMessages[error] ?? "Something went wrong. Please try again."}
-          </p>
-        )
-      }
+      {error && (
+        <p class="error" role="alert">
+          {errorMessages[error] ?? "Something went wrong. Please try again."}
+        </p>
+      )}
 
       <input type="hidden" name="roleSlug" value={role.slug} />
 
-      <!--
+      {/*
         Honeypot for bots.
         Hidden from sight and screen readers, but still present in the DOM
         so simple autofill bots may fill it.
         We intentionally do not use display:none because some bots ignore
         fields hidden that way.
-      -->
+
+        This is a JSX comment, not an HTML one, for two reasons. It sits
+        inside a JSX expression — the `applied ? ... : ...` ternary — where
+        <!-- --> is not valid syntax, which is why prettier could not parse
+        this file. And an HTML comment would be rendered into the response,
+        so the trap arrived at the client explaining itself to the very bots
+        it is meant to catch.
+      */}
       <div class="trap" aria-hidden="true">
         <label for="company">Company</label>
         <input
@@ -106,32 +112,22 @@ const errorMessages: Record<string, string> = {
           minlength="20"
           maxlength="4000"
           rows="6"
-        ></textarea>
+        />
 
         <span class="hint">A couple of sentences is enough.</span>
       </p>
 
       <p class="field consent">
-        <input
-          id="consent"
-          name="consent"
-          type="checkbox"
-          required
-        />
+        <input id="consent" name="consent" type="checkbox" required />
 
         <label for="consent">
           I agree that Scorewarrior may process my data for this application.
         </label>
       </p>
 
-      <div
-        class="cf-turnstile"
-        data-sitekey={TURNSTILE_SITE_KEY}
-      ></div>
+      <div class="cf-turnstile" data-sitekey={TURNSTILE_SITE_KEY} />
 
-      <button type="submit">
-        Send application
-      </button>
+      <button type="submit">Send application</button>
 
       <p class="hint">
         On-site — {role.location}. We do not offer remote for this role.
@@ -144,8 +140,7 @@ const errorMessages: Record<string, string> = {
   is:inline
   src="https://challenges.cloudflare.com/turnstile/v0/api.js"
   async
-  defer
-></script>
+  defer></script>
 
 <style>
   .form {

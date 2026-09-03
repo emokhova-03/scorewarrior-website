@@ -104,9 +104,7 @@ export function parseRoles(input: unknown): RolesParse {
     const result = roleSchema.safeParse(item);
 
     if (!result.success) {
-      problems.push(
-        `record #${index}: ${formatIssues(result.error)}`,
-      );
+      problems.push(`record #${index}: ${formatIssues(result.error)}`);
       return;
     }
 
