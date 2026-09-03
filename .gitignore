@@ -10,3 +10,6 @@
 .idea/
 
 .wrangler/
+
+worker-configuration.d.ts
+.dev.vars

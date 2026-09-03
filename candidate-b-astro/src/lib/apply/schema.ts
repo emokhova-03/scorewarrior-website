@@ -36,7 +36,6 @@ export const applicationSchema = z.object({
 
   // A checked checkbox is submitted as the string "on".
   // If it is not checked, the field is omitted entirely.
-  // z.literal validates the accepted checked value.
   consent: z.literal(
     "on",
     "Please confirm you agree to the privacy policy",
@@ -48,9 +47,6 @@ export type Application = z.infer<typeof applicationSchema>;
 /**
  * Converts validation issues into:
  * "field name -> first error message".
- *
- * There is no need to show a candidate several validation
- * errors for the same field at once.
  */
 export function fieldErrors(
   error: z.ZodError,

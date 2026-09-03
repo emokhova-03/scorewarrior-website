@@ -1,28 +1,72 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import { readRolesSnapshot } from "../../lib/roles/read";
 import ApplyForm from "../../components/ApplyForm.astro";
+import { readRolesSnapshot } from "../../lib/roles/read";
 
-// Server-rendered. This page is the main reason Careers cannot
-// be fully static: a newly added role must have a page without
-// waiting for the next deployment.
+// Server-rendered. A newly added role must get its own page
+// without waiting for the next deployment.
 export const prerender = false;
 
 const { slug } = Astro.params;
 
 const { snapshot } = await readRolesSnapshot();
 
-const role = snapshot.roles.find((item) => item.slug === slug);
-
-const applied = Astro.url.searchParams.get("applied") === "1";
-const formError = Astro.url.searchParams.get("error");
+const role = snapshot.roles.find(
+  (item) => item.slug === slug,
+);
 
 if (!role) {
-  // Return a real HTTP 404 rather than a page that merely says
-  // "not found". The status code matters to search engines
+  // Return a real HTTP 404 rather than a page that merely displays
+  // "not found". The response status matters to search engines
   // and monitoring.
-  return new Response(null, { status: 404 });
+  return new Response(null, {
+    status: 404,
+  });
 }
+
+const applied =
+  Astro.url.searchParams.get("applied") === "1";
+
+const formError =
+  Astro.url.searchParams.get("error");
+
+// JSON-LD for search engines such as Google Jobs.
+//
+// Build this as a JavaScript object rather than manually constructing
+// a JSON string. JSON.stringify() will correctly escape role titles
+// and other dynamic values.
+const jobPosting = {
+  "@context": "https://schema.org",
+  "@type": "JobPosting",
+
+  title: role.title,
+
+  description: `${role.title} at Scorewarrior, on-site in ${role.location}.`,
+
+  employmentType: "FULL_TIME",
+
+  ...(role.postedAt
+    ? {
+        datePosted: role.postedAt,
+      }
+    : {}),
+
+  hiringOrganization: {
+    "@type": "Organization",
+    name: "Scorewarrior",
+    sameAs: Astro.site?.href,
+  },
+
+  jobLocation: {
+    "@type": "Place",
+
+    address: {
+      "@type": "PostalAddress",
+      addressLocality: "Limassol",
+      addressCountry: "CY",
+    },
+  },
+};
 
 Astro.response.headers.set(
   "cache-control",
@@ -34,9 +78,18 @@ Astro.response.headers.set(
   title={`${role.title} - Scorewarrior`}
   description={`${role.title} at Scorewarrior — on-site in ${role.location}. ${role.department} team.`}
 >
+  <script
+    slot="head"
+    type="application/ld+json"
+    is:inline
+    set:html={JSON.stringify(jobPosting)}
+  />
+
   <article class="container role">
     <p class="back">
-      <a href="/careers">&larr; All open roles</a>
+      <a href="/careers">
+        &larr; All open roles
+      </a>
     </p>
 
     <h1>{role.title}</h1>
@@ -66,27 +119,29 @@ Astro.response.headers.set(
       <h2>About the role</h2>
 
       <p>
-        [TEXT] Placeholder. Role description content has not been provided yet.
-        The page structure is ready for additional fields when they are added
-        to the role schema and source data.
+        [TEXT] Placeholder. Role description content has not been
+        provided yet. The page structure is ready for additional
+        fields when they are added to the role schema and source data.
       </p>
     </section>
 
-      <section id="apply" class="apply">
-        <h2>Apply</h2>
+    <section id="apply" class="apply">
+      <h2>Apply</h2>
 
-        <ApplyForm
-          role={role}
-          applied={applied}
-          error={formError}
-        />
-      </section>
+      <ApplyForm
+        role={role}
+        applied={applied}
+        error={formError}
+      />
+    </section>
   </article>
 </BaseLayout>
 
 <style>
   .role {
-    padding-block: calc(var(--header-h) + var(--s-8)) var(--s-9);
+    padding-block:
+      calc(var(--header-h) + var(--s-8))
+      var(--s-9);
     max-width: 72ch;
   }
 

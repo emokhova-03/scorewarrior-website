@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+# Служебные эндпоинты: индексировать нечего, а в выдаче они вредны
+Disallow: /api/
+Sitemap: https://scorewarrior-website.emokhova.workers.dev/sitemap.xml

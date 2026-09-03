@@ -106,7 +106,7 @@ describe("parseRoles", () => {
 
     expect(result.ok).toBe(true);
     expect(result.ok && result.roles).toHaveLength(1);
-    expect(result.ok && result.problems[0]).toContain("уже встречался");
+    expect(result.ok && result.problems[0]).toContain("has already been used");
   });
 
   it("отказывает, если источник — не массив", () => {
