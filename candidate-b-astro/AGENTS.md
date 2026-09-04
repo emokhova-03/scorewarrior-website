@@ -24,6 +24,11 @@ the repo; a plain `wrangler deploy` would leave it at the schema default
 `"local"` and the health endpoint would be lying. Deploy from a clean, pulled
 `main`, or the SHA names a commit nobody else has.
 
+Normally nobody needs to run it: merging to `main` publishes through
+`.github/workflows/deploy.yml`. Reach for `npm run deploy` when Actions is
+down, or to get a fix out without waiting for the queue — knowing it skips
+`format:check`, which the workflow does not.
+
 Run `npm run dev` in the foreground, in its own terminal. Do not put it in
 background mode: it holds port 4321 without showing its banner, and a
 background server plus a concurrent `npm run build` will rewrite
@@ -63,9 +68,9 @@ Never run `npm run build` while a dev server is up.
   directory and a `TURNSTILE_SECRET` build variable configured in the
   dashboard, i.e. two pieces of build configuration invisible to review, which
   is exactly what the "platform configuration lives in the repo" rule below
-  forbids. Deploys are `npm run deploy`, run deliberately. If they should ever
-  be automated, automate them in `.github/workflows/`, where the config is
-  reviewable.
+  forbids. Automatic deploys live in `.github/workflows/deploy.yml` instead:
+  same behaviour, config readable in the repository, and gated on the checks
+  passing first. `npm run deploy` remains the way to publish from a laptop.
 - **Do not add `not_found_handling` to the `assets` block** in
   `wrangler.jsonc`. It is omitted deliberately.
 - **`Astro.locals.runtime.env` is removed.** Read bindings with

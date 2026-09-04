@@ -61,12 +61,11 @@ Kept here so a reviewer can tell an intentional difference from a mistake.
 
 ## Later
 
-- Automate the deploy in `.github/workflows/`, now that the dashboard Git
-  integration is gone (see AGENTS.md). Needs a Cloudflare API token in GitHub
-  Secrets, and should be gated on `main` plus green checks — the point of
-  dropping the integration was that nothing publishes without a decision, so
-  an Actions job must not quietly restore push-to-publish. Manual
-  `npm run deploy` is fine until then.
+- Protect `main` on GitHub: require the CI checks and disallow direct pushes.
+  Right now `deploy.yml` runs the checks itself before publishing, so a bad
+  commit cannot reach the live site — but it _can_ reach `main`, and the red
+  run is then the only signal. A branch protection rule would stop it one step
+  earlier. Dashboard setting, so record it here when it is set.
 
 - Dark theme — post-demo idea only. The original scorewarrior.com has a single
   light theme and no toggle, and neither does this project: what looked like a

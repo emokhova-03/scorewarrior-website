@@ -1,0 +1,109 @@
+name: Deploy Astro
+
+# Publishes candidate-b-astro to Cloudflare Workers.
+#
+# This file exists because the dashboard's Git integration was disconnected on
+# 04.09.2026 — see candidate-b-astro/AGENTS.md. That integration had two
+# pieces of build configuration living only in the Cloudflare UI, invisible to
+# review. Everything this workflow needs is either here or in GitHub Secrets,
+# so a reviewer can read the whole publishing rule in the repository.
+#
+# It also restores the content workflow the integration was supposed to give:
+# edit a photo or a data file on GitHub, merge to main, and the live site
+# follows — without anyone running a command on a laptop.
+
+on:
+  # Only main. Feature branches must never publish: a pull request is for
+  # review, and half-finished work reaching the live URL is exactly what this
+  # project is trying to avoid.
+  push:
+    branches: [main]
+
+  # The manual valve — a "Run workflow" button on the Actions tab. Needed to
+  # redeploy the current main without inventing a commit, e.g. after rotating
+  # a secret with `wrangler secret`, which changes nothing in git.
+  workflow_dispatch:
+
+# Read-only is all this needs. It does not write to the repository, so nothing
+# it can do to the code, however it fails.
+permissions:
+  contents: read
+
+# One deploy at a time, and never cancel one already running: two
+# `wrangler deploy` runs racing could finish out of order and leave the older
+# build live. Queueing is slower and correct.
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    # The same values as ci-astro.yml, for the same reason: the Astro env
+    # schema in astro.config.mjs sets validateSecrets: true, so `astro check`
+    # and `astro build` fail without them. That failure is the guard working.
+    #
+    # The Turnstile value is Cloudflare's published test key, deliberately
+    # public. Production verifies challenges with its own value, read from
+    # `wrangler secret` at runtime — never from this file.
+    env:
+      ROLES_SOURCE_URL: https://raw.githubusercontent.com/emokhova-03/scorewarrior-website/main/data/roles.json
+      ROLES_MAX_AGE_MINUTES: "15"
+      TURNSTILE_SECRET: 1x0000000000000000000000000000000AA
+
+      # The commit actually being published. /api/health.json reports it, and
+      # PRD §8 uses it to detect drift between the deployed Worker and the
+      # repository. Left unset it defaults to "local" and the endpoint lies.
+      BUILD_SHA: ${{ github.sha }}
+
+    steps:
+      - name: Check out the code
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: candidate-b-astro/package-lock.json
+
+      - name: Install dependencies
+        working-directory: candidate-b-astro
+        run: npm ci
+
+      # The checks are repeated here rather than inherited from the CI
+      # workflow. Chaining with `workflow_run` would avoid the duplication,
+      # but it moves the deploy into a different event, whose ref is not the
+      # one being deployed — subtly wrong in a way that is easy to miss and
+      # hard to notice until something ships that should not have.
+      #
+      # A minute of repeated CI buys a file that states, top to bottom,
+      # exactly what must pass before anything is published. For a deploy,
+      # that is worth more than not repeating yourself.
+      - name: Check formatting
+        working-directory: candidate-b-astro
+        run: npm run format:check
+
+      - name: Type check
+        working-directory: candidate-b-astro
+        run: npm run check
+
+      - name: Run tests
+        working-directory: candidate-b-astro
+        run: npm run test
+
+      - name: Build
+        working-directory: candidate-b-astro
+        run: npm run build
+
+      # `npx wrangler deploy`, not `npm run deploy`: that script derives
+      # BUILD_SHA from `git rev-parse` and rebuilds, both of which are already
+      # done above. It stays the right command on a laptop.
+      - name: Deploy to Cloudflare
+        working-directory: candidate-b-astro
+        run: npx wrangler deploy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
