@@ -15,7 +15,14 @@ npm run check    # wrangler types && astro check
 npm run test     # vitest run
 npm run build    # wrangler types && astro build
 npm run dev      # astro dev
+npm run deploy   # build with BUILD_SHA set, then wrangler deploy
 ```
+
+`deploy` exists so `BUILD_SHA` cannot be forgotten. `/api/health.json` reports
+it, and PRD §8 uses it to detect drift between what is deployed and what is in
+the repo; a plain `wrangler deploy` would leave it at the schema default
+`"local"` and the health endpoint would be lying. Deploy from a clean, pulled
+`main`, or the SHA names a commit nobody else has.
 
 Run `npm run dev` in the foreground, in its own terminal. Do not put it in
 background mode: it holds port 4321 without showing its banner, and a
@@ -47,6 +54,18 @@ Never run `npm run build` while a dev server is up.
 
 ## Do not do this
 
+- **Do not reconnect the Cloudflare Workers Git integration.** It was attached
+  in the dashboard, never built successfully, and was disconnected on purpose
+  on 04.09.2026. It ran `npm run build` at `/opt/buildhome/repo`, where there
+  is no `package.json` — this project lives in `candidate-b-astro/` and the
+  repository root is the Go candidate — so every push failed with ENOENT and
+  hung a red cross on the pull request. Fixing it would have meant a root
+  directory and a `TURNSTILE_SECRET` build variable configured in the
+  dashboard, i.e. two pieces of build configuration invisible to review, which
+  is exactly what the "platform configuration lives in the repo" rule below
+  forbids. Deploys are `npm run deploy`, run deliberately. If they should ever
+  be automated, automate them in `.github/workflows/`, where the config is
+  reviewable.
 - **Do not add `not_found_handling` to the `assets` block** in
   `wrangler.jsonc`. It is omitted deliberately.
 - **`Astro.locals.runtime.env` is removed.** Read bindings with

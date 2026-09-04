@@ -61,6 +61,13 @@ Kept here so a reviewer can tell an intentional difference from a mistake.
 
 ## Later
 
+- Automate the deploy in `.github/workflows/`, now that the dashboard Git
+  integration is gone (see AGENTS.md). Needs a Cloudflare API token in GitHub
+  Secrets, and should be gated on `main` plus green checks — the point of
+  dropping the integration was that nothing publishes without a decision, so
+  an Actions job must not quietly restore push-to-publish. Manual
+  `npm run deploy` is fine until then.
+
 - Dark theme — post-demo idea only. The original scorewarrior.com has a single
   light theme and no toggle, and neither does this project: what looked like a
   theme switch during review was Astro's dev error overlay. If it is ever

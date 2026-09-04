@@ -8,6 +8,7 @@
   "scripts": {
     "dev": "wrangler types && astro dev",
     "build": "wrangler types && astro build",
+    "deploy": "BUILD_SHA=$(git rev-parse --short HEAD) npm run build && wrangler deploy",
     "check": "wrangler types && astro check",
     "preview": "astro preview",
     "test": "vitest run",
