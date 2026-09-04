@@ -1,19 +1,19 @@
 ---
 import { getCollection } from "astro:content";
-import { Image } from "astro:assets";
 
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Section from "../components/sections/Section.astro";
 import LogoRow from "../components/sections/LogoRow.astro";
 import QuoteCard from "../components/sections/QuoteCard.astro";
 import TimelineList from "../components/sections/TimelineList.astro";
+import Gallery from "../components/sections/Gallery.astro";
 
 import { byOrder } from "../lib/collections";
-import { img } from "../lib/images";
 
 const timeline = byOrder(await getCollection("timeline"));
 const quotes = byOrder(await getCollection("team"));
 const logos = byOrder(await getCollection("openSource"));
+const gallery = byOrder(await getCollection("teamGallery"));
 ---
 
 <BaseLayout
@@ -26,14 +26,44 @@ const logos = byOrder(await getCollection("openSource"));
     title="Exciting game. Uniting players."
     lead="Scorewarrior is a game developer from Limassol, Cyprus. The company was founded in 2015 and is focused o"
   >
-    <Image
-      src={img("team/team-office")}
-      alt="The Scorewarrior team in the Limassol office"
-      widths={[640, 960, 1440]}
-      sizes="(max-width: 1240px) 100vw, 1200px"
-      loading="lazy"
-      class="team-photo"
-    />
+    {
+      /*
+      Слайдер команды, на месте оригинального `gallery18` — он стоит ровно
+      здесь, под заголовком и лидом первой секции.
+
+      Тот же компонент Gallery, что на /games: одна и та же дорожка со
+      scroll-snap и те же две кнопки на public/js/gallery.js. Скрипт уже
+      разрешён CSP и уже привязывается один раз на экземпляр, так что второй
+      слайдер на сайте не добавляет ни новых скриптов, ни новых правил.
+
+      Секция рендерится всегда, а слайдер — только если в коллекции есть
+      записи: пустая дорожка с двумя рабочими кнопками выглядела бы как
+      поломка, а не как отсутствие контента.
+
+      Слайд уже, чем на /games (420px против 720px). Там пять больших артов и
+      смысл в том, чтобы смотреть на один; здесь четырнадцать фото команды, и
+      при 720px секция читается как одна огромная фотография с обрезком
+      следующей — галерея перестаёт выглядеть галереей. При 420px на десктопе
+      видно два с половиной кадра, и сразу понятно, что это дорожка.
+
+      widths до 840, а не до 1200 по умолчанию: исходники ровно 960px — больше
+      Webflow для своего слайдера не отдаёт. Запрос 1200 заставил бы Astro
+      растянуть картинку: файл тяжелее, деталей не прибавилось. 840 — это
+      420px слайд на экране с двойной плотностью, то есть предел, который
+      здесь имеет смысл.
+    */
+    }
+    {
+      gallery.length > 0 && (
+        <Gallery
+          label="The Scorewarrior team in Limassol"
+          slides={gallery.map((entry) => entry.data)}
+          slideWidth="min(82vw, 420px)"
+          sizes="(max-width: 860px) 82vw, 420px"
+          widths={[420, 640, 840]}
+        />
+      )
+    }
   </Section>
 
   <Section title="Our story">
@@ -70,11 +100,6 @@ const logos = byOrder(await getCollection("openSource"));
 </BaseLayout>
 
 <style>
-  .team-photo {
-    width: 100%;
-    border-radius: var(--radius);
-  }
-
   .quotes {
     list-style: none;
     padding: 0;

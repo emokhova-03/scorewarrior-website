@@ -51,6 +51,23 @@ const gameArt = defineCollection({
     alt: z.string().min(3),
   }),
 });
+// Фото-стена команды на /company. Отдельная коллекция, а не поле в `team`:
+// в `team` запись — это человек с цитатой и должностью, а здесь запись — это
+// просто снимок без подписи. Смешивать их в одной схеме значило бы делать
+// половину полей необязательными и потом проверять их в разметке.
+//
+// Ключ `image` — тот же вид, что у gameArt: путь внутри src/assets без
+// расширения, который lib/images.ts превращает в метаданные картинки.
+// Префикс "team/" зафиксирован в схеме, чтобы случайная опечатка
+// ("teams/…", "game/…") падала на сборке, а не тихо ломала страницу.
+const teamGallery = defineCollection({
+  loader: file("src/data/team-gallery.json"),
+  schema: z.object({
+    ...ordered,
+    image: z.string().startsWith("team/"),
+    alt: z.string().min(3),
+  }),
+});
 const offices = defineCollection({
   loader: file("src/data/offices.json"),
   schema: z.object({
@@ -65,6 +82,7 @@ export const collections = {
   team,
   openSource,
   gameArt,
+  teamGallery,
   offices,
   roles,
 };

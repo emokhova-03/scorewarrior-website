@@ -36,22 +36,97 @@ document.querySelectorAll("[data-gallery]").forEach((root) => {
     return width + gap;
   };
 
+  /**
+   * Read the preference per call, not once at load: a visitor can change it
+   * mid-session, and on iOS toggling Reduce Motion does not reload the page.
+   * The CSS rule in global.css cannot reach this, because `behavior` is a
+   * script argument rather than a style.
+   */
+  const behavior = () =>
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches
+      ? "auto"
+      : "smooth";
+
   root.querySelectorAll("[data-dir]").forEach((btn) => {
     btn.addEventListener("click", () => {
-      const dir = Number(btn.dataset.dir);
-
-      // Read the preference per click, not once at load: a visitor can change
-      // it mid-session, and on iOS toggling Reduce Motion does not reload the
-      // page. The CSS rule in global.css cannot reach this, because `behavior`
-      // is a script argument rather than a style.
-      const reduced = window.matchMedia(
-        "(prefers-reduced-motion: reduce)",
-      ).matches;
-
       track.scrollBy({
-        left: dir * step(),
-        behavior: reduced ? "auto" : "smooth",
+        left: Number(btn.dataset.dir) * step(),
+        behavior: behavior(),
       });
     });
   });
+
+  // ---- slide dots -------------------------------------------------------
+  //
+  // The markup is rendered by Gallery.astro, so the count is right even if
+  // this file never loads. What is added here is the two things that need
+  // script: jumping to a slide, and knowing which slide you are on.
+
+  const dots = [...root.querySelectorAll("[data-gallery-dots] button")];
+  const slides = [...track.querySelectorAll(".slide")];
+
+  // Bail rather than half-work if the two lists ever drift apart — a mismatch
+  // means the markup changed and the mapping below would be wrong.
+  if (dots.length === 0 || dots.length !== slides.length) return;
+
+  /**
+   * Offset of a slide within the track's scroll range.
+   *
+   * Measured as a difference from the first slide rather than read straight
+   * off offsetLeft: offsetLeft is relative to the nearest positioned
+   * ancestor, which is not necessarily the track, but the difference between
+   * two of them is the scroll distance either way.
+   */
+  const offsetOf = (index) => slides[index].offsetLeft - slides[0].offsetLeft;
+
+  dots.forEach((dot, index) => {
+    dot.addEventListener("click", () => {
+      track.scrollTo({ left: offsetOf(index), behavior: behavior() });
+    });
+  });
+
+  /**
+   * Mark the slide nearest the track's left edge as current.
+   *
+   * Nearest-wins rather than an IntersectionObserver: /company shows three
+   * slides at once, so several are always intersecting and "is it visible"
+   * cannot name a single current slide. Distance to the snap position can.
+   *
+   * aria-current is the only state written — the stylesheet selects on it, so
+   * there is no second class to keep in sync.
+   */
+  const sync = () => {
+    let nearest = 0;
+
+    slides.forEach((_, index) => {
+      const distance = Math.abs(offsetOf(index) - track.scrollLeft);
+      if (distance < Math.abs(offsetOf(nearest) - track.scrollLeft)) {
+        nearest = index;
+      }
+    });
+
+    dots.forEach((dot, index) => {
+      dot.setAttribute("aria-current", index === nearest ? "true" : "false");
+    });
+  };
+
+  // Scroll fires far more often than the screen repaints, and each sync reads
+  // layout. One run per frame is enough and keeps the handler cheap.
+  let queued = false;
+
+  const onScroll = () => {
+    if (queued) return;
+    queued = true;
+    requestAnimationFrame(() => {
+      queued = false;
+      sync();
+    });
+  };
+
+  track.addEventListener("scroll", onScroll, { passive: true });
+
+  // Slide width is viewport-relative, so a resize moves every snap position.
+  window.addEventListener("resize", onScroll, { passive: true });
+
+  sync();
 });

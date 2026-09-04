@@ -47,9 +47,10 @@ Kept here so a reviewer can tell an intentional difference from a mistake.
 
 - **Gallery arrows stay visible at every width.** The original hides them below
   767px (`.hide-mobile-landscape { display: none }`) and offers its `slide-nav`
-  dots as the affordance instead. We have no dots, so hiding the arrows would
-  leave the scroll-snap track with no visible cue at all — worse than the
-  original rather than equal to it. Revisit if the dots get built.
+  dots as the affordance instead. The dots exist here now, but theirs is a 20px
+  hit area — fine as a redundant control beside the arrows, wrong as the only
+  one on a touch screen. So the arrows stay until the dots can carry that load
+  alone. See "Later".
 - **Footer copyright derives the year.** The original hardcodes 2025 and is now
   a year stale.
 - **Footer links grow to a 44px tap target below 767px.** The original's are
@@ -79,11 +80,19 @@ Kept here so a reviewer can tell an intentional difference from a mistake.
   copied. Fill from the ATS.
 - gallery lightbox — the original has none, would be a deliberate divergence;
   needs a script and a CSP review.
-- gallery dots (slide-nav) — would let the arrows hide on mobile as the
-  original does.
-- company page: the original has a gallery18 team slider; we render a single
-  office photo. Blocked on fetching ~13 photos — add them to
-  scripts/fetch-assets.sh.
+- gallery arrows below 767px: the dots (slide-nav) now exist, so the original's
+  `.hide-mobile-landscape` behaviour is finally available — hiding the arrows
+  there would no longer leave the track with no visible cue. Not done yet
+  because the dots' hit area is 20px, and dropping the arrows would leave a
+  sub-44px control as the only affordance on touch, which is the wrong trade.
+  Revisit if the dots get a larger touch target.
+- `src/assets/team/team-office.jpg` is now unreferenced — the slider replaced
+  the single hero photo on /company. On the original it belongs to the
+  /careers stats block; put it there with the rest of the careers work rather
+  than deleting it.
+- `PhotoWall.astro` is unused on purpose, not dead by accident: it is the
+  no-JavaScript alternative to the slider, kept so the choice can be reversed
+  by changing one import. Delete it if the slider is settled.
 - careers: mission block, stats row (2015 / Limassol / 200+ / 30m+) and nine
   perks cards — copy exists on the original, icons already in public/perks/,
   needs a perks data file.
