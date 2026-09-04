@@ -1,0 +1,72 @@
+{
+  "office-costumes": {
+    "order": 1,
+    "image": "team/wall-06",
+    "alt": "Two colleagues in oversized novelty sunglasses and a rainbow umbrella hat clowning around in the Limassol office, one of them in a Scorewarrior hoodie"
+  },
+  "office-lounge": {
+    "order": 2,
+    "image": "team/wall-14",
+    "alt": "Five colleagues in wigs, novelty glasses and Minnie Mouse ears squeezed onto a sofa in the office lounge"
+  },
+  "charity-gala": {
+    "order": 3,
+    "image": "team/wall-01",
+    "alt": "Five team members in evening dress at a Hope For Children charity gala in Cyprus"
+  },
+  "party-blue": {
+    "order": 4,
+    "image": "team/wall-12",
+    "alt": "Two colleagues at a company party, lit blue by the stage lights, one holding a drink"
+  },
+  "party-thumbs-up": {
+    "order": 5,
+    "image": "team/wall-02",
+    "alt": "Two colleagues arm in arm at a company party, one giving a thumbs up"
+  },
+  "party-three": {
+    "order": 6,
+    "image": "team/wall-03",
+    "alt": "Three colleagues laughing together with their arms around each other at an evening company event"
+  },
+  "beach-walk": {
+    "order": 7,
+    "image": "team/wall-04",
+    "alt": "A group of colleagues walking along a pebble beach at dusk, one waving at the camera"
+  },
+  "sea-viewpoint": {
+    "order": 8,
+    "image": "team/wall-05",
+    "alt": "A team member on a clifftop pointing out something far across the deep blue Mediterranean"
+  },
+  "surf": {
+    "order": 9,
+    "image": "team/wall-08",
+    "alt": "A team member standing ankle-deep in the surf as a wave breaks along the Cyprus shoreline"
+  },
+  "seafront": {
+    "order": 10,
+    "image": "team/wall-07",
+    "alt": "A team member with a camera phone on the Limassol seafront promenade"
+  },
+  "selfie": {
+    "order": 11,
+    "image": "team/wall-11",
+    "alt": "A team member taking a selfie outdoors on a bright day"
+  },
+  "dam-walk": {
+    "order": 12,
+    "image": "team/wall-09",
+    "alt": "A team member walking across a reservoir dam into the low evening sun"
+  },
+  "reservoir-dusk": {
+    "order": 13,
+    "image": "team/wall-10",
+    "alt": "The still water and intake tower of a Cyprus reservoir at dusk, with hills reflected on the surface"
+  },
+  "reservoir-rocks": {
+    "order": 14,
+    "image": "team/wall-13",
+    "alt": "A Cyprus reservoir seen over boulders on the shore, with the intake tower on the far bank"
+  }
+}

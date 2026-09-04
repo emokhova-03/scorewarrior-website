@@ -43,6 +43,49 @@ get 635bddebb5eec8720de73084_Michalis.jpg "$SRC/team/michalis.jpg"
 get 635bdf33e17e1de7746e3e5d_Anastasia.jpg "$SRC/team/anastasia.jpg"
 get 635bdc563444bf1e9633f9c1_Christina.jpg "$SRC/team/christina.jpg"
 get 635bdffcb5eec820cbe75569_Stelios.jpg "$SRC/team/stelios.jpg"
+# --- team slider on /company -------------------------------------------
+# The 14 slides of the original's `gallery18` slider, feeding the Gallery on
+# /company through src/data/team-gallery.json.
+#
+# These were NOT collected by curling the page: Webflow's slider sets each
+# <img src> from its own script, so the served HTML has empty <img> tags and
+# nothing to grep. They were read out of a live browser instead — open
+# https://scorewarrior.com/company, click the slider through to the last
+# slide so every image has loaded, then in the DevTools console:
+#
+#   const big = (im) => {
+#     const set = (im.srcset || "").split(",").map(s => s.trim()).filter(Boolean);
+#     const url = set.length ? set[set.length - 1].split(/\s+/)[0]
+#                            : (im.currentSrc || im.src);
+#     return (url || "").split("?")[0];
+#   };
+#   [...new Set([...document.querySelectorAll('.w-slider img, [class*="gallery"] img')]
+#     .map(big).filter(u => /\.(jpg|jpeg|png|webp)$/i.test(u)))]
+#     .forEach((u, i) => console.log(u.split("/").pop()));
+#
+# These originals are 960x710 — Webflow's srcset for that slider tops out at
+# the source file itself, which is why /company passes widths up to 840 rather
+# than the Gallery default of 1200. Never request more than the source has.
+#
+# The wall-NN numbering is the order the snippet printed, i.e. DOM order of the
+# slider. To check the mapping did not drift, re-run this script and then
+# `git status`: correct mapping means every file is overwritten with identical
+# bytes and the tree stays clean. Modified files mean the order shifted and the
+# pairs below need redoing.
+get 635bd93a9681785e1b85f6e4_4-1.jpg "$SRC/team/wall-01.jpg"
+get 635bd93a332189b60e4adc72_3-1.jpg "$SRC/team/wall-02.jpg"
+get 635bd93af1e4ed42845a2dd4_3-3.jpg "$SRC/team/wall-03.jpg"
+get 635bd93a5834af569bee5686_3-5.jpg "$SRC/team/wall-04.jpg"
+get 635bd9395834aff1faee55f5_2-4.jpg "$SRC/team/wall-05.jpg"
+get 63ee4c18f9e505e201c4b6d2_1-14.jpg "$SRC/team/wall-06.jpg"
+get 635bd938c5a75160582adac7_1-7.jpg "$SRC/team/wall-07.jpg"
+get 635bd9383444bf0de433c7bd_2-1.jpg "$SRC/team/wall-08.jpg"
+get 635bd9380af9692bd8f087bc_1-11.jpg "$SRC/team/wall-09.jpg"
+get 635bd937c5ea0db924d216c7_1-1.jpg "$SRC/team/wall-10.jpg"
+get 635bd9371cfdc046243d3c97_1-2.jpg "$SRC/team/wall-11.jpg"
+get 635bd93ad37e4831417f4264_3-2.jpg "$SRC/team/wall-12.jpg"
+get 635bd939e6daeb47efb5e159_1-12.jpg "$SRC/team/wall-13.jpg"
+get 63ee4c042c5f25704f11f093_1-13.jpg "$SRC/team/wall-14.jpg"
 echo "open source logos"
 get 6797b8fdbbbf42ec44c40265_logo_large_color_light.svg \
 "$PUB/opensource/godot.svg"
