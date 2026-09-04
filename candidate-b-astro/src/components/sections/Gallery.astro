@@ -37,6 +37,15 @@ interface Props {
    * the two in step whenever either changes.
    */
   sizes?: string;
+  /**
+   * Advance on its own every N milliseconds. Omit, or pass 0, for a slider
+   * that only moves when asked — which stays the default, because autoplay is
+   * the one feature here that takes control away from the reader.
+   *
+   * Opt-in per page rather than global: the value is measured from whichever
+   * slider on the original is being matched, and /games has not been checked.
+   */
+  autoplay?: number;
 }
 const {
   slides,
@@ -44,10 +53,19 @@ const {
   widths = [480, 800, 1200],
   slideWidth = "min(86vw, 720px)",
   sizes = "(max-width: 860px) 86vw, 720px",
+  autoplay = 0,
 } = Astro.props;
+
+// Autoplay with one slide would scroll a track that cannot move.
+const autoplays = autoplay > 0 && slides.length > 1;
 ---
 
-<div class="gallery" data-gallery style={`--slide-width: ${slideWidth}`}>
+<div
+  class="gallery"
+  data-gallery
+  data-autoplay-delay={autoplays ? String(autoplay) : undefined}
+  style={`--slide-width: ${slideWidth}`}
+>
   <ul class="track" tabindex="0" aria-label={label}>
     {
       slides.map((slide) => (
@@ -101,6 +119,51 @@ const {
     }
 
     <div class="arrows">
+      {
+        /*
+        Pause control, and the reason it exists at all: WCAG 2.2.2 asks for a
+        way to stop content that moves on its own for longer than five
+        seconds. Hover pausing does not satisfy it — a keyboard or
+        screen-reader user never hovers. The original has no such control;
+        this is a deliberate addition, recorded in docs/backlog.md with the
+        other divergences.
+
+        It sits inside .arrows rather than in a track of its own, so the row
+        keeps its two-group shape at every width and the dots stay centred.
+
+        Both glyphs ship in the markup and CSS shows one, keyed off
+        `data-playing`. That keeps gallery.js to flipping one attribute
+        instead of building SVG at runtime.
+
+        Rendered paused, and gallery.js starts it. Without the script nothing
+        moves, so a button labelled "Pause" would be describing a state the
+        page is not in.
+      */
+      }
+      {
+        autoplays && (
+          <button
+            type="button"
+            data-gallery-autoplay
+            data-playing="false"
+            aria-label="Play the slideshow"
+          >
+            <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
+              <g class="glyph-pause" fill="currentColor">
+                <rect x="3" y="2" width="3.5" height="12" rx="1" />
+                <rect x="9.5" y="2" width="3.5" height="12" rx="1" />
+              </g>
+
+              <path
+                class="glyph-play"
+                d="M4 2.2v11.6L13.5 8z"
+                fill="currentColor"
+              />
+            </svg>
+          </button>
+        )
+      }
+
       <button type="button" data-dir="-1" aria-label="Previous">
         <svg
           width="16"
@@ -303,6 +366,16 @@ const {
      sit outside the circle rather than cutting across it. */
   .arrows button:focus-visible {
     outline-offset: 2px;
+  }
+
+  /**
+   * One glyph at a time. `data-playing` is the whole state, written by
+   * gallery.js and read here — same arrangement as `aria-current` on the dots,
+   * and for the same reason: no second class to keep in sync.
+   */
+  .arrows button[data-playing="true"] .glyph-play,
+  .arrows button[data-playing="false"] .glyph-pause {
+    display: none;
   }
 
   /* The original steps its arrows down to 3rem here, which still clears the

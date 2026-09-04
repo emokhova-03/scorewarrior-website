@@ -56,6 +56,140 @@ document.querySelectorAll("[data-gallery]").forEach((root) => {
     });
   });
 
+  // ---- autoplay ---------------------------------------------------------
+  //
+  // Only when the component asked for it: the delay comes from the markup, so
+  // a gallery without `autoplay` has no timer, no button, and skips all this.
+
+  const delay = Number(root.dataset.autoplayDelay) || 0;
+  const toggle = root.querySelector("[data-gallery-autoplay]");
+
+  if (delay > 0 && toggle) {
+    const reduced = () =>
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    /**
+     * Two pieces of state, and keeping them apart is the whole design.
+     *
+     * `wanted` is intent: should this slideshow be running at all. It starts
+     * as "yes, unless Reduce Motion is set", the button flips it, and the
+     * glyph shows it.
+     *
+     * `timer` is the mechanics: is a tick scheduled right now. Hovering,
+     * tabbing in, scrolling the gallery out of view or backgrounding the tab
+     * all clear the timer without touching intent — so nothing slides out
+     * from under the reader, and it picks up again by itself afterwards.
+     *
+     * Collapsing the two is the bug I wrote first: the glyph then flickered
+     * to "play" on every hover, saying the slideshow was off when it was
+     * merely waiting.
+     */
+    let wanted = !reduced();
+    let timer = 0;
+
+    const advance = () => {
+      // clientWidth is what is on screen, scrollWidth the whole track; within
+      // a pixel or two of each other means the last slide is fully shown.
+      // Sub-pixel widths make an exact comparison unreliable.
+      const atEnd =
+        track.scrollLeft + track.clientWidth >= track.scrollWidth - 2;
+
+      if (atEnd) track.scrollTo({ left: 0, behavior: behavior() });
+      else track.scrollBy({ left: step(), behavior: behavior() });
+    };
+
+    const paint = () => {
+      toggle.dataset.playing = wanted ? "true" : "false";
+      toggle.setAttribute(
+        "aria-label",
+        wanted ? "Pause the slideshow" : "Play the slideshow",
+      );
+    };
+
+    /** Stop ticking, keep intent. */
+    const idle = () => {
+      clearInterval(timer);
+      timer = 0;
+    };
+
+    /** Tick again, if that is still what is wanted. */
+    const resume = () => {
+      if (!wanted || timer) return;
+      timer = setInterval(advance, delay);
+    };
+
+    /**
+     * The reader took over. Autoplay is off until they ask for it back —
+     * pausing-and-resuming here would fight whoever is looking at a photo.
+     */
+    const surrender = () => {
+      wanted = false;
+      idle();
+      paint();
+    };
+
+    toggle.addEventListener("click", () => {
+      if (wanted) {
+        surrender();
+        return;
+      }
+
+      // Pressing play is consent, so it also overrides Reduce Motion — that
+      // preference is about not moving things unasked, not about refusing.
+      wanted = true;
+      paint();
+      resume();
+    });
+
+    // Any real press inside the gallery — an arrow, a dot, a swipe on the
+    // track — means the reader is driving. The toggle handles itself above.
+    //
+    // pointerdown rather than a scroll listener: our own smooth scrolling
+    // fires scroll events too, and telling those apart from a finger is
+    // guesswork. A pointerdown is never ours.
+    root.addEventListener("pointerdown", (event) => {
+      if (event.target.closest("[data-gallery-autoplay]")) return;
+      surrender();
+    });
+
+    // Keyboard equivalent: arrows and dots are reachable by Tab, and pressing
+    // one is the same act of taking over.
+    root.addEventListener("keydown", (event) => {
+      if (event.key !== "Enter" && event.key !== " ") return;
+      if (event.target.closest("[data-gallery-autoplay]")) return;
+      surrender();
+    });
+
+    // Courtesy pauses. These do not change intent: the reader has not asked
+    // for anything, they are just looking.
+    root.addEventListener("mouseenter", idle);
+    root.addEventListener("mouseleave", resume);
+    root.addEventListener("focusin", idle);
+    root.addEventListener("focusout", resume);
+
+    // A slideshow nobody can see is pure battery drain — scrolled off screen,
+    // or the tab in the background.
+    if ("IntersectionObserver" in window) {
+      new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) {
+            if (entry.isIntersecting) resume();
+            else idle();
+          }
+        },
+        { threshold: 0.25 },
+      ).observe(root);
+    }
+
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden) idle();
+      else resume();
+    });
+
+    paint();
+    resume();
+  }
+
   // ---- slide dots -------------------------------------------------------
   //
   // The markup is rendered by Gallery.astro, so the count is right even if

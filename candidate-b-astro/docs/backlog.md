@@ -51,6 +51,18 @@ Kept here so a reviewer can tell an intentional difference from a mistake.
   hit area — fine as a redundant control beside the arrows, wrong as the only
   one on a touch screen. So the arrows stay until the dots can carry that load
   alone. See "Later".
+- **The autoplaying gallery has a pause button; the original's has none.**
+  WCAG 2.2.2 asks for a way to stop content that moves on its own for more
+  than five seconds, and hover pausing does not satisfy it — a keyboard or
+  screen-reader user never hovers. So the /company slider gets a third circle
+  next to the arrows. Autoplay also never starts under `prefers-reduced-motion`
+  and gives up permanently the first time the reader touches an arrow, a dot
+  or the track.
+- **The autoplay delay is Webflow's default, not a measurement.** 4000ms, the
+  `data-delay` default for its slider component. The original's actual value
+  was never read off the page — every other number in this project is measured
+  and provenanced in docs/design-tokens.md, and this one is not. Read it and
+  either confirm or correct `autoplay` in company.astro.
 - **Footer copyright derives the year.** The original hardcodes 2025 and is now
   a year stale.
 - **Footer links grow to a 44px tap target below 767px.** The original's are
