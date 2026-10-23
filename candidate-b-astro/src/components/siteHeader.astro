@@ -250,11 +250,33 @@ function isCurrent(href: string): boolean {
     white-space: nowrap;
     transition:
       background-color var(--dur) var(--ease),
-      color var(--dur) var(--ease);
+      color var(--dur) var(--ease),
+      scale 150ms var(--ease-out-strong);
   }
 
-  .support:hover {
-    background: var(--c-fuchsia-50);
+  /**
+   * Нажатие и наведение на Support (приёмы из курса):
+   *  - при нажатии кнопка чуть «вдавливается» (scale 0.97, 150 мс) — ощущение,
+   *    что интерфейс живой и слышит клик;
+   *  - hover (только мышь/трекпад: на телефоне наведения нет) — лёгкое
+   *    сжатие 0.98 и затемнение фона; цвета меняем кривой ease, как советует
+   *    курс для hover-эффектов.
+   * Используем свойство scale, а не transform: на телефоне у .support свой
+   * transform для каскада меню, и они бы конфликтовали.
+   */
+  .support:active {
+    scale: 0.97;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .support:hover {
+      background: var(--c-fuchsia-100);
+      scale: 0.98;
+    }
+
+    .support:hover:active {
+      scale: 0.97;
+    }
   }
 
   .burger {
