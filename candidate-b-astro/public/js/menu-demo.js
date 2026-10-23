@@ -42,11 +42,27 @@ document.addEventListener("DOMContentLoaded", () => {
     );
   }
 
+  /**
+   * Смена версии меняет стили ЗАКРЫТОЙ панели (opacity, scale, clip-path…),
+   * и браузер плавно довозил бы их — панель на миг мигала («твитчинг»).
+   * Поэтому на два кадра гасим все transition в шапке (.is-resizing, то же
+   * правило, что при смене ширины окна) и меняем версию «втихую».
+   */
+  const header = document.querySelector(".site-header");
+  let frames = 0;
+
   buttons.forEach((b) =>
     b.addEventListener("click", () => {
+      header?.classList.add("is-resizing");
       root.setAttribute("data-menu", b.dataset.version);
       write(KEY, b.dataset.version);
       mark();
+      cancelAnimationFrame(frames);
+      frames = requestAnimationFrame(() => {
+        frames = requestAnimationFrame(() =>
+          header?.classList.remove("is-resizing"),
+        );
+      });
     }),
   );
   mark();
