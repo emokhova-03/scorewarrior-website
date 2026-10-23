@@ -19,18 +19,18 @@ src/data/*.json (команда, таймлайн…) и вакансии (data/
 
 ## Куда смотреть, если спросят «а где…»
 
-| Вопрос | Файл |
-|---|---|
-| Шапка и меню | `src/components/siteHeader.astro` + `public/js/nav.js` |
-| Общий каркас страниц | `src/layouts/BaseLayout.astro` |
-| Цвета, отступы, скорости анимаций | `src/styles/tokens.css` |
-| Команда, таймлайн, офисы | `src/data/*.json` |
-| Проверка формата данных | `src/content.config.ts` (zod-схемы) |
-| Вакансии | `data/roles.json`, `src/lib/roles/*` |
-| Форма отклика (backend) | `src/pages/api/apply.ts`, `src/lib/apply/schema.ts` |
-| Проверка «жив ли сайт» | `src/pages/api/health.json.ts` |
-| Расписание (cron) | `src/worker.ts`, `wrangler.jsonc` |
-| Безопасность (CSP) | `public/_headers` |
+| Вопрос                            | Файл                                                   |
+| --------------------------------- | ------------------------------------------------------ |
+| Шапка и меню                      | `src/components/siteHeader.astro` + `public/js/nav.js` |
+| Общий каркас страниц              | `src/layouts/BaseLayout.astro`                         |
+| Цвета, отступы, скорости анимаций | `src/styles/tokens.css`                                |
+| Команда, таймлайн, офисы          | `src/data/*.json`                                      |
+| Проверка формата данных           | `src/content.config.ts` (zod-схемы)                    |
+| Вакансии                          | `data/roles.json`, `src/lib/roles/*`                   |
+| Форма отклика (backend)           | `src/pages/api/apply.ts`, `src/lib/apply/schema.ts`    |
+| Проверка «жив ли сайт»            | `src/pages/api/health.json.ts`                         |
+| Расписание (cron)                 | `src/worker.ts`, `wrangler.jsonc`                      |
+| Безопасность (CSP)                | `public/_headers`                                      |
 
 ## 10 решений и ответ в одно предложение
 

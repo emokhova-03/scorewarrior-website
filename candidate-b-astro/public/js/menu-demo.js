@@ -11,10 +11,18 @@ const KEY = "sw-menu-version";
 const DEMO_KEY = "sw-demo";
 
 function read(key) {
-  try { return localStorage.getItem(key); } catch { return null; }
+  try {
+    return localStorage.getItem(key);
+  } catch {
+    return null;
+  }
 }
 function write(key, value) {
-  try { localStorage.setItem(key, value); } catch { /* приватный режим — ок */ }
+  try {
+    localStorage.setItem(key, value);
+  } catch {
+    /* приватный режим — ок */
+  }
 }
 
 // ?demo=off / ?demo=on включает и выключает панель
