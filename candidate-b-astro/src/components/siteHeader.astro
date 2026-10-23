@@ -43,9 +43,20 @@ function isCurrent(href: string): boolean {
 ---
 
 <header class="site-header">
+  <!-- Затемнение страницы под открытым меню (используется вариантом «Dim»). -->
+  <div class="nav-scrim" aria-hidden="true"></div>
   <div class="bar">
     <a class="logo" href="/" aria-label="Scorewarrior — home">
+      <!-- Знак-треугольник слева от надписи. Декоративный: имя ссылки даёт aria-label. -->
       <img
+        class="logo-mark"
+        src="/brand/sw-triangle-white.svg"
+        alt=""
+        width="26"
+        height="23"
+      />
+      <img
+        class="logo-word"
         src="/brand/logo-scorewarrior-white.svg"
         alt="Scorewarrior"
         width="185"
@@ -66,6 +77,8 @@ function isCurrent(href: string): boolean {
     </button>
 
     <nav id="site-nav" class="nav" aria-label="Main">
+      <!-- Плавающая подсветка под пунктом при наведении (двигает nav.js). Только десктоп + мышь. -->
+      <span class="nav-pill" aria-hidden="true"></span>
       <ul class="nav-list">
         {
           nav.map((item) => (
@@ -121,9 +134,16 @@ function isCurrent(href: string): boolean {
   .logo {
     display: flex;
     align-items: center;
+    gap: 0.625rem; /* расстояние между треугольником и надписью */
   }
 
-  .logo img {
+  .logo-mark {
+    width: 26px;
+    height: auto;
+    flex: none; /* не даём треугольнику сжиматься на узких экранах */
+  }
+
+  .logo-word {
     width: 185px;
     height: auto;
   }
@@ -158,6 +178,66 @@ function isCurrent(href: string): boolean {
     font-weight: var(--fw-regular);
   }
 
+  /**
+   * «Плавающая пилюля» (как в Linear): один фон, который переезжает к пункту
+   * под курсором. Включается только там, где есть настоящий hover
+   * (мышь/трекпад) и десктопная ширина — на телефоне hover не существует.
+   * Позицию и размер ставит nav.js через transform/width/height.
+   */
+  .nav-pill {
+    display: none;
+  }
+
+  @media screen and (min-width: 992px) and (hover: hover) and (pointer: fine) {
+    .nav {
+      position: relative;
+      isolation: isolate; /* пилюля z-index:0 остаётся под текстом ссылок */
+    }
+
+    .nav-list a {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Раньше hover просто тускнил текст; теперь это делает пилюля. */
+    .nav-list a:hover {
+      color: var(--c-nav-link);
+    }
+
+    .nav-pill {
+      display: block;
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 0;
+      border-radius: 0.5rem;
+      background: #ffffff26;
+      opacity: 0;
+      scale: 0.96;
+      pointer-events: none;
+      /* Едет по тем же правилам, что .viewport в курсе (width/height),
+         но с сильным ease-out вместо ease — резкий старт, мягкая посадка. */
+      transition:
+        translate 250ms var(--ease-out-strong),
+        width 250ms var(--ease-out-strong),
+        height 250ms var(--ease-out-strong),
+        scale 200ms var(--ease-out-strong),
+        opacity 150ms ease;
+    }
+
+    .nav-pill.is-on {
+      opacity: 1;
+      scale: 1;
+    }
+
+    /* Первое появление: пилюля не «летит» из угла, а возникает на месте. */
+    .nav-pill.no-move {
+      transition:
+        scale 200ms var(--ease-out-strong),
+        opacity 150ms ease;
+    }
+  }
+
   /* .navbar14_button-wrapper { margin-left: 2rem } wrapping .button.is-small,
      which is a white pill with accent text — not an outline. */
   .support {
@@ -187,6 +267,73 @@ function isCurrent(href: string): boolean {
    */
   :global(body.nav-open) {
     overflow: hidden;
+  }
+
+  /**
+   * Пока меню раскрыто, «бегунок» страницы прячем: делаем его прозрачным.
+   * Не display:none — иначе исчезнет и место под полосу, и страница дёрнется
+   * вбок. scrollbar-color — стандарт (Chrome, Firefox, Safari 18.2+),
+   * ::-webkit-scrollbar — запасной вариант для старых Safari/Chrome.
+   */
+  :global(html:has(body.nav-open)) {
+    scrollbar-color: transparent transparent;
+  }
+  :global(html:has(body.nav-open)::-webkit-scrollbar),
+  :global(html:has(body.nav-open)::-webkit-scrollbar-thumb),
+  :global(html:has(body.nav-open)::-webkit-scrollbar-track) {
+    background: transparent;
+  }
+
+  /**
+   * Плавная смена «мобильная ↔ десктопная». CSS не умеет анимировать
+   * переключение layout (inline-ряд ссылок ↔ выпадающая панель), поэтому
+   * nav.js на мгновение вешает .is-switching, и то, что появляется в новом
+   * режиме, мягко проявляется (fade + лёгкий сдвиг) вместо резкого щелчка.
+   * fill-mode backwards: после анимации возвращаются обычные стили.
+   */
+  /**
+   * Причина «дёрганья» при пересечении 991px: у мобильной панели есть свои
+   * transition'ы (opacity/transform/clip-path). В момент смены режима стили
+   * панели меняются с «десктопных» на «закрытая мобильная» — и браузер
+   * ПЛАВНО довозит их, т.е. видно, как ряд ссылок улетает/гаснет. Пока на
+   * шапке стоит .is-resizing (2 кадра, ставит nav.js), все transition
+   * отключены, и смена происходит мгновенно и незаметно. Анимация
+   * проявления (@keyframes ниже) — это animation, ей это правило не мешает.
+   */
+  :global(.site-header.is-resizing),
+  :global(.site-header.is-resizing *),
+  :global(.site-header.is-resizing *::before),
+  :global(.site-header.is-resizing *::after) {
+    transition: none !important;
+  }
+
+  /* Затемнение страницы: по умолчанию выключено, включает вариант «Dim». */
+  .nav-scrim {
+    display: none;
+  }
+
+  @keyframes sw-appear {
+    from {
+      opacity: 0;
+      transform: translateY(-4px);
+    }
+  }
+
+  @media screen and (min-width: 992px) {
+    .is-switching .nav-list li,
+    .is-switching .support {
+      animation: sw-appear 320ms var(--ease-out-strong) backwards;
+    }
+    .is-switching .nav-list li:nth-child(2) { animation-delay: 30ms; }
+    .is-switching .nav-list li:nth-child(3) { animation-delay: 60ms; }
+    .is-switching .nav-list li:nth-child(4) { animation-delay: 90ms; }
+    .is-switching .support { animation-delay: 120ms; }
+  }
+
+  @media screen and (max-width: 991px) {
+    .is-switching .burger {
+      animation: sw-appear 320ms var(--ease-out-strong) backwards;
+    }
   }
 
   /* ---------------------------------------------------------------------
@@ -375,8 +522,8 @@ function isCurrent(href: string): boolean {
     /* At 360px the full wordmark would crowd the burger. The original keeps it
        at 185px; we let it shrink instead of overflowing, which is the one
        place the 360px floor overrides parity. */
-    .logo img {
-      width: min(185px, 46vw);
+    .logo-word {
+      width: min(185px, 40vw);
     }
   }
 </style>

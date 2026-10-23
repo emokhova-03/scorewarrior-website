@@ -1,0 +1,26 @@
+---
+/**
+ * DEMO switcher for the boss: five menu-animation versions.
+ * Delete together with menu-variants.css and public/js/menu-demo.js once a
+ * version is chosen. On by default; ?demo=off hides it, ?demo=on brings it back.
+ */
+const versions = [
+  { id: "v1", name: "Linear" },
+  { id: "v2", name: "Cascade" },
+  { id: "v3", name: "Curtain" },
+  { id: "v4", name: "Pop" },
+  { id: "v5", name: "Dim" },
+];
+---
+
+<div class="demo-panel" role="group" aria-label="Menu animation version">
+  <span class="demo-panel__label">Menu animation</span>
+  {
+    versions.map((v, i) => (
+      <button type="button" data-version={v.id} aria-pressed="false">
+        <span class="demo-panel__num">{i + 1}</span>
+        <span class="demo-panel__name">{v.name}</span>
+      </button>
+    ))
+  }
+</div>

@@ -7,6 +7,8 @@ import "@fontsource-variable/inter";
 
 import "../styles/tokens.css";
 import "../styles/global.css";
+import "../styles/menu-variants.css"; // ДЕМО: варианты анимации меню
+import DemoPanel from "../components/demoPanel.astro";
 import Header from "../components/siteHeader.astro";
 import Footer from "../components/siteFooter.astro";
 
@@ -63,12 +65,16 @@ const resolvedOgImage = new URL(
 
     <meta name="theme-color" content="#0a0818" />
 
+    <!-- ДЕМО: ставит выбранную версию меню до первой отрисовки -->
+    <script is:inline src="/js/menu-demo.js"></script>
+
     <slot name="head" />
   </head>
 
   <body>
     <a class="skip" href="#main">Skip to content</a>
 
+    <DemoPanel />
     <Header variant={headerVariant} />
 
     <main id="main">
