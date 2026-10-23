@@ -51,5 +51,107 @@ document.addEventListener("keydown", (event) => {
  * would stay on with no visible control to release it.
  */
 collapsed.addEventListener("change", (event) => {
+  // ВАЖНО: класс вешаем синхронно, ДО пересчёта стилей (браузер сообщает о
+  // смене media query перед style recalc). Иначе transition'ы мобильного меню
+  // успевают стартовать и панель «дёргается» (улетает/мигает) при переходе.
+  suppressTransitions();
   if (!event.matches && isOpen()) setOpen(false);
+  playSwitch();
+});
+
+/**
+ * На время переключения режима отключаем ВСЕ transition внутри шапки
+ * (CSS: .is-resizing в siteHeader.astro). Снимаем через два кадра — когда
+ * новые стили уже применены, и дальше меню анимируется как обычно.
+ */
+let resizeFrames = 0;
+function suppressTransitions() {
+  header?.classList.add("is-resizing");
+  cancelAnimationFrame(resizeFrames);
+  resizeFrames = requestAnimationFrame(() => {
+    resizeFrames = requestAnimationFrame(() => {
+      header?.classList.remove("is-resizing");
+    });
+  });
+}
+
+/**
+ * Плавная смена режима: на ~0.5 с вешаем .is-switching на шапку, CSS в
+ * siteHeader.astro проявляет элементы нового режима. Класс сначала снимаем и
+ * форсируем reflow (offsetWidth), чтобы анимация перезапускалась и при
+ * быстром «туда-сюда» ресайзе.
+ */
+const header = document.querySelector(".site-header");
+let switchTimer;
+
+function playSwitch() {
+  if (!header) return;
+  header.classList.remove("is-switching");
+  void header.offsetWidth;
+  header.classList.add("is-switching");
+  clearTimeout(switchTimer);
+  switchTimer = setTimeout(() => header.classList.remove("is-switching"), 600);
+}
+
+/**
+ * «Плавающая пилюля» под пунктами десктопного меню.
+ *
+ * Приёмы из курса (Radix NavigationMenu, App.css):
+ *  - ОДНА общая поверхность, которая меняет положение и размер (как
+ *    .viewport с transition по width/height), а не по подсветке на пункт;
+ *  - первое появление — лёгкий scale 0.96→1 + fade (как scaleIn 0.98);
+ *  - между пунктами пилюля едет, а не мигает;
+ *  - «grace period» при уходе курсора (~120 мс): курсор пересекает зазор
+ *    между пунктами, не выходя за меню, — без задержки пилюля гасла бы и
+ *    включалась снова (hover flicker).
+ * Клавиатуру не трогаем: по курсу действия с клавиатуры не анимируют.
+ */
+const pill = document.querySelector(".nav-pill");
+const navList = document.querySelector(".nav-list");
+const pillLinks = document.querySelectorAll(".nav-list a");
+let hideTimer;
+
+function placePill(link) {
+  const n = nav.getBoundingClientRect();
+  const r = link.getBoundingClientRect();
+  pill.style.width = `${r.width}px`;
+  pill.style.height = `${r.height}px`;
+  // Отдельное свойство translate (не transform): scale живёт в своём
+  // свойстве и не конфликтует с позицией.
+  pill.style.translate = `${r.left - n.left}px ${r.top - n.top}px`;
+}
+
+function showPill(link) {
+  clearTimeout(hideTimer);
+  if (!pill.classList.contains("is-on")) {
+    pill.classList.add("no-move"); // возникает на месте, не летит из угла
+    placePill(link);
+    void pill.offsetWidth; // фиксируем позицию до включения transition
+    pill.classList.remove("no-move");
+    pill.classList.add("is-on");
+  } else {
+    placePill(link);
+  }
+}
+
+if (pill && navList) {
+  pillLinks.forEach((link) => {
+    link.addEventListener("pointerenter", (event) => {
+      if (event.pointerType !== "mouse" || collapsed.matches) return;
+      showPill(link);
+    });
+  });
+
+  navList.addEventListener("pointerleave", () => {
+    clearTimeout(hideTimer);
+    hideTimer = setTimeout(() => pill.classList.remove("is-on"), 120);
+  });
+}
+
+// Клик по затемнению (вариант «Dim») закрывает меню.
+document.querySelector(".nav-scrim")?.addEventListener("click", () => {
+  if (isOpen()) {
+    setOpen(false);
+    burger.focus();
+  }
 });
