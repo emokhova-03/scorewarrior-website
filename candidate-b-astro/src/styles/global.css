@@ -110,3 +110,48 @@ button {
     scroll-behavior: auto !important;
   }
 }
+
+/* ---------------------------------------------------------------------
+   «Призрак» десктопного меню при переходе в мобильную версию.
+   Создаётся nav.js (playGhost): копия ряда ссылок гаснет на месте, пока
+   проявляются бургер и логотип. Стили повторяют десктопные .nav-list a и
+   .support из siteHeader.astro; живут здесь, потому что элемент создаётся
+   скриптом и не получает scoped-атрибут Astro.
+   --------------------------------------------------------------------- */
+.nav-ghost {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  color: var(--c-nav-link);
+  pointer-events: none;
+  animation: nav-ghost-out 300ms var(--ease-out-strong) forwards;
+}
+
+.nav-ghost .g-link {
+  display: block;
+  padding: var(--space-xxsmall) var(--space-xsmall);
+  font-size: var(--fs-regular);
+  white-space: nowrap;
+}
+
+.nav-ghost .g-link.is-current {
+  color: var(--c-nav-link-current);
+}
+
+.nav-ghost .g-support {
+  margin-left: var(--space-medium);
+  padding: var(--space-xxsmall) 1.25rem;
+  background: var(--white);
+  color: var(--c-accent);
+  font-weight: var(--fw-bold);
+  font-size: var(--fs-regular);
+  border-radius: var(--radius);
+  white-space: nowrap;
+}
+
+@keyframes nav-ghost-out {
+  to {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+}

@@ -53,6 +53,7 @@ document.addEventListener("keydown", (event) => {
  * would stay on with no visible control to release it.
  */
 collapsed.addEventListener("change", (event) => {
+  if (event.matches) playGhost(); // десктоп → мобильная: ряд ссылок гаснет на месте
   // ВАЖНО: класс вешаем синхронно, ДО пересчёта стилей (браузер сообщает о
   // смене media query перед style recalc). Иначе transition'ы мобильного меню
   // успевают стартовать и панель «дёргается» (улетает/мигает) при переходе.
@@ -157,3 +158,69 @@ document.querySelector(".nav-scrim")?.addEventListener("click", () => {
     burger.focus();
   }
 });
+
+/**
+ * «Призрак» десктопного меню (десктоп → мобильная).
+ *
+ * Проблема: на 991px CSS мгновенно превращает ряд ссылок в закрытую панель —
+ * ссылки просто исчезают, это и ощущалось «резко». Анимировать такую смену
+ * layout средствами CSS нельзя. Приём: заранее (пока мы на десктопе) запоминаем,
+ * где стоял ряд ссылок. В момент перехода рисуем лёгкую декоративную копию на
+ * том же месте и плавно гасим её (~220 мс, CSS .nav-ghost в global.css), пока
+ * проявляются бургер и логотип. Копия aria-hidden и не кликабельна.
+ * Позиция хранится от ПРАВОГО края панели: ряд прижат вправо, а ширина панели
+ * меняется при растягивании окна.
+ */
+const bar = document.querySelector(".bar");
+let snapshot = null;
+let snapshotFrame = 0;
+
+function takeSnapshot() {
+  if (!bar || !nav || collapsed.matches) return;
+  const b = bar.getBoundingClientRect();
+  const n = nav.getBoundingClientRect();
+  snapshot = {
+    right: b.right - n.right,
+    top: n.top - b.top,
+    height: n.height,
+    links: [...document.querySelectorAll(".nav-list a")].map((a) => ({
+      text: a.textContent.trim(),
+      current: a.getAttribute("aria-current") === "page",
+    })),
+    support: document.querySelector(".support")?.textContent.trim() ?? "",
+  };
+}
+
+function scheduleSnapshot() {
+  cancelAnimationFrame(snapshotFrame);
+  snapshotFrame = requestAnimationFrame(takeSnapshot);
+}
+
+window.addEventListener("resize", scheduleSnapshot);
+takeSnapshot();
+
+function playGhost() {
+  if (!bar || !snapshot) return;
+
+  const ghost = document.createElement("div");
+  ghost.className = "nav-ghost";
+  ghost.setAttribute("aria-hidden", "true");
+  ghost.style.right = `${snapshot.right}px`;
+  ghost.style.top = `${snapshot.top}px`;
+  ghost.style.height = `${snapshot.height}px`;
+
+  for (const link of snapshot.links) {
+    const item = document.createElement("span");
+    item.className = link.current ? "g-link is-current" : "g-link";
+    item.textContent = link.text;
+    ghost.append(item);
+  }
+
+  const support = document.createElement("span");
+  support.className = "g-support";
+  support.textContent = snapshot.support;
+  ghost.append(support);
+
+  bar.append(ghost);
+  setTimeout(() => ghost.remove(), 400);
+}
