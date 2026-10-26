@@ -26,6 +26,8 @@ function setOpen(open) {
   // own (max-height + overflow-y in the component's styles), and
   // overscroll-behavior keeps that scroll from chaining through to the body.
   document.body.classList.toggle("nav-open", open);
+  // Полоса прокрутки принадлежит <html>, поэтому класс нужен и на нём.
+  document.documentElement.classList.toggle("nav-open", open);
 }
 
 function isOpen() {

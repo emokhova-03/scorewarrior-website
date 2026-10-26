@@ -134,13 +134,15 @@ function isCurrent(href: string): boolean {
   .logo {
     display: flex;
     align-items: center;
-    gap: 0.625rem; /* расстояние между треугольником и надписью */
   }
 
+  /* Правило бренда: либо знак, либо надпись, но не оба сразу.
+     Десктоп — только надпись; ≤991px (там же, где бургер) — только знак. */
   .logo-mark {
-    width: 26px;
+    display: none;
+    width: 34px;
     height: auto;
-    flex: none; /* не даём треугольнику сжиматься на узких экранах */
+    flex: none;
   }
 
   .logo-word {
@@ -210,7 +212,7 @@ function isCurrent(href: string): boolean {
       top: 0;
       left: 0;
       z-index: 0;
-      border-radius: 0.5rem;
+      border-radius: var(--radius); /* та же форма, что у кнопки Support */
       background: #ffffff26;
       opacity: 0;
       scale: 0.96;
@@ -292,18 +294,18 @@ function isCurrent(href: string): boolean {
   }
 
   /**
-   * Пока меню раскрыто, «бегунок» страницы прячем: делаем его прозрачным.
-   * Не display:none — иначе исчезнет и место под полосу, и страница дёрнется
-   * вбок. scrollbar-color — стандарт (Chrome, Firefox, Safari 18.2+),
-   * ::-webkit-scrollbar — запасной вариант для старых Safari/Chrome.
+   * Пока меню раскрыто, «бегунок» страницы (полоса прокрутки) исчезает.
+   * Раньше блокировали только body, а полоса принадлежит <html> — поэтому она
+   * оставалась видна. Теперь nav.js вешает класс .nav-open ещё и на <html>:
+   *  - overflow: hidden убирает полосу и саму прокрутку страницы;
+   *  - scrollbar-gutter: stable оставляет место под полосу пустым, чтобы
+   *    страница и шапка не прыгнули вбок на ширину полосы (на Windows и
+   *    при мыши на Mac полоса занимает ~15px).
+   * Без :has() — работает во всех браузерах, где есть сама полоса.
    */
-  :global(html:has(body.nav-open)) {
-    scrollbar-color: transparent transparent;
-  }
-  :global(html:has(body.nav-open)::-webkit-scrollbar),
-  :global(html:has(body.nav-open)::-webkit-scrollbar-thumb),
-  :global(html:has(body.nav-open)::-webkit-scrollbar-track) {
-    background: transparent;
+  :global(html.nav-open) {
+    overflow: hidden;
+    scrollbar-gutter: stable;
   }
 
   /**
@@ -341,6 +343,10 @@ function isCurrent(href: string): boolean {
     }
   }
 
+  .is-switching .logo {
+    animation: sw-appear 320ms var(--ease-out-strong) backwards;
+  }
+
   @media screen and (min-width: 992px) {
     .is-switching .nav-list li,
     .is-switching .support {
@@ -372,6 +378,14 @@ function isCurrent(href: string): boolean {
   @media screen and (max-width: 991px) {
     /* .menu-icon2 — 48x48 holding three 24x2 white bars. 48px already
        clears the 44px tap-target minimum. */
+    .logo-mark {
+      display: block;
+    }
+
+    .logo-word {
+      display: none;
+    }
+
     .burger {
       display: grid;
       place-content: center;
@@ -547,13 +561,6 @@ function isCurrent(href: string): boolean {
     .bar,
     .nav {
       padding-inline: 1.25rem;
-    }
-
-    /* At 360px the full wordmark would crowd the burger. The original keeps it
-       at 185px; we let it shrink instead of overflowing, which is the one
-       place the 360px floor overrides parity. */
-    .logo-word {
-      width: min(185px, 40vw);
     }
   }
 </style>
