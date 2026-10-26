@@ -33,6 +33,6 @@
     "wrangler": "^4.127.1"
   },
   "overrides": {
-  "miniflare": { "undici": "^7.31.0" }
+  "miniflare": { "undici": "^8.0.0" }
 }
 }
