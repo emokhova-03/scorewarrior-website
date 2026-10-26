@@ -132,22 +132,44 @@ function isCurrent(href: string): boolean {
   }
 
   .logo {
+    position: relative;
     display: flex;
     align-items: center;
   }
 
-  /* Правило бренда: либо знак, либо надпись, но не оба сразу.
-     Десктоп — только надпись; ≤991px (там же, где бургер) — только знак. */
-  .logo-mark {
-    display: none;
-    width: 34px;
+  /**
+   * Правило бренда: либо знак, либо надпись, но не оба сразу.
+   * Десктоп — только надпись; ≤991px (там же, где бургер) — только знак.
+   *
+   * Обе картинки всегда в DOM, и смена идёт кроссфейдом, а не display:none —
+   * иначе знак «появляется из ниоткуда». Активная лежит в потоке и задаёт
+   * ширину ссылки, неактивная — absolute, прозрачная и чуть уменьшенная.
+   * Масштаб — через свойство scale (оно не конфликтует с transform).
+   * Исключены из .is-resizing, поэтому переход виден (см. ниже).
+   */
+  .logo-mark,
+  .logo-word {
     height: auto;
-    flex: none;
+    transform-origin: left center;
+    transition:
+      opacity 280ms var(--ease-out-strong),
+      scale 280ms var(--ease-out-strong);
   }
 
   .logo-word {
     width: 185px;
-    height: auto;
+  }
+
+  .logo-mark {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    margin-block: auto; /* вертикальное центрирование без transform */
+    width: 34px;
+    opacity: 0;
+    scale: 0.8;
+    pointer-events: none;
   }
 
   .nav {
@@ -325,7 +347,7 @@ function isCurrent(href: string): boolean {
    * проявления (@keyframes ниже) — это animation, ей это правило не мешает.
    */
   :global(.site-header.is-resizing),
-  :global(.site-header.is-resizing *),
+  :global(.site-header.is-resizing *:not(.logo-mark):not(.logo-word)),
   :global(.site-header.is-resizing *::before),
   :global(.site-header.is-resizing *::after) {
     transition: none !important;
@@ -341,10 +363,6 @@ function isCurrent(href: string): boolean {
       opacity: 0;
       transform: translateY(-4px);
     }
-  }
-
-  .is-switching .logo {
-    animation: sw-appear 320ms var(--ease-out-strong) backwards;
   }
 
   @media screen and (min-width: 992px) {
@@ -379,11 +397,21 @@ function isCurrent(href: string): boolean {
     /* .menu-icon2 — 48x48 holding three 24x2 white bars. 48px already
        clears the 44px tap-target minimum. */
     .logo-mark {
-      display: block;
+      position: static;
+      opacity: 1;
+      scale: 1;
+      pointer-events: auto;
     }
 
     .logo-word {
-      display: none;
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      margin-block: auto;
+      opacity: 0;
+      scale: 0.9;
+      pointer-events: none;
     }
 
     .burger {
